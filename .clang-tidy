@@ -1,0 +1,76 @@
+---
+Checks: >
+  readability-*,
+  -readability-use-anyofallof,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-non-const-global-variable*,
+  -*pro-type-vararg,
+  performance-*,
+  modernize-*,
+  -*array*,
+  -*trailing-return*,
+  -*-owning-memory,
+  -*-special-member-functions
+CheckOptions:
+  - { key: readability-identifier-naming.AbstractClassCase,              value: CamelCase  }
+  - { key: readability-identifier-naming.ClassCase,                      value: CamelCase  }
+  - { key: readability-identifier-naming.ClassConstantCase,              value: UPPER_CASE }
+  - { key: readability-identifier-naming.ClassMemberPrefix,              value: s_         }
+  - { key: readability-identifier-naming.ClassMemberCase,                value: camelBack  }
+  - { key: readability-identifier-naming.ClassMethodCase,                value: camelBack  }
+# The following two rules are disabled, as they conflict with the private member prefix
+# - { key: readability-identifier-naming.ConstantCase,                   value: camelBack  }
+# - { key: readability-identifier-naming.ConstantMemberCase,             value: camelBack  }
+  - { key: readability-identifier-naming.ConstantParameterCase,          value: camelBack  }
+  - { key: readability-identifier-naming.ConstantPointerParameterCase,   value: camelBack  }
+  - { key: readability-identifier-naming.ConstexprFunctionCase,          value: camelBack  }
+  - { key: readability-identifier-naming.ConstexprMethodCase,            value: camelBack  }
+  - { key: readability-identifier-naming.ConstexprVariableCase,          value: UPPER_CASE }
+  - { key: readability-identifier-naming.EnumCase,                       value: CamelCase  }
+  - { key: readability-identifier-naming.EnumConstantCase,               value: UPPER_CASE }
+  - { key: readability-identifier-naming.FunctionCase,                   value: camelBack  }
+  - { key: readability-identifier-naming.GlobalConstantCase,             value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantPointerCase,      value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalFunctionCase,             value: Camel_Snake_Case  }
+  - { key: readability-identifier-naming.GlobalPointerCase,              value: camelBack  }
+  - { key: readability-identifier-naming.GlobalVariableCase,             value: camelBack  }
+  - { key: readability-identifier-naming.InlineNamespaceCase,            value: lower_case }
+  - { key: readability-identifier-naming.LocalConstantCase,              value: camelBack  }
+  - { key: readability-identifier-naming.LocalConstantPointerCase,       value: camelBack  }
+  - { key: readability-identifier-naming.LocalPointerCase,               value: camelBack  }
+  - { key: readability-identifier-naming.LocalVariableCase,              value: camelBack  }
+  - { key: readability-identifier-naming.MemberCase,                     value: camelBack  }
+  - { key: readability-identifier-naming.MethodCase,                     value: camelBack  }
+  - { key: readability-identifier-naming.NamespaceCase,                  value: lower_case }
+  - { key: readability-identifier-naming.ParameterCase,                  value: camelBack  }
+  - { key: readability-identifier-naming.ParameterPackCase,              value: camelBack  }
+  - { key: readability-identifier-naming.PointerParameterCase,           value: camelBack  }
+  - { key: readability-identifier-naming.PrivateMemberPrefix,            value: m_         }
+  - { key: readability-identifier-naming.PrivateMemberCase,              value: camelBack  }
+  - { key: readability-identifier-naming.PrivateMethodCase,              value: camelBack  }
+  - { key: readability-identifier-naming.ProtectedMemberCase,            value: camelBack  }
+  - { key: readability-identifier-naming.ProtectedMethodCase,            value: camelBack  }
+  - { key: readability-identifier-naming.PublicMemberCase,               value: camelBack  }
+  - { key: readability-identifier-naming.PublicMethodCase,               value: camelBack  }
+  - { key: readability-identifier-naming.StaticConstantCase,             value: UPPER_CASE }
+  - { key: readability-identifier-naming.StaticVariableCase,             value: camelBack  }
+  - { key: readability-identifier-naming.StructCase,                     value: CamelCase  }
+# TemplateParameterCase & TypeTemplateParameterCase generate not better defined warnings if used with our code.
+# Thus they are disabled for now to allow the pipeline to pass.
+# - { key: readability-identifier-naming.TemplateParameterCase,          value: CamelCase  }
+  - { key: readability-identifier-naming.TemplateTemplateParameterCase,  value: CamelCase  }
+  - { key: readability-identifier-naming.TypeAliasCase,                  value: CamelCase  }
+  - { key: readability-identifier-naming.TypedefCase,                    value: CamelCase  }
+# - { key: readability-identifier-naming.TypeTemplateParameterCase,      value: CamelCase  }
+  - { key: readability-identifier-naming.UnionCase,                      value: CamelCase  }
+  - { key: readability-identifier-naming.ValueTemplateParameterCase,     value: UPPER_CASE }
+  - { key: readability-identifier-naming.VariableCase,                   value: camelBack  }
+  - { key: readability-identifier-naming.VirtualMethodCase,              value: camelBack  }
+  - { key: cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues,
+      value: "1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21;22;23;24;25;27;28;29;30;31;32" }
+  - { key: readability-magic-numbers.IgnoredIntegerValues,
+      value: "1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21;22;23;24;25;27;28;29;30;31;32" }
+  - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor, value: 1 }
+  - { key: readability-function-cognitive-complexity.Threshold,             value: 100 }
+FormatStyle : 'webkit'
+HeaderFilterRegex : '(core|common|experiments|integration)/.*'

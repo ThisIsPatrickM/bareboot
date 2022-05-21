@@ -1,0 +1,19 @@
+# Build output folders
+build/
+build*/
+public/
+
+subprojects/*
+!subprojects/rodos
+!subprojects/*.wrap
+
+# Development-tool specific configuration files 
+.vscode
+.clangd/
+.cache/
+.ccls-cache/
+
+# Python
+__pycache__
+.venv*
+.pytest_cache
