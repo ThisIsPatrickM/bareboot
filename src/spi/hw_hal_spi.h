@@ -1,10 +1,29 @@
-#include "hal/hal_spi.h"
-#include "peripheral_ctrl/pin_config/enums.h"
-#include "peripheral_ctrl/register_maps/spi_registers.h"
+#pragma once
+
+#include "src/peripheral_ctrl/pin_config/enums.h"
+#include "src/peripheral_ctrl/register_maps/spi_registers.h"
 
 #include <cstddef>
 
 namespace RODOS {
+
+enum SPI_IDX { //  STM32F4
+    SPI_IDX0, //  not available
+    SPI_IDX1, //  SPI1
+    SPI_IDX2, //  SPI2
+    SPI_IDX3, //   SPI3
+    SPI_IDX4, //  SPI4 (STM32F429 only)
+    SPI_IDX5, //  SPI5 (STM32F429 only)
+    SPI_IDX6 //  SPI6 (STM32F429 only)
+};
+
+enum SPI_PARAMETER_TYPE {
+    SPI_PARAMETER_BAUDRATE,
+    SPI_PARAMETER_MODE, // MODE:CPOL/CPHA  0:0/0   1:0/1   2:1/0   3:1/1
+    SPI_PARAMETER_MOSI_IDL_HIGH, // value 0 -> low, else high
+};
+
+enum SPI_STATUS_TYPE { SPI_STATUS_BAUDRATE, SPI_STATUS_MODE };
 
 class HW_HAL_SPI {
 public:
@@ -13,8 +32,11 @@ public:
 
     bool writeRead(const std::byte* txBuffer, size_t txLen, std::byte* rxBuffer, size_t rxLen);
 
-    static constexpr bool ENABLE_ROM_SPI { false }; ///< enables SPI_IDX3, which can be used for accessing the FRAM. Use with care.
+    static constexpr bool ENABLE_ROM_SPI {
+        false
+    }; ///< enables SPI_IDX3, which can be used for accessing the FRAM. Use with care.
     static constexpr SPI_IDX MAX_SPI_IDX { ENABLE_ROM_SPI ? SPI_IDX3 : SPI_IDX2 };
+
 private:
     const SPI_IDX m_idx;
     SPIStruct& m_spi;

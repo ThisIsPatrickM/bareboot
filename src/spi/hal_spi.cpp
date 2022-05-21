@@ -1,5 +1,6 @@
-// #include "misc-rodos-funcs.h"
-#include "hw_hal_spi.h"
+#include "hal_spi.h"
+#include "../rodos_includes/hal_gpio.h"
+#include "../rodos_includes/misc-rodos-funcs.h"
 
 #include <new>
 
@@ -22,7 +23,7 @@ HAL_SPI::HAL_SPI(SPI_IDX idx)
 int32_t HAL_SPI::init(uint32_t baudrate, bool slave, bool tiMode)
 {
     if (slave || tiMode) {
-        RODOS_ERROR("SPI slave or TI mode currently not supported");
+        // RODOS_ERROR("SPI slave or TI mode currently not supported");
         return -1;
     }
     context->init(baudrate);
@@ -36,18 +37,18 @@ bool HAL_SPI::isWriteFinished()
 
 void HAL_SPI::reset()
 {
-    RODOS_ERROR("SPI reset not supported yet!");
+    // RODOS_ERROR("SPI reset not supported yet!");
 }
 
 int32_t HAL_SPI::config(SPI_PARAMETER_TYPE, int32_t)
 {
-    RODOS_ERROR("SPI config not supported yet!");
+    // RODOS_ERROR("SPI config not supported yet!");
     return -1;
 }
 
 int32_t HAL_SPI::status(SPI_STATUS_TYPE)
 {
-    RODOS_ERROR("SPI status not supported yet!");
+    // RODOS_ERROR("SPI status not supported yet!");
     return -1;
 }
 
@@ -80,19 +81,19 @@ int32_t HAL_SPI::writeRead(const void* txBuffer, size_t txSize, void* rxBuffer, 
 
 int32_t HAL_SPI::writeTrig(const void*, size_t, uint8_t, int64_t, bool)
 {
-    RODOS_ERROR("SPI trig methods not implemented");
+    // RODOS_ERROR("SPI trig methods not implemented");
     return -1;
 }
 
 int32_t HAL_SPI::readTrig(void*, size_t, uint8_t, int64_t, bool)
 {
-    RODOS_ERROR("SPI trig methods not implemented");
+    // RODOS_ERROR("SPI trig methods not implemented");
     return -1;
 }
 
 int32_t HAL_SPI::writeReadTrig(const void*, size_t, void*, size_t, uint8_t, int64_t, bool)
 {
-    RODOS_ERROR("SPI trig methods not implemented");
+    // RODOS_ERROR("SPI trig methods not implemented");
     return -1;
 }
 

@@ -1,1 +1,8 @@
-../../../stm32l4/cortex_m/register_access/reserved_bytes.h
+#pragma once
+
+namespace RODOS {
+
+class alignas(uint32_t) ReservedWord {};
+
+
+}

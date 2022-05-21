@@ -1,6 +1,8 @@
 
 bootloader_common_sources = files('startup.cpp', 'bootloader.cpp', 'call_constructors.cpp', 'weak_irq_handlers.cpp')
 
+
+# Platform dependent 
 bootloader_armv7_sources = files('platforms' / 'armv7' / 'start_app.cpp')
 bootloader_x64_sources = files('platforms' / 'x64' / 'start_app.cpp')
 

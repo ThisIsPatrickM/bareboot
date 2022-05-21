@@ -8,42 +8,28 @@
  */
 #pragma once
 
-
-#include <stdint.h>
-#include "genericIO.h"
-#include "hal_gpio.h"
+#include <cstdint>
+// #include "genericIO.h"
+// #include "hal_gpio.h"
+#include "../rodos_includes/hal_gpio.h"
+#include "hw_hal_spi.h"
 
 namespace RODOS {
 
-enum SPI_IDX{   //  STM32F4
-	SPI_IDX0,   //  not available
-	SPI_IDX1,   //  SPI1
-	SPI_IDX2,   //  SPI2
-	SPI_IDX3,    //   SPI3
-	SPI_IDX4,   //  SPI4 (STM32F429 only)
-	SPI_IDX5,   //  SPI5 (STM32F429 only)
-	SPI_IDX6    //  SPI6 (STM32F429 only)
-};
+using namespace std;
 
-enum SPI_PARAMETER_TYPE {
-    SPI_PARAMETER_BAUDRATE,
-    SPI_PARAMETER_MODE,      // MODE:CPOL/CPHA  0:0/0   1:0/1   2:1/0   3:1/1
-    SPI_PARAMETER_MOSI_IDL_HIGH,   // value 0 -> low, else high
-};
+// class HAL_SPI : public GenericIOInterface {
+class HAL_SPI {
+    HW_HAL_SPI* context;
 
-enum SPI_STATUS_TYPE {
-    SPI_STATUS_BAUDRATE,
-    SPI_STATUS_MODE
-};
-
-
-class HW_HAL_SPI;
-
-class HAL_SPI : public GenericIOInterface {
-	HW_HAL_SPI *context;
 public:
     HAL_SPI(SPI_IDX spiIdx);
-    HAL_SPI(SPI_IDX idx, GPIO_PIN sckPin, GPIO_PIN misoPin, GPIO_PIN mosiPin, GPIO_PIN nssPin = GPIO_INVALID);
+    HAL_SPI(
+        SPI_IDX idx,
+        GPIO_PIN sckPin,
+        GPIO_PIN misoPin,
+        GPIO_PIN mosiPin,
+        GPIO_PIN nssPin = GPIO_INVALID);
     virtual ~HAL_SPI() {}
 
     /**
@@ -102,29 +88,29 @@ public:
      * @param   maxLen  size of receive buffer
      * @retval  int32_t number of received bytes, value < 0 on failure
      */
-    int32_t read( void* recBuf, size_t maxLen);
+    int32_t read(void* recBuf, size_t maxLen);
 
-	/**
-	 * @brief   Send and receive data FULL-DUPLEX.
-	 *          With every sent byte one byte is received and put in recBuf.
-	 *          If recBuf is bigger than sendBuf dummy bytes will be sent to
-	 *          get requested data.
-	 *          If sendBuf is bigger than recBuf you will only get the first
-	 *          received bytes until recBuf is full.
-	 *          Does not return until transfer is finished(blocking).
-	 * @param   sendBuf pointer to transmit buffer
-	 * @param   len     size of transmit buffer
-	 * @param   recBuf  pointer to receive buffer
-	 * @param   maxLen  size of receive buffer
-	 * @retval  int32_t number of received bytes, value < 0 on failure
-	 */
+    /**
+     * @brief   Send and receive data FULL-DUPLEX.
+     *          With every sent byte one byte is received and put in recBuf.
+     *          If recBuf is bigger than sendBuf dummy bytes will be sent to
+     *          get requested data.
+     *          If sendBuf is bigger than recBuf you will only get the first
+     *          received bytes until recBuf is full.
+     *          Does not return until transfer is finished(blocking).
+     * @param   sendBuf pointer to transmit buffer
+     * @param   len     size of transmit buffer
+     * @param   recBuf  pointer to receive buffer
+     * @param   maxLen  size of receive buffer
+     * @retval  int32_t number of received bytes, value < 0 on failure
+     */
     int32_t writeRead(const void* sendBuf, size_t len, void* recBuf, size_t maxLen);
 
-     /**
+    /**
      * @brief   Send data to a spi slave device.
      *          Define byte, which, once received on the miso line, triggers
      *          the start of the transmission.
-     *          Alternatively possible to have the function trigger once this 
+     *          Alternatively possible to have the function trigger once this
      *          byte is not received anymore.
      *          Does not return until transfer is finished(blocking).
      * @param   sendBuf pointer to transmit buffer
@@ -138,13 +124,14 @@ public:
      *          (default: false)
      * @retval  int32_t number of sent bytes, value < 0 on failure
      */
-    int32_t writeTrig(const void* sendBuf, size_t len, uint8_t trigger, int64_t timeout, bool notTrig = false);
+    int32_t writeTrig(
+        const void* sendBuf, size_t len, uint8_t trigger, int64_t timeout, bool notTrig = false);
 
     /**
      * @brief   Request data from a spi slave device.
      *          Define byte, which, once received on the miso line, triggers
      *          the start of the reception.
-     *          Alternatively possible to have the function trigger once this 
+     *          Alternatively possible to have the function trigger once this
      *          byte is not received anymore.
      *          To get data from slave the master must generate the SPI clock and dummy
      *          data must be sent. For it recBuf will be used.
@@ -160,13 +147,14 @@ public:
      *          (default: false)
      * @retval  int32_t number of received bytes, value < 0 on failure
      */
-    int32_t readTrig(void* recBuf, size_t rxLen, uint8_t trigger, int64_t timeout, bool notTrig = false);
+    int32_t readTrig(
+        void* recBuf, size_t rxLen, uint8_t trigger, int64_t timeout, bool notTrig = false);
 
     /**
      * @brief   Send and receive data FULL-DUPLEX.
      *          Define byte, which, once received on the miso line, triggers
      *          the start of the transmission and reception.
-     *          Alternatively possible to have the function trigger once this 
+     *          Alternatively possible to have the function trigger once this
      *          byte is not received anymore.
      *          With every sent byte one byte is received and put in recBuf.
      *          If recBuf is bigger than sendBuf dummy bytes will be sent to
@@ -187,9 +175,14 @@ public:
      *          (default: false)
      * @retval  int32_t number of received bytes, value < 0 on failure
      */
-    int32_t writeReadTrig(  const void* sendBuf, size_t len, void *recvBuf, size_t maxLen, 
-                            uint8_t trigger, int64_t timeout, bool notTrig = false);
-
+    int32_t writeReadTrig(
+        const void* sendBuf,
+        size_t len,
+        void* recvBuf,
+        size_t maxLen,
+        uint8_t trigger,
+        int64_t timeout,
+        bool notTrig = false);
 };
 
 }

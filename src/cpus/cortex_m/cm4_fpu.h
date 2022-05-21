@@ -1,1 +1,7 @@
-../../stm32l4/cortex_m/cm4_fpu.h
+#pragma once
+
+namespace RODOS {
+
+extern "C" void setupFPU();
+
+}

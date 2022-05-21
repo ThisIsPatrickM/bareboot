@@ -1,6 +1,8 @@
 #include "startup.h"
 
-void bootloader::Init_Data_Section()
+namespace bootloader {
+
+void Init_Data_Section()
 {
     volatile uint32_t* destPtr = _sdata;
     const volatile uint32_t* srcPtr = _sidata;
@@ -11,7 +13,7 @@ void bootloader::Init_Data_Section()
     }
 }
 
-void bootloader::Init_Bss_Section()
+void Init_Bss_Section()
 {
     volatile uint32_t* destPtr = _sbss;
     while (reinterpret_cast<uintptr_t>(destPtr) < reinterpret_cast<uintptr_t>(_ebss)) { // NOLINT
@@ -20,12 +22,12 @@ void bootloader::Init_Bss_Section()
     }
 }
 
-inline void bootloader::Memory_Barrier()
+inline void Memory_Barrier()
 {
     asm volatile("" : : : "memory");
 }
 
-void bootloader::Wait_About_5_Seconds()
+void Wait_About_5_Seconds()
 {
     constexpr int32_t seconds { 5 }; // NOLINT
     constexpr int32_t frequencyHz { 20'000'000 }; // NOLINT
@@ -35,8 +37,6 @@ void bootloader::Wait_About_5_Seconds()
         asm volatile("");
     }
 }
-
-using namespace bootloader;
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
@@ -48,16 +48,18 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Memory_Barrier();
     // // setupFPU();
     // Memory_Barrier();
-    bootloader::Call_Constructors();
+    Call_Constructors();
     Memory_Barrier();
     // // ClockInitializer::init(globalClockSetup);
     // Memory_Barrier();
 
-    auto* appVectors = (bootloader::DeviceVectors*)&__approm_start__; // NOLINT
+    auto* appVectors = (DeviceVectors*)&__approm_start__; // NOLINT
     // TODO Set TBLOFF
-    bootloader::Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
+    Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
 
     while (true) {
         ;
     }
+}
+
 }
