@@ -1,6 +1,6 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
@@ -90,7 +90,7 @@ struct I2CStruct {
     Register FIFO_CLR;
     Register TMCONFIG;
     Register CLKTOLIMIT;
-    ReservedWord RESERVED0[(0x100-0x4C)/sizeof(ReservedWord)];
+    ReservedWord RESERVED0[(0x100 - 0x4C) / sizeof(ReservedWord)];
     Register S0_CTRL;
     Register S0_MAXWORDS;
     Register S0_ADDRESS;
@@ -110,10 +110,10 @@ struct I2CStruct {
     Register S0_FIFO_CLR;
     Register S0_ADDRESSB;
     Register S0_ADDRESSMASKB;
-    ReservedWord RESERVED1[(0x3FC-0x14C)/sizeof(ReservedWord)];
+    ReservedWord RESERVED1[(0x3FC - 0x14C) / sizeof(ReservedWord)];
     Register PERID;
 };
 
-static_assert(sizeof(I2CStruct)==0x400);
+static_assert(sizeof(I2CStruct) == 0x400);
 
 }

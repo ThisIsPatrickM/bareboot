@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cortex_m/hw_periph_bitband.h"
+#include "cpus/cortex_m/hw_periph_bitband.h"
 #include "register_maps/adc_registers.h"
 #include "register_maps/can_registers.h"
 #include "register_maps/clkgen_registers.h"

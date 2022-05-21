@@ -1,7 +1,7 @@
 #pragma once
 
-#include "src/peripheral_ctrl/pin_config/enums.h"
-#include "src/peripheral_ctrl/register_maps/spi_registers.h"
+#include "../peripheral_ctrl/pin_config/enums.h"
+#include "../peripheral_ctrl/register_maps/spi_registers.h"
 
 #include <cstddef>
 

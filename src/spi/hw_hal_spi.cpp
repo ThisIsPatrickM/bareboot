@@ -1,9 +1,11 @@
 #include "hw_hal_spi.h"
-#include "clkgen_config.h"
+// #include "clkgen_config.h"
+// TODO How is this selected in RODOS?
+#include "peripheral_ctrl/peripheral_defs.h"
+#include "peripheral_ctrl/pin_config/pin_config.h"
+#include "peripheral_ctrl/pin_config/pinmap.h"
 #include "rodos_includes/hal_gpio.h"
-#include "src/peripheral_ctrl/peripheral_defs.h"
-#include "src/peripheral_ctrl/pin_config/pin_config.h"
-#include "src/peripheral_ctrl/pin_config/pinmap.h"
+#include "subtargets/peb1_20mhz/clkgen_config.h"
 
 #include <limits>
 

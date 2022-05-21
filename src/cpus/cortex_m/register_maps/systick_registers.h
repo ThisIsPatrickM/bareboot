@@ -1,7 +1,7 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/register.h"
 
-namespace RODOS{
+namespace RODOS {
 
 namespace SysTick_CSR {
     using ENABLE = RegSubValue<0>;

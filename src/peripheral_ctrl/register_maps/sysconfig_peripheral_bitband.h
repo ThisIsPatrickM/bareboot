@@ -1,6 +1,6 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
@@ -52,6 +52,6 @@ struct SYSCONFIGPeripheralBitbandStruct {
     ReservedWord RESERVED3;
 };
 
-static_assert(sizeof(SYSCONFIGPeripheralBitbandStruct) == 4*32*sizeof(Register));
+static_assert(sizeof(SYSCONFIGPeripheralBitbandStruct) == 4 * 32 * sizeof(Register));
 
-}    
+}

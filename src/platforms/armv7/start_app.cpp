@@ -2,15 +2,14 @@
 
 namespace bootloader {
 
-extern "C" void Start_App(
-    [[maybe_unused]] void* programmCounter, [[maybe_unused]] void* stackPointer)
+void Start_App([[maybe_unused]] void* programmCounter, [[maybe_unused]] void* stackPointer)
 {
-    // TODO in inline assembly auf Variablen zugreifen
     __asm(
-        "           \n\
-          msr msp, r1 \n\
-          bx r0       \n\
-    ");
+        "msr msp, %0;"
+        "bx %1;"
+        : // Output Operands
+        : "r"(stackPointer), "r"(programmCounter) // Input operands
+    );
 }
 
 } // namespace bootloader

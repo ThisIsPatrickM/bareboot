@@ -1,12 +1,12 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 namespace RODOS {
 
 namespace SCB_ICSR {
     using VECTACTIVE = RegSubValue<0, 9>;
     using RETTOBASE = RegSubValue<11>;
-    using VECTPENDING = RegSubValue<12,9>;
+    using VECTPENDING = RegSubValue<12, 9>;
     using ISRPENDING = RegSubValue<22>;
     using ISRPREEMPT = RegSubValue<23>;
     using PENDSTCLR = RegSubValue<25>;
@@ -20,18 +20,17 @@ namespace SCB_AIRCR {
     using VECTRESET = RegSubValue<0>;
     using VECTCLRACTIVE = RegSubValue<1>;
     using SYSRESETREQ = RegSubValue<2>;
-    using PRIGROUP = RegSubValue<8,3>;
+    using PRIGROUP = RegSubValue<8, 3>;
     using ENDIANNESS = RegSubValue<15>;
-    using VECTKEY = RegSubValue<16,16>;
+    using VECTKEY = RegSubValue<16, 16>;
 
     constexpr uint32_t VECTKEY_WRITEVALUE = 0x05FA;
 }
 
 namespace SCB_CPACR {
-    using CP10 = RegSubValue<20,2>;
-    using CP11 = RegSubValue<22,2>;
+    using CP10 = RegSubValue<20, 2>;
+    using CP11 = RegSubValue<22, 2>;
 }
-
 
 struct SCBStruct {
     Register CPUID;
@@ -53,6 +52,6 @@ struct SCBStruct {
     ReservedWord RESERVED1;
 };
 
-static_assert(sizeof(SCBStruct)==0x90);
+static_assert(sizeof(SCBStruct) == 0x90);
 
 }

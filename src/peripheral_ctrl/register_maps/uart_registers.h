@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
@@ -20,7 +20,7 @@ namespace UART_CTRL {
     using PAREVEN = RegSubValue<1>;
     using PARMAN = RegSubValue<2>;
     using STOPBITS = RegSubValue<3>;
-    using WORDSIZE = RegSubValue<4,2>;
+    using WORDSIZE = RegSubValue<4, 2>;
     using LOOPBACK = RegSubValue<6>;
     using LOOPBACKBLK = RegSubValue<7>;
     using AUTOCTS = RegSubValue<8>;
@@ -33,7 +33,8 @@ namespace UART_CLKSCALE {
     using FRAC = RegSubValue<0, 6>;
     using INT = RegSubValue<6, 18>;
     /**
-     * not in the manual, but the FRAC and INT fields can just be viewed as a combined fixed-point value
+     * not in the manual, but the FRAC and INT fields can just be viewed as a combined fixed-point
+     * value
      */
     using COMBINEDVALUE = RegSubValue<0, 24>;
 }
@@ -81,7 +82,7 @@ namespace UART_IRQ_ENB {
     using IRQ_TX = RegSubValue<4>;
     using IRQ_TX_STATUS = RegSubValue<5>;
     using IRQ_TX_EMPTY = RegSubValue<6>;
-    using IRQ_TX_CTS= RegSubValue<7>;
+    using IRQ_TX_CTS = RegSubValue<7>;
 }
 
 struct UARTStruct {
@@ -103,10 +104,10 @@ struct UARTStruct {
     Register TXFIFOIRQTRG;
     Register RXFIFORTSTRG;
     Register STATE;
-    ReservedWord RESERVED0[(0xFFC-0x48)/sizeof(Register)];
+    ReservedWord RESERVED0[(0xFFC - 0x48) / sizeof(Register)];
     Register PERID;
 };
 
-static_assert(sizeof(UARTStruct)==0x1000);
+static_assert(sizeof(UARTStruct) == 0x1000);
 
 }

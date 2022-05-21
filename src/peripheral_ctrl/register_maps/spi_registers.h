@@ -1,6 +1,8 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+// #include "cpus/cortex_m/register_access/register.h"
+// #include "cpus/cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
@@ -21,7 +23,7 @@ namespace SPI_CTRL1 {
     using BMSTART = RegSubValue<8>;
     using BMSTALL = RegSubValue<9>;
     using MDLYCAP = RegSubValue<10>;
-    using MTXCAP = RegSubValue<11>;    
+    using MTXCAP = RegSubValue<11>;
 }
 
 namespace SPI_DATA {
@@ -72,7 +74,7 @@ struct SPIStruct {
     Register TXFIFOIRQTRG;
     Register FIFO_CLR;
     Register STATE;
-    ReservedWord RESERVED[(0x3F8-0x30)/sizeof(ReservedWord)];
+    ReservedWord RESERVED[(0x3F8 - 0x30) / sizeof(ReservedWord)];
     Register PERID;
 };
 

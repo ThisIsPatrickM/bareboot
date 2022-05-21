@@ -1,5 +1,5 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/register.h"
 
 namespace RODOS {
 

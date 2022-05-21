@@ -1,7 +1,7 @@
 #pragma once
 #include "peripheral_ctrl/pin_config/enums.h"
 #include "peripheral_ctrl/register_maps/ioconfig_registers.h"
-#include "src/rodos_includes/hal_gpio.h"
+#include "rodos_includes/hal_gpio.h"
 
 namespace RODOS::pin_config {
 

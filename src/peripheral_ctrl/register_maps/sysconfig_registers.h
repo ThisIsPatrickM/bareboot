@@ -1,8 +1,7 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/register.h"
 
 namespace RODOS {
-
 
 namespace SYSCONFIG_RST_STAT {
     using POR = RegSubValue<0>;
@@ -185,8 +184,6 @@ namespace SYSCONFIG_EF_CONFIG {
     using WM = RegSubValue<28>;
 }
 
-
-
 struct SYSCONFIGStruct {
     Register RST_STAT;
     Register RST_CNTL_ROM;
@@ -222,7 +219,7 @@ struct SYSCONFIGStruct {
     Register ANALOG_CNTL;
     Register SW_CLKDIV10;
     Register REFRESH_CONFIG_L;
-    ReservedWord RESERVED0[(0xFEC-0x088)/4];
+    ReservedWord RESERVED0[(0xFEC - 0x088) / 4];
     Register EF_CONFIG;
     Register EF_ID0;
     Register EF_ID1;

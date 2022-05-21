@@ -1,5 +1,5 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/register.h"
 
 namespace RODOS {
 
@@ -14,7 +14,7 @@ namespace CLKGEN_CTRL0 {
     using PLL_CLKOD = RegSubValue<14, 4>;
     using PLL_CLKF = RegSubValue<18, 6>;
     using PLL_CLKR = RegSubValue<24, 4>;
-    using CLK_DIV_SEL = RegSubValue<28,2>;
+    using CLK_DIV_SEL = RegSubValue<28, 2>;
     using PLL_RESET = RegSubValue<30>;
     using SYS_CLK_LOST_DET_EN = RegSubValue<31>;
 }
@@ -44,4 +44,3 @@ struct CLKGENStruct {
 static_assert(sizeof(CLKGENStruct) == 0xC);
 
 }
-

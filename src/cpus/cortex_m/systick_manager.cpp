@@ -1,5 +1,5 @@
 // #include "systick_manager.h"
-// #include "cortex_m/peripheral_defs.h"
+// #include "cpus/cortex_m/peripheral_defs.h"
 // #include "hw_specific.h"
 // #include "timeevent.h"
 // #include "timemodel.h"

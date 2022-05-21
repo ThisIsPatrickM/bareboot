@@ -27,6 +27,12 @@ inline void Memory_Barrier()
     asm volatile("" : : : "memory");
 }
 
+void Init_Spi()
+{
+    RODOS::HAL_SPI spi { RODOS::SPI_IDX3 };
+    spi.init();
+}
+
 void Wait_About_5_Seconds()
 {
     constexpr int32_t seconds { 5 }; // NOLINT

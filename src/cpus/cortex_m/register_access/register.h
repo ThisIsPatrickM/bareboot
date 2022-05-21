@@ -1,6 +1,6 @@
 #pragma once
-#include "bit_field.h"
-#include "cortex_m/register_access/mmio.h"
+#include "cpus/cortex_m/register_access/mmio.h"
+#include "rodos_includes/bit_field.h"
 
 namespace RODOS {
 

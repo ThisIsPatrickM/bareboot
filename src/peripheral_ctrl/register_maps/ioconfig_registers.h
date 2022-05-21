@@ -1,6 +1,6 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
@@ -18,16 +18,16 @@ namespace IOCONFIG_PINx {
     using IODIS = RegSubValue<16>;
 }
 
-constexpr uint32_t TOTAL_NUMBER_OF_PINS {104};
+constexpr uint32_t TOTAL_NUMBER_OF_PINS { 104 };
 
 struct IOCONFIGStruct {
     Register PINx[TOTAL_NUMBER_OF_PINS];
-    ReservedWord RESERVED0[(0x1C0-0x1A0)/sizeof(Register)];
+    ReservedWord RESERVED0[(0x1C0 - 0x1A0) / sizeof(Register)];
     Register CLKDIV[8];
-    ReservedWord RESERVED1[(0xFFC-0x1E0)/sizeof(Register)];
+    ReservedWord RESERVED1[(0xFFC - 0x1E0) / sizeof(Register)];
     Register PERID;
 };
 
-static_assert(sizeof(IOCONFIGStruct)==0x1000);
+static_assert(sizeof(IOCONFIGStruct) == 0x1000);
 
 }

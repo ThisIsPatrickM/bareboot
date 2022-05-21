@@ -1,6 +1,6 @@
 #pragma once
-#include "cortex_m/register_access/register.h"
-#include "cortex_m/register_access/reserved_bytes.h"
+#include "cpus/cortex_m/register_access/register.h"
+#include "cpus/cortex_m/register_access/reserved_bytes.h"
 
 #include <cstddef>
 
@@ -27,7 +27,6 @@ enum class CAN_ST_VALUE : uint8_t {
     TX_ONCE_RTR = 14,
     TX_BUSY2 = 15
 };
-
 
 namespace CAN_CGCR {
     using CANEN = RegSubValue<0>;
@@ -92,7 +91,6 @@ namespace CAN_CEDIAG {
     using DRIVE = RegSubValue<14>;
 }
 
-
 struct CANHardwareBuffer {
     Register CNSTAT;
     Register TSTP;
@@ -128,10 +126,9 @@ struct CANStruct {
     Register CANEC;
     Register CEDIAG;
     Register CTMR;
-    ReservedWord RESERVED[(0x400-0x238)/sizeof(ReservedWord)];
+    ReservedWord RESERVED[(0x400 - 0x238) / sizeof(ReservedWord)];
 };
 
 static_assert(sizeof(CANStruct) == 0x400);
 
 }
-
