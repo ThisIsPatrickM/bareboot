@@ -2,7 +2,7 @@
 
 namespace RODOS {
 
-class alignas(uint32_t) ReservedWord {};
-
+class alignas(uint32_t) ReservedWord {
+};
 
 }

@@ -47,7 +47,7 @@ void Bootloader::updateImageAlwaysKeep(
 
 GlobalImageMetadata& Bootloader::getGlobalImageMetadata()
 {
-    return m_globalImageMetadata;
+    return globalImageMetadata;
 }
 
 } // namespace bootloader

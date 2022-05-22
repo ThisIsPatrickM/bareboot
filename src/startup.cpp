@@ -48,19 +48,27 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
     // TODO remove before flight
     Wait_About_5_Seconds();
+    blTable.globalImageMetadata.bootcounter++;
     // Memory_Barrier();
     Init_Data_Section();
     Init_Bss_Section();
+    blTable.globalImageMetadata.bootcounter++;
     Memory_Barrier();
     // // setupFPU();
     // Memory_Barrier();
     Call_Constructors();
+    blTable.globalImageMetadata.bootcounter++;
     Memory_Barrier();
     // // ClockInitializer::init(globalClockSetup);
     // Memory_Barrier();
 
     auto* appVectors = (DeviceVectors*)&__approm_start__; // NOLINT
-    // TODO Set TBLOFF
+
+    auto* blTable = (Bootloader*)&__bootrom_start__; // NOLINT
+    blTable->globalImageMetadata.bootcounter++;
+
+    Move_Vector_Table();
+
     Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
 
     while (true) {

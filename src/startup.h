@@ -4,8 +4,8 @@
 #include "call_constructors.h"
 #include "irq_handlers.h"
 #include "memory_map.h"
+#include "platforms/start_app.h"
 #include "spi/hal_spi.h"
-#include "start_app.h"
 
 namespace bootloader {
 
@@ -18,8 +18,6 @@ inline void Memory_Barrier();
 void Wait_About_5_Seconds();
 
 void Init_Spi();
-
-extern "C" [[noreturn, gnu::used]] void Reset_Handler();
 
 struct DeviceVectors {
     /* Stack pointer */

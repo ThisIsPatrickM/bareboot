@@ -6,9 +6,9 @@ namespace bootloader {
 
 using namespace std;
 
-const struct Bootloader {
+static struct Bootloader {
 public:
-    // bool checkCRC(size_t index, uint32_t crc);
+    bool checkCRC(size_t index, uint32_t crc);
     void updatePrefferedImage(size_t index);
     void updateCurrentImage(size_t index);
     void updateVersion(uint32_t version, size_t imageIndex);
@@ -21,8 +21,8 @@ public:
 
     GlobalImageMetadata& getGlobalImageMetadata();
 
-private:
-    GlobalImageMetadata m_globalImageMetadata = {};
-} BL_TABLE __attribute__((used, section(".bootloader")));
+    // private:
+    GlobalImageMetadata globalImageMetadata = {};
+} blTable __attribute__((used, section(".bootloader")));
 
 } // namespace bootloader

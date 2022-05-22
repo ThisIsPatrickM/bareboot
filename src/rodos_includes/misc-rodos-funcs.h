@@ -1,18 +1,16 @@
 
 /**
-* @file misc-rodos-funcs.h
-* @date 2008/06/17 10:46
-* @author Sergio MOntenegro
-*
-* @brief simple misc functions
-*/
+ * @file misc-rodos-funcs.h
+ * @date 2008/06/17 10:46
+ * @author Sergio MOntenegro
+ *
+ * @brief simple misc functions
+ */
 
 #pragma once
 
-
-#include <stdint.h>
 #include <stddef.h>
-
+#include <stdint.h>
 
 namespace RODOS {
 
@@ -34,77 +32,93 @@ extern void* xmalloc(size_t len);
 
 extern void* xmallocAndTrapOnFailure(size_t len);
 
-template<typename T>
-inline T* xmalloc(){
-	return (T*) xmalloc(sizeof(T));
+template <typename T>
+inline T* xmalloc()
+{
+    return (T*)xmalloc(sizeof(T));
 }
 
-template<typename T>
-inline T* xmallocAndTrapOnFailure(){
-	return (T*) xmallocAndTrapOnFailure(sizeof(T));
-	
+template <typename T>
+inline T* xmallocAndTrapOnFailure()
+{
+    return (T*)xmallocAndTrapOnFailure(sizeof(T));
 }
 
-extern void hwResetAndReboot();        ///<  End of Program -> reboot Hw dependent
+extern void hwResetAndReboot(); ///<  End of Program -> reboot Hw dependent
 extern void hwInitWatchdog(int32_t intervalMilliseconds);
-extern void hwTriggerWatchdog();        ///<  for CPUS which provide a hardware watchdog
-extern void hwDisableInterrupts();      // global interrupt disable - use carefully
-extern void hwEnableInterrupts();       // global interrupt enable - use carefully
-extern void deepSleepUntil(int64_t until); //< cpu core and periphery off until external interrupt or time "until"
-extern bool isSchedulerRunning();       //< implemented in the platform dependent scheduler
+extern void hwTriggerWatchdog(); ///<  for CPUS which provide a hardware watchdog
+extern void hwDisableInterrupts(); // global interrupt disable - use carefully
+extern void hwEnableInterrupts(); // global interrupt enable - use carefully
+extern void deepSleepUntil(
+    int64_t until); //< cpu core and periphery off until external interrupt or time "until"
+extern bool isSchedulerRunning(); //< implemented in the platform dependent scheduler
 extern int64_t hwGetRTCTime();
 extern void hwSetRTCTime(int64_t time);
 
 /** Nop... no operation ... do nothing ***/
-void nop( ... );
+void nop(...);
 
 extern float getCpuLoad(); ///< value from 0 to 1, average from the last call
 
+inline bool getbit(uint32_t bitmap, uint8_t bitIndex)
+{
+    return (bitmap >> bitIndex) & 0x01;
+}
 
-inline bool getbit(uint32_t bitmap, uint8_t bitIndex) { return (bitmap >> bitIndex) & 0x01; }
-
-inline void setbit(uint32_t* bitmap, bool value, uint8_t bitIndex) {
-    if(value) *bitmap |=  (0x01u  << bitIndex);
-    else      *bitmap &= ~(0x01u  << bitIndex);
+inline void setbit(uint32_t* bitmap, bool value, uint8_t bitIndex)
+{
+    if (value)
+        *bitmap |= (0x01u << bitIndex);
+    else
+        *bitmap &= ~(0x01u << bitIndex);
 }
 
 template <typename T>
-constexpr T min(const T a, const T b) {
+constexpr T min(const T a, const T b)
+{
     return (a < b) ? a : b;
 }
 
 template <typename T>
-constexpr T max(const T a, const T b) {
+constexpr T max(const T a, const T b)
+{
     return (a > b) ? a : b;
 }
 
 template <typename T>
-constexpr T abs(const T a) {
+constexpr T abs(const T a)
+{
     return (a >= 0) ? a : -a;
 }
 
-constexpr uint32_t uint32_tOnes(uint8_t n) {
-    return (static_cast<uint32_t>(1)  << n) - static_cast<uint32_t>(1);
+constexpr uint32_t uint32_tOnes(uint8_t n)
+{
+    return (static_cast<uint32_t>(1) << n) - static_cast<uint32_t>(1);
 }
 
 template <typename T>
-constexpr bool inClosedInterval(const T& a, const T& min, const T& max) {
+constexpr bool inClosedInterval(const T& a, const T& min, const T& max)
+{
     return (min <= a) && (a <= max);
 }
 
 template <typename T>
-constexpr bool inOpenInterval(const T& a, const T& min, const T& max) {
+constexpr bool inOpenInterval(const T& a, const T& min, const T& max)
+{
     return (min < a) && (a < max);
 }
 
-constexpr uint16_t chars2short(const char a, const char b) {
+constexpr uint16_t chars2short(const char a, const char b)
+{
     return static_cast<uint16_t>((a << 8) + b);
 }
 
-constexpr uint8_t not0(const void* a) { return (a) ? 1 : 0; }
+constexpr uint8_t not0(const void* a)
+{
+    return (a) ? 1 : 0;
+}
 
-}  // namespace
-
+} // namespace
 
 /**
  * MAIN() will be executed after initialisation and before
@@ -114,4 +128,3 @@ constexpr uint8_t not0(const void* a) { return (a) ? 1 : 0; }
  * outside of namespace RODOS!
  **/
 void MAIN();
-

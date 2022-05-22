@@ -3,24 +3,15 @@
 
 namespace RODOS {
 
-enum class XTAL_MODE {
-    OFF = 0,
-    XTAL = 1,
-    EXT_CLK = 2
-};
-    
+enum class XTAL_MODE { OFF = 0, XTAL = 1, EXT_CLK = 2 };
+
 enum class PLL_SOURCE {
     NONE = 0,
     XTAL = 1,
     EXT_CLK = 2,
 };
-    
-enum class SYSCLK_SOURCE {
-    HBO = 0,
-    EXT_CLK = 1,
-    PLL = 2,
-    XTAL = 3
-};
+
+enum class SYSCLK_SOURCE { HBO = 0, EXT_CLK = 1, PLL = 2, XTAL = 3 };
 
 class CLKGENConfigStruct {
 public:

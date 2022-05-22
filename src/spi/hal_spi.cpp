@@ -1,6 +1,6 @@
 #include "hal_spi.h"
-#include "../rodos_includes/hal_gpio.h"
-#include "../rodos_includes/misc-rodos-funcs.h"
+#include "rodos_includes/hal_gpio.h"
+#include "rodos_includes/misc-rodos-funcs.h"
 
 #include <new>
 

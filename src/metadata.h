@@ -28,6 +28,7 @@ struct GlobalImageMetadata {
     uint8_t hmac1[HMAC_LENGTH] = { 0 };
     uint8_t hmac2[HMAC_LENGTH] = { 0 };
     uint8_t hmac3[HMAC_LENGTH] = { 0 };
+    uint32_t bootcounter = 0;
 };
 
 } // namespace bootloader

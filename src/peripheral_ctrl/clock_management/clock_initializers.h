@@ -11,6 +11,7 @@ public:
 class PLLInitializer {
 public:
     static void init(const PLLSetup& setup);
+
 private:
     static void setClockSource(const PLLSetup& setup);
     static void disablePowerDown();

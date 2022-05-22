@@ -11,8 +11,8 @@
 #include <cstdint>
 // #include "genericIO.h"
 // #include "hal_gpio.h"
-#include "../rodos_includes/hal_gpio.h"
 #include "hw_hal_spi.h"
+#include "rodos_includes/hal_gpio.h"
 
 namespace RODOS {
 

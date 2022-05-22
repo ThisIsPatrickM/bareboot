@@ -1,5 +1,5 @@
 
-ENTRY(main)
+ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
 _estack = 0x20008000;    /* end of RAM */

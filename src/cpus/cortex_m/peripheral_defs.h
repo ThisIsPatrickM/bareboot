@@ -1,8 +1,7 @@
 #pragma once
-#include "register_maps/scb_registers.h"
 #include "register_maps/nvic_registers.h"
+#include "register_maps/scb_registers.h"
 #include "register_maps/systick_registers.h"
-
 
 namespace RODOS {
 

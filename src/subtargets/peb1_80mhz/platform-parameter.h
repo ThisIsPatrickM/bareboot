@@ -21,9 +21,9 @@ namespace RODOS {
  *
  */
 #ifndef UART_DEBUG_IDX
-#    define UART_DEBUG_IDX UART_IDX0
-#    define UART_DEBUG_RX GPIO_096 // PG0
-#    define UART_DEBUG_TX GPIO_097 // PG1
+#define UART_DEBUG_IDX UART_IDX0
+#define UART_DEBUG_RX GPIO_096 // PG0
+#define UART_DEBUG_TX GPIO_097 // PG1
 #endif
 
 /** Memory for allocation (xmalloc) e.g. for all thread stacks ***/
@@ -42,7 +42,8 @@ namespace RODOS {
 #undef SCHEDULER_STACKSIZE
 #define SCHEDULER_STACKSIZE 8
 
-/** time interval between timer interrupts in microseconds - max. 798000us (if CPU_CLK==168MHz)!!! */
+/** time interval between timer interrupts in microseconds - max. 798000us (if CPU_CLK==168MHz)!!!
+ */
 #undef PARAM_TIMER_INTERVAL
 #define PARAM_TIMER_INTERVAL 10000
 }

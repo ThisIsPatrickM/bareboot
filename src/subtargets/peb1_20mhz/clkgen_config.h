@@ -9,9 +9,9 @@ namespace RODOS {
  */
 constexpr CLKGENConfigStruct clkgenConfig {
     .xtalMode = XTAL_MODE::EXT_CLK,
-    .xtalFreq = 40'000'000, //must be <=100MHz for EXT_CLK or >=4MHz and <=10MHz for XTAL
+    .xtalFreq = 40'000'000, // must be <=100MHz for EXT_CLK or >=4MHz and <=10MHz for XTAL
     .usePLL = true,
-    .pllTargetFrequency = 20'000'000, //must be <= 100MHz
+    .pllTargetFrequency = 20'000'000, // must be <= 100MHz
     .requireExactPLLFrequency = true,
     .sysclkSource = SYSCLK_SOURCE::PLL
 };
