@@ -17,7 +17,7 @@ void Dummy_App()
     }
 }
 
-void* __bootrom_start__ = &dummyBootloader; // NOLINT
+void* __bootrom_start__ = (&dummyBootloader); // NOLINT
 int __bootrom_size__ = sizeof(dummyBootloader); // NOLINT
 void* __approm_start__ = (void*)Dummy_App; // NOLINT
 int __approm_size__ = 0; // NOLINT

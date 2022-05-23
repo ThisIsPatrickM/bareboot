@@ -9,14 +9,15 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
 RAM (xrw)   : ORIGIN = 0x1fff8000, LENGTH = 64K
-BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
-ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K
+BOOTROM (rwx)    : ORIGIN = 0x00000000, LENGTH = 4K
+ROM (rwx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K
 }
 
 __bootrom_start__ = ORIGIN(BOOTROM);
 __bootrom_size__ = LENGTH(BOOTROM);
 __approm_start__ = ORIGIN(ROM);
 __approm_size__ = LENGTH(ROM);
+__bootloader__ = ORIGIN(BOOTROM)+0x350;
 
 
 /* Define output sections */
@@ -30,11 +31,11 @@ SECTIONS
     . = ALIGN(8);
   } >BOOTROM
 
-  .bootloader :
+  .bootloader_table :
   {
     . = ALIGN(8);
-    __bootloader__ = .;
-    KEEP(*(.bootloader)) /* Bootloader Code */
+    /* __bootloader__ = .; TODO To fixed address */
+    KEEP(*(.bootloader_table)) /* Bootloader Code */
     . = ALIGN(8);
   } >BOOTROM
 

@@ -17,6 +17,8 @@ inline void Memory_Barrier();
 
 void Wait_About_5_Seconds();
 
+void Toggle_ROM_Writeable(bool writeable);
+
 void Init_Spi();
 
 struct DeviceVectors {
@@ -26,7 +28,7 @@ struct DeviceVectors {
     void* pfnResetHandler;
 };
 
-const struct IrqTable { // NOLINT
+constinit const struct IrqTable { // NOLINT
     const volatile void* sp = _estack;
 
     void (*resetHandler)() = Reset_Handler; // Reset Handler
