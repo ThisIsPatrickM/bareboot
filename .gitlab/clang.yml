@@ -1,6 +1,6 @@
 .check:
   tags:
-    - bootloader
+    - dosis
   stage: check
   variables:
     CHECK: clang-tidy
