@@ -1,3 +1,6 @@
+
+image: $CI_REGISTRY/move/software/docker-images/dosis:master
+
 stages:
   - verify
   - check
