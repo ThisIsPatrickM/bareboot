@@ -1,0 +1,21 @@
+.check:
+  tags:
+    - bootloader
+  stage: check
+  variables:
+    CHECK: clang-tidy
+  script:
+    - echo "Executing check named ${CHECK}"
+    - > 
+    - rm -rf build && meson build ${CROSS} ${MESON_CONFIG}
+    - ninja -Cbuild {CHECK}
+
+clang-tidy:
+  extends: .check
+  variables:
+    CHECK: clang-tidy
+
+clang-format:
+  extends: .check   
+  variables: 
+    CHECK: clang-format

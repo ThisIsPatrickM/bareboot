@@ -12,3 +12,4 @@ stages:
 
 include:
   - local: '.gitlab/no-newline-check.yml'
+  - local: '.gitlab/clang.yml'
