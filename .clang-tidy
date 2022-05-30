@@ -74,4 +74,3 @@ CheckOptions:
   - { key: readability-function-cognitive-complexity.Threshold,             value: 100 }
 FormatStyle : 'webkit'
 HeaderFilterRegex : '(src|tests)/.*'
-WarningsAsErrors : '*'

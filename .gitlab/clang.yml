@@ -4,11 +4,12 @@
   stage: check
   variables:
     CHECK: clang-tidy
-  script:
-    - echo "Executing check named ${CHECK}"
-    - > 
-    - rm -rf build && meson build
-    - ninja -C build ${CHECK}
+  script: |
+    echo "Executing check named ${CHECK}"
+    rm -rf build && meson build
+    if ./ninja -C ${CHECK} | grep -q 'error:|warning:'; then
+    exit 1
+    fi
 
 clang-tidy:
   extends: .check
