@@ -7,13 +7,13 @@
   script:
     - echo "Executing check named ${CHECK}"
     - > 
-    - rm -rf build && meson build ${CROSS} ${MESON_CONFIG}
-    - ninja -Cbuild {CHECK}
+    - rm -rf build && meson build
+    - ninja -C build {CHECK}
 
 clang-tidy:
   extends: .check
   variables:
-    CHECK: clang-tidy
+    CHECK: tidy
 
 clang-format:
   extends: .check   
