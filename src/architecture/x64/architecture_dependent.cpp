@@ -1,5 +1,8 @@
-#include "platforms/start_app.h"
+#include "architecture/architecture_dependent.h"
+
 #include "bootloader.h"
+
+#include <iostream>
 
 // TODO this only fixes compiler/linker warnings, because I couldn't find a
 // proper linkerscript for linux
@@ -12,6 +15,7 @@ volatile uint32_t _estack[1] = {}; // NOLINT
 bootloader::Bootloader dummyBootloader;
 void Dummy_App()
 {
+    std::cout << "Dummy App called. x64 Example ends here." << std::endl;
     while (true) {
         ;
     }
@@ -28,18 +32,9 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler();
 
 void Start_App([[maybe_unused]] void* programmCounter, [[maybe_unused]] void* stackPointer)
 {
-    // TODO in inline assembly auf Variablen zugreifen
-    // TODO Assembly for Linux
-    // TODO Clear stack
-    __asm(
-        "push %0;"
-        "ret"
-        : // Output Operands
-        : "r"(programmCounter) // Input operands
-    );
+    // TODO This only calls a Dummy_App.
+    __asm__("call *%0" ::"m"(__approm_start__) :); // good
 }
-
-void Move_Vector_Table() {}
 
 } // namespace bootloader
 

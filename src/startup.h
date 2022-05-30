@@ -1,10 +1,11 @@
 #pragma once
 
+#include "architecture/architecture_dependent.h"
 #include "bootloader.h"
 #include "call_constructors.h"
 #include "irq_handlers.h"
 #include "memory_map.h"
-#include "platforms/start_app.h"
+#include "microcontroller/microcontroller_dependent.h"
 #include "spi/hal_spi.h"
 
 namespace bootloader {
@@ -16,8 +17,6 @@ void Init_Bss_Section();
 inline void Memory_Barrier();
 
 void Wait_About_5_Seconds();
-
-void Toggle_ROM_Writeable(bool writeable);
 
 void Init_Spi();
 

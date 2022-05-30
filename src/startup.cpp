@@ -49,26 +49,17 @@ void Wait_About_5_Seconds()
     constexpr int32_t frequencyHz { 20'000'000 }; // NOLINT
     constexpr int32_t approximateCyclesPerLoop { 3 }; // NOLINT
     constexpr int32_t totalLoops { (frequencyHz / approximateCyclesPerLoop) * seconds }; // NOLINT
+
     for (int32_t i { 0 }; i < totalLoops; i++) {
         asm volatile("");
-    }
-}
-
-void Toggle_ROM_Writeable(bool writeable)
-{
-    constexpr uint32_t ROM_PROT_ADDRESS = 0x40010010;
-    uint32_t* ROM_PROT = reinterpret_cast<uint32_t*>(ROM_PROT_ADDRESS); // NOLINT
-    if (writeable) {
-        *ROM_PROT = 0x1;
-    } else {
-        *ROM_PROT = 0x0;
     }
 }
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
     // TODO remove before flight
-    Wait_About_5_Seconds();
+    // Wait_About_5_Seconds();
+
     Memory_Barrier();
 
     // Remove ROM_PROT
@@ -90,8 +81,10 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Move_Vector_Table();
     Memory_Barrier();
 
-    auto* appVectors = (DeviceVectors*)&__approm_start__; // NOLINT
-    Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
+    auto* appVectors = reinterpret_cast<DeviceVectors*>(&__approm_start__); // NOLINT
+    // Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
+    Start_App(appVectors->pfnResetHandler,
+              (void*)(_estack)); // TODO This might cause errors
 
     while (true) {
         ;
