@@ -1,2 +1,11 @@
+stages:
+  - verify
+  - check
+  - build
+  - test
+  - doc
+  - deploy
+  - release
+
 include:
   - local: '.gitlab/no-newline-check.yml'
