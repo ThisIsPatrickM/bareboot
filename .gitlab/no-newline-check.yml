@@ -1,0 +1,13 @@
+
+
+no-newline-in-file:
+  stage: verify
+  tags:
+    - dosis
+  script:
+   - >
+    CHECK_STATUS=0;
+    while read check_file;
+    do [[ $(tail -c1 $check_file) != "" ]] && echo "No newline at the end of file - $check_file" && CHECK_STATUS=1;
+    done <<< $(find src tests linkerscripts cross_files -not -path "*/\.*" -not -name "*.pdf" -type f);
+    exit $CHECK_STATUS

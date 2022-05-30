@@ -22,13 +22,13 @@ constexpr size_t NUMBER_OF_IMAGES = 1;
 constexpr size_t HMAC_LENGTH = 64;
 
 struct GlobalImageMetadata {
+    uint32_t bootcounter = 1; // NOLINT
     ImageMetadata images[NUMBER_OF_IMAGES] = {};
     size_t preferredImage = 7;
     size_t currentImage = 8;
     // uint8_t hmac1[HMAC_LENGTH] = { 0 };
     // uint8_t hmac2[HMAC_LENGTH] = { 0 };
     // uint8_t hmac3[HMAC_LENGTH] = { 0 };
-    uint32_t bootcounter = 19; // NOLINT
 };
 struct Bootloader {
     // bool checkCRC(size_t index, uint32_t crc);
@@ -42,9 +42,6 @@ struct Bootloader {
     // void updateImageComplete(bool status, size_t imageIndex);
     // void updateImageAlwaysKeep(bool status, size_t imageIndex);
 
-    // GlobalImageMetadata& getGlobalImageMetadata();
-
-    uint32_t someValue = 15;
     GlobalImageMetadata globalImageMetadata = {};
 };
 

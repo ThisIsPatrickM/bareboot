@@ -14,3 +14,4 @@ extern void* __bootrom_start__; // NOLINT
 extern int __bootrom_size__; // NOLINT
 extern void* __approm_start__; // NOLINT
 extern int __approm_size__; // NOLINT
+extern void* __bootloader__; // NOLINT

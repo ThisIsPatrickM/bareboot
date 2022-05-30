@@ -1,1 +1,2 @@
-
+include:
+  - local: '.gitlab/no-newline-check.yml'

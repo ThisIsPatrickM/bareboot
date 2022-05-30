@@ -58,7 +58,7 @@ void Wait_About_5_Seconds()
 extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
     // TODO remove before flight
-    // Wait_About_5_Seconds();
+    Wait_About_5_Seconds();
 
     Memory_Barrier();
 
@@ -68,7 +68,6 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Memory_Barrier();
     Init_Spi();
 
-    // auto* bl = (Bootloader*)&__bootrom_start__; // NOLINT
     Init_Data_Section();
     Init_Bss_Section();
     Memory_Barrier();
