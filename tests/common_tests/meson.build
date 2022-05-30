@@ -20,4 +20,3 @@ test('Common Tests', common_tests)
 
 all_test_deps += common_tests_deps
 all_test_dep_libs += common_tests_lib_deps
-# project_benchmark_sources += files(footest_sources)
