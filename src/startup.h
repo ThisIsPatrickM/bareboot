@@ -1,10 +1,10 @@
 #pragma once
 
 #include "architecture/architecture_dependent.h"
-#include "bootloader.h"
 #include "call_constructors.h"
 #include "irq_handlers.h"
 #include "memory_map.h"
+#include "metadata.h"
 #include "microcontroller/microcontroller_dependent.h"
 #include "spi/hal_spi.h"
 

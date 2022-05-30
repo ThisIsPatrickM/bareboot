@@ -2,6 +2,9 @@
 
 namespace bootloader {
 
+constinit const GlobalImageMetadata GLOBAL_IMAGE_METADATA
+    __attribute__((used, section(".metadata_table")));
+
 void Init_Data_Section()
 {
     volatile uint32_t* destPtr = _sdata;

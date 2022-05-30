@@ -1,6 +1,6 @@
 #include "architecture/architecture_dependent.h"
 
-#include "bootloader.h"
+#include "metadata.h"
 
 #include <iostream>
 
@@ -12,7 +12,7 @@ volatile uint32_t _sbss[1] = {}; // NOLINT
 volatile uint32_t _ebss[1] = {}; // NOLINT
 volatile uint32_t _estack[1] = {}; // NOLINT
 
-bootloader::Bootloader dummyBootloader;
+bootloader::GlobalImageMetadata dummyBootloader;
 void Dummy_App()
 {
     std::cout << "Dummy App called. x64 Example ends here." << std::endl;

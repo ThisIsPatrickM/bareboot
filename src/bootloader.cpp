@@ -1,4 +1,4 @@
-#include "bootloader.h"
+#include "metadata.h"
 
 namespace bootloader {
 
@@ -49,7 +49,5 @@ using namespace std;
 // {
 //     return globalImageMetadata;
 // }
-
-constinit const Bootloader BLTABLE __attribute__((used, section(".bootloader_table")));
 
 } // namespace bootloader

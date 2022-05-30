@@ -31,11 +31,11 @@ SECTIONS
     . = ALIGN(8);
   } >BOOTROM
 
-  .bootloader_table :
+  .metadata_table :
   {
     . = ALIGN(8);
     /* __bootloader__ = .; TODO To fixed address */
-    KEEP(*(.bootloader_table)) /* Bootloader Code */
+    KEEP(*(.metadata_table)) /* Bootloader Code */
     . = ALIGN(8);
   } >BOOTROM
 
