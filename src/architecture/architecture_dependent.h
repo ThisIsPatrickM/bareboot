@@ -4,6 +4,6 @@
 
 namespace bootloader {
 
-void Start_App([[maybe_unused]] void* programmCounter, [[maybe_unused]] void* stackPointer);
+void Start_App();
 
 } // namespace bootloader

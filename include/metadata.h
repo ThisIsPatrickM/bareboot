@@ -12,10 +12,11 @@ struct ImageMetadata {
     uint32_t bootCounter = 3;
     uint32_t successCounter = 4;
     uint32_t lastSuccessStatus = 5;
-    bool complete = false;
-    bool alwaysKeep = false;
     void const* imageBegin = nullptr;
     uint32_t length = 6;
+    bool complete = false;
+    bool alwaysKeep = false;
+    // TODO Think about alignment?
 };
 
 constexpr size_t NUMBER_OF_IMAGES = 3;

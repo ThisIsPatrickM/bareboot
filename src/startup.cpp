@@ -30,22 +30,6 @@ inline void Memory_Barrier()
     asm volatile("" : : : "memory");
 }
 
-void Init_Spi()
-{
-    //     SPI ROM boot port (ROM_SCK, ROM_SS, ROM_MISO, and
-    // ROM_MOSI).
-
-    // RODOS::GPIO_PIN sckPin;
-    // RODOS::GPIO_PIN misoPin;
-    // RODOS::GPIO_PIN scmosiPinkPin;
-    // RODOS::GPIO_PIN nssPin;
-
-    // RODOS::HAL_SPI spi { RODOS::SPI_IDX3, sckPin, misoPin, scmosiPinkPin, nssPin };
-    // uint32_t buffer[20] { 0 };
-    // spi.init();
-    // spi.read(buffer, sizeof(buffer));
-}
-
 void Wait_About_5_Seconds()
 {
     constexpr int32_t seconds { 5 }; // NOLINT
@@ -63,30 +47,22 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     // TODO remove before flight
     Wait_About_5_Seconds();
 
-    Memory_Barrier();
-
-    // Remove ROM_PROT
     Toggle_ROM_Writeable(true);
-
     Memory_Barrier();
-    Init_Spi();
 
     Init_Data_Section();
     Init_Bss_Section();
+
     Memory_Barrier();
     Call_Constructors();
     Memory_Barrier();
-
-    Toggle_ROM_Writeable(false);
+    // TODO Block ROM later agian
+    // Toggle_ROM_Writeable(false);
     Memory_Barrier();
     // Memroy Barrier is important!
     Move_Vector_Table();
     Memory_Barrier();
-
-    auto* appVectors = reinterpret_cast<DeviceVectors*>(&__approm_start__); // NOLINT
-    // Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
-    Start_App(appVectors->pfnResetHandler,
-              (void*)(_estack)); // TODO This might cause errors
+    Start_App();
 
     while (true) {
         ;

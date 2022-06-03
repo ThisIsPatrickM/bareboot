@@ -30,10 +30,10 @@ namespace bootloader {
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler();
 
-void Start_App([[maybe_unused]] void* programmCounter, [[maybe_unused]] void* stackPointer)
+void Start_App()
 {
     // TODO This only calls a Dummy_App.
-    __asm__("call *%0" ::"m"(__approm_start__) :); // good
+    __asm__("call *%0" ::"m"(__approm_start__) :);
 }
 
 } // namespace bootloader

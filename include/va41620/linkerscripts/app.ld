@@ -14,10 +14,13 @@ BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
 ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K
 }
 
+/* TODO Dont hardcode __bootloader__ address? */ 
+/* TODO Sync with rodos linkerscript? */ 
 __bootrom_start__ = ORIGIN(BOOTROM);
 __bootrom_size__ = LENGTH(BOOTROM);
 __approm_start__ = ORIGIN(ROM);
 __approm_size__ = LENGTH(ROM);
+__bootloader__ = ORIGIN(BOOTROM)+0x350;
 
 
 /* Define output sections */

@@ -4,8 +4,8 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace RODOS {
-
+namespace rodos {
+// NOLINTBEGIN
 template <typename integer_t>
 struct Integer {
 public:
@@ -124,5 +124,5 @@ template <uint16_t offset_, uint8_t length_ = 1>
 using UInt16SubValue = BitField<Integer<uint16_t>>::SubValue<offset_, length_>;
 template <uint32_t offset_, uint8_t length_ = 1>
 using UInt32SubValue = BitField<Integer<uint32_t>>::SubValue<offset_, length_>;
-
+// NOLINTEND
 }

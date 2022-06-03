@@ -6,7 +6,6 @@
 #include "memory_map.h"
 #include "metadata.h"
 #include "microcontroller/microcontroller_dependent.h"
-#include "spi/hal_spi.h"
 
 namespace bootloader {
 
@@ -17,15 +16,6 @@ void Init_Bss_Section();
 inline void Memory_Barrier();
 
 void Wait_About_5_Seconds();
-
-void Init_Spi();
-
-struct DeviceVectors {
-    /* Stack pointer */
-    void* pvStack;
-    /* Cortex-M handlers */
-    void* pfnResetHandler;
-};
 
 constinit const struct IrqTable { // NOLINT
     const volatile void* sp = _estack;

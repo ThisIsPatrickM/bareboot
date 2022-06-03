@@ -1,8 +1,7 @@
 
-spi_sources = files('spi/hal_spi.cpp', 'spi/hw_hal_spi.cpp', 'spi/hal_gpio.cpp', 'spi/hw_hal_gpio.cpp')
 bootloader_common_sources = files('startup.cpp', 'bootloader.cpp', 'call_constructors.cpp', 'weak_irq_handlers.cpp')
 
-bootloader_sources += bootloader_common_sources + spi_sources
+bootloader_sources += bootloader_common_sources 
 
 
 subdir('architecture')
