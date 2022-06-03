@@ -25,11 +25,6 @@ void Init_Bss_Section()
     }
 }
 
-inline void Memory_Barrier()
-{
-    asm volatile("" : : : "memory");
-}
-
 void Wait_About_5_Seconds()
 {
     constexpr int32_t seconds { 5 }; // NOLINT
@@ -47,7 +42,6 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     // TODO remove before flight
     Wait_About_5_Seconds();
 
-    Toggle_ROM_Writeable(true);
     Memory_Barrier();
 
     Init_Data_Section();
@@ -56,14 +50,9 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Memory_Barrier();
     Call_Constructors();
     Memory_Barrier();
-    // TODO Block ROM later agian
-    // Toggle_ROM_Writeable(false);
-    Memory_Barrier();
-    // Memroy Barrier is important!
-    Move_Vector_Table();
-    Memory_Barrier();
-    Start_App();
 
+    Bootloader boot {};
+    boot.run();
     while (true) {
         ;
     }

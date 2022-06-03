@@ -6,4 +6,6 @@ namespace bootloader {
 
 void Start_App();
 
+void Memory_Barrier();
+
 } // namespace bootloader

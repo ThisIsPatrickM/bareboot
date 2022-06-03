@@ -1,8 +1,18 @@
-#include "metadata.h"
+#include "bootloader.h"
 
 namespace bootloader {
 
 using namespace std;
+
+void Bootloader::run()
+{
+    // Logic to run the bootloader
+    Move_Vector_Table();
+    // Memory_Barrier();
+    Memory_Barrier();
+
+    Start_App();
+}
 
 // bool Bootloader::checkCRC([[maybe_unused]] size_t index, [[maybe_unused]] uint32_t crc)
 // {

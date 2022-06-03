@@ -2,27 +2,28 @@
 
 namespace bootloader {
 
-struct DeviceVectors {
+struct AppVectorTable {
     /* Stack pointer */
-    void* pvStack;
+    void* stackPointer;
     /* Cortex-M handlers */
-    void* pfnResetHandler;
+    void* resethandler;
 };
 
 void Start_App()
 {
-    auto* appVectors = reinterpret_cast<DeviceVectors*>(&__approm_start__); // NOLINT
-    // Start_App(appVectors->pfnResetHandler, appVectors->pvStack);
-    // Start_App(appVectors->pfnResetHandler,
-    //           (void*)(_estack)); // TODO This might cause errors
+    auto* appVectors = reinterpret_cast<AppVectorTable*>(&__approm_start__); // NOLINT
+
     __asm(
         "msr msp, %0;"
         "bx %1;"
         : // Output Operands
-        // : "r"(stackPointer), "r"(programmCounter) // Input operands
-        // : "r"(appVectors->pvStack), "r"(appVectors->pfnResetHandler) // Input operands
-        : "r"((void*)(_estack)), "r"(appVectors->pfnResetHandler) // Input operands
+        : "r"(appVectors->stackPointer), "r"(appVectors->resethandler) // Input operands
     );
+}
+
+void Memory_Barrier()
+{
+    __asm__ volatile("" : : : "memory");
 }
 
 } // namespace bootloader

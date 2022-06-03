@@ -1,7 +1,7 @@
 #include "microcontroller/metadata_interface.h"
 
 /* Controller specific includes */
-#include "microcontroller/va41620/boot_rom_spi.h"
+#include "microcontroller/va41620/boot_rom_spi/boot_rom_spi.h"
 
 namespace bootloader {
 

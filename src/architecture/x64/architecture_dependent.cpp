@@ -36,6 +36,14 @@ void Start_App()
     __asm__("call *%0" ::"m"(__approm_start__) :);
 }
 
+void Memory_Barrier()
+{
+    // TODO: This was only copied from previous code and needs to be checked, if it really is a
+    // memory barrier
+    // __asm__ volatile("" : : : "memory");
+    asm volatile("mfence" ::: "memory");
+}
+
 } // namespace bootloader
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) // NOLINT

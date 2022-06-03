@@ -1,19 +1,17 @@
 #pragma once
 
-#include "architecture/architecture_dependent.h"
+#include "bootloader.h"
 #include "call_constructors.h"
 #include "irq_handlers.h"
 #include "memory_map.h"
 #include "metadata.h"
-#include "microcontroller/microcontroller_dependent.h"
 
 namespace bootloader {
 
+// TODO Maybe move those functions to Bootloader
 void Init_Data_Section();
 
 void Init_Bss_Section();
-
-inline void Memory_Barrier();
 
 void Wait_About_5_Seconds();
 

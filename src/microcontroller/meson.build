@@ -4,7 +4,7 @@ bootloader_va41620_sources = files(
     'va41620' / 'hal' / 'hal_spi.cpp',
     'va41620' / 'hw_hal' / 'hw_hal_spi.cpp',
     'va41620' / 'metadata_interface.cpp',
-    'va41620' / 'boot_rom_spi.cpp'
+    'va41620' / 'boot_rom_spi' / 'boot_rom_spi.cpp'
     )
 
 bootloader_generic_sources = files(

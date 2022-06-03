@@ -9,4 +9,6 @@ void Move_Vector_Table();
 
 void Toggle_ROM_Writeable(bool writeable);
 
+// TODO Init Watchdog?
+
 } // namespace bootloader
