@@ -10,9 +10,14 @@
     echo "Executing check named ${CHECK} for device ${DEVICE}"
     rm -rf build-${DEVICE} && meson build-${DEVICE} ${CROSS}
     echo "Executing ninja -C build-${DEVICE} ${CHECK}"
-    if ninja -C build-${DEVICE} ${CHECK}  | grep -e 'error:\|warning:'; then
+    ninja -C build-${DEVICE} ${CHECK} >> build-${DEVICE}/tidy-output.log
+    if grep -eq "warning: \|error: " build-${DEVICE}/tidy-output.log;
+    then
+      echo "Errors or warnings detected. Please fix them"
+      ninja -C build-${DEVICE} ${CHECK}
       exit 1
     fi
+
 
 clang-tidy:
   extends: .check
