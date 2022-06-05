@@ -29,6 +29,17 @@ void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
     disableWriting();
 }
 
+void BootRomSpi::updateGlobalBootcounterOverSpi(int32_t bootcounter)
+{
+    SpiWrite<sizeof(int32_t)> writeMessage {};
+    putAddressOffsetInto18bits(writeMessage.address18bit, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
+    rodos::memcpy(writeMessage.data, &bootcounter, sizeof(int32_t));
+
+    enableWriting();
+    m_halSpi.write(&writeMessage, sizeof(writeMessage));
+    disableWriting();
+}
+
 void BootRomSpi::updateImageVersionOverSpi(uint32_t version, size_t imageIndex)
 {
     if (imageIndex >= NUMBER_OF_IMAGES) {
@@ -50,8 +61,8 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
-    uint32_t address =
-        METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) + offsetof(ImageMetadata, crc);
+
+    uint32_t address = IMAGE_BEGIN_ADDRESSES[imageIndex] + offsetof(Image, crc);
     putAddressOffsetInto18bits(writeMessage.address18bit, address);
     rodos::memcpy(writeMessage.data, &crc, sizeof(crc));
     enableWriting();
@@ -95,10 +106,24 @@ void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
-    uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
-                       offsetof(ImageMetadata, length);
+    uint32_t address = IMAGE_BEGIN_ADDRESSES[imageIndex] + offsetof(Image, length);
     putAddressOffsetInto18bits(writeMessage.address18bit, address);
     rodos::memcpy(writeMessage.data, &length, sizeof(length));
+    enableWriting();
+    m_halSpi.write(&writeMessage, sizeof(writeMessage));
+    disableWriting();
+}
+
+void BootRomSpi::updateImageBeginOverSpi(void* imageBegin, size_t imageIndex)
+{
+    if (imageIndex >= NUMBER_OF_IMAGES) {
+        return;
+    }
+    SpiWrite<sizeof(void*)> writeMessage {};
+    uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
+                       offsetof(ImageMetadata, imageBegin);
+    putAddressOffsetInto18bits(writeMessage.address18bit, address);
+    rodos::memcpy(writeMessage.data, &imageBegin, sizeof(imageBegin));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -134,5 +159,4 @@ void BootRomSpi::putAddressOffsetInto18bits(
     address[1] = (addressOffset >> 8) & 0xff; // NOLINT
     address[2] = (addressOffset)&0xff; // NOLINT
 }
-
 }

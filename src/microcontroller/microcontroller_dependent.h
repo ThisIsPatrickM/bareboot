@@ -1,6 +1,9 @@
 #pragma once
 
+#include "bootloader.h"
+#include "call_constructors.h"
 #include "memory_map.h"
+#include "metadata.h"
 #include <cstdint>
 
 namespace bootloader {

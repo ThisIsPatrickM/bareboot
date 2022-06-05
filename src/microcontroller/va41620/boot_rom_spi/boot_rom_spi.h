@@ -3,6 +3,7 @@
 #include "memory_map.h"
 #include "metadata.h"
 #include "microcontroller/va41620/hal/hal_spi.h"
+#include "va41620/platform-parameters.h"
 
 /* rodos includes */
 #include "rodos_includes/bit_field.h"
@@ -16,6 +17,9 @@ constexpr uint32_t METADATA_OFFSET = 0x350;
 constexpr uint32_t METADATA_PREFERRED_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, preferredImage);
 constexpr uint32_t METADATA_IMAGES_OFFSET = METADATA_OFFSET + offsetof(GlobalImageMetadata, images);
+
+constexpr uint32_t METADATA_GLOBAL_BOOTCOUNTER_OFFSET =
+    METADATA_OFFSET + offsetof(GlobalImageMetadata, globalBootcounter);
 
 constexpr size_t SPI_ADDRESS_SPACE_BYTES = 3;
 constexpr size_t SPI_RECEIVE_ADDRESSED_DATA_OFFSET = 4;
@@ -188,16 +192,24 @@ public:
      * @brief Set the preferred Image for the next boot process.
      *
      * @param preferredImageIndex
-     * @return void Returns < 0 in case of errors
+     * @return void
      */
     void updatePreferredImageOverSpi(size_t preferredImageIndex);
+
+    /**
+     * @brief Set the global bootcounter.
+     *
+     * @param bootcounter
+     * @return void
+     */
+    void updateGlobalBootcounterOverSpi(int32_t bootcounter);
 
     /**
      * @brief Set image version of selected image
      *
      * @param version
      * @param imageIndex Index of the image that should have new version.
-     * @return void Returns < 0 in case of errors
+     * @return void
      */
     void updateImageVersionOverSpi(uint32_t version, size_t imageIndex);
 
@@ -206,7 +218,7 @@ public:
      *
      * @param crc
      * @param imageIndex
-     * @return void Returns < 0 in case of errors
+     * @return void
      */
     void updateImageCrcOverSpi(uint32_t crc, size_t imageIndex);
 
@@ -215,7 +227,7 @@ public:
      *
      * @param size
      * @param imageIndex
-     * @return void Returns < 0 in case of errors
+     * @return void
      */
     void updateImageCompleteOverSpi(bool complete, size_t imageIndex);
 
@@ -224,7 +236,7 @@ public:
      *
      * @param complete
      * @param imageIndex
-     * @return Returns < 0 in case of errors
+     * @return Returns
      */
     void updateImageAlwaysKeepOverSpi(bool alwaysKeep, size_t imageIndex);
 
@@ -233,9 +245,18 @@ public:
      *
      * @param length
      * @param imageIndex
-     * @return Returns < 0 in case of errors
+     * @return Returns
      */
     void updateImageLengthOverSpi(uint32_t length, size_t imageIndex);
+
+    /**
+     * @brief Set imageBegin of selected image
+     *
+     * @param imageBegin
+     * @param imageIndex
+     * @return Returns
+     */
+    void updateImageBeginOverSpi(void* imageBegin, size_t imageIndex);
 
     void init();
 

@@ -1,15 +1,10 @@
 # microcontroller dependent 
-bootloader_va41620_sources = files(
-    'va41620' / 'microcontroller_dependent.cpp',
-    'va41620' / 'hal' / 'hal_spi.cpp',
-    'va41620' / 'hw_hal' / 'hw_hal_spi.cpp',
-    'va41620' / 'metadata_interface.cpp',
-    'va41620' / 'boot_rom_spi' / 'boot_rom_spi.cpp'
-    )
+bootloader_va41620_sources = []
+subdir('va41620')
 
-bootloader_generic_sources = files(
-    'generic' / 'microcontroller_dependent.cpp',
-    'generic' / 'metadata_interface.cpp')
+bootloader_generic_sources = []
+subdir('generic-dummy')
+
 linker_args = []
 
 if host_machine.system() == 'va41620'

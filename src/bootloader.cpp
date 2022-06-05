@@ -8,13 +8,13 @@ void Bootloader::run()
 {
     int32_t selectedImage = selectImageSlot();
 
-    if (selectedImage < 0 || selectedImage >= static_cast<int32_t>(NUMBER_OF_IMAGES)) {
-        // TODO Error Handling
+    if (selectedImage < 0) {
+        // TODO Error Handling, random Image?
     }
 
     loadImage(selectedImage);
-    // TODO Disable Interrupts before moving vector table?
 
+    // TODO Disable Interrupts before moving vector table?
     // Logic to run the bootloader
     Move_Vector_Table();
     // Memory_Barrier();
@@ -25,6 +25,12 @@ void Bootloader::run()
 
 int32_t Bootloader::selectImageSlot()
 {
+    if (m_metadataInterface.getGlobalImageMetadata()->globalBootcounter == -1) {
+        m_metadataInterface.init();
+        // Boot first Image, if this is the first boot. This will set the addresses
+        return 0;
+    }
+
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
     if (isImageValid(preferredImage)) {
         return static_cast<int32_t>(preferredImage);
@@ -51,17 +57,17 @@ bool Bootloader::isImageValid(size_t index)
 bool Bootloader::verifyChecksum([[maybe_unused]] size_t index)
 {
     // TODO Implement
-    uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
-    return expectedChecksum > 0;
+    // uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
+    return true;
 }
 
-void Bootloader::loadImage(size_t index)
+void Bootloader::loadImage([[maybe_unused]] size_t index)
 {
     // TODO Lengthcheck at another place
-    memcpy(
-        &__approm_start__,
-        m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
-        m_metadataInterface.getGlobalImageMetadata()->images[index].length);
+    // memcpy(
+    //     &__approm_start__,
+    //     m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
+    //     m_metadataInterface.getGlobalImageMetadata()->images[index].length);
 }
 
 void* Bootloader::memcpy(void* destP, const void* srcP, size_t len)

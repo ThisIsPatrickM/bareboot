@@ -1,5 +1,5 @@
 
-bootloader_common_sources = files('startup.cpp', 'bootloader.cpp', 'call_constructors.cpp', 'weak_irq_handlers.cpp')
+bootloader_common_sources = files('bootloader.cpp', 'call_constructors.cpp')
 
 bootloader_sources += bootloader_common_sources 
 
