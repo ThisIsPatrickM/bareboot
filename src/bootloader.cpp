@@ -38,8 +38,8 @@ int32_t Bootloader::selectImageSlot()
 
 int32_t Bootloader::selectBestGuessImageSlot()
 {
-    // TODO Implement
-    return -1;
+    // TODO Implement Advanced Select logic
+    return m_metadataInterface.getGlobalImageMetadata()->preferredImage; // NOLINT
 }
 
 bool Bootloader::isImageValid(size_t index)
@@ -51,7 +51,8 @@ bool Bootloader::isImageValid(size_t index)
 bool Bootloader::verifyChecksum([[maybe_unused]] size_t index)
 {
     // TODO Implement
-    return true;
+    uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
+    return expectedChecksum > 0;
 }
 
 void Bootloader::loadImage(size_t index)
