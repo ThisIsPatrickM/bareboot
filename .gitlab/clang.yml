@@ -3,12 +3,13 @@
     - dosis
   stage: check
   variables:
-    CHECK: clang-tidy
+    CHECK: tidy
     CROSS: ""
     DEVICE: default
   script: |
     echo "Executing check named ${CHECK} for device ${DEVICE}"
     rm -rf build-${DEVICE} && meson build-${DEVICE} ${CROSS}
+    echo "Executing ninja -C build-${DEVICE} ${CHECK}"
     if ninja -C build-${DEVICE} ${CHECK}  | grep -e 'error:\|warning:'; then
       exit 1
     fi
@@ -23,7 +24,7 @@ clang-tidy-va41620:
   variables:
     CHECK: tidy
     DEVICE: va41620
-    CROSS: "--cross-file include/va41620/cross_files/cross.ini"
+    CROSS: --cross-file include/va41620/cross_files/cross.ini
 
 clang-format:
   extends: .check   
