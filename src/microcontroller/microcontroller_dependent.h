@@ -9,6 +9,12 @@ void Move_Vector_Table();
 
 void Toggle_ROM_Writeable(bool writeable);
 
-// TODO Init Watchdog?
+void Disable_Interrupts();
+
+void Enable_Interrupts();
+
+void Init_Watchdog();
+
+// TODO Move to a class?
 
 } // namespace bootloader

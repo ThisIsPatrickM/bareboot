@@ -10,6 +10,13 @@ public:
     void run();
 
 private:
+    int32_t selectImageSlot();
+    int32_t selectBestGuessImageSlot();
+    bool isImageValid(size_t index);
+    bool verifyChecksum(size_t index);
+    void loadImage(size_t index);
+    static void* memcpy(void* destP, const void* srcP, size_t len);
+
     MetadataInterface m_metadataInterface {};
 };
 

@@ -25,4 +25,19 @@ void Toggle_ROM_Writeable(bool writeable)
     }
 }
 
+void Disable_Interrupts()
+{
+    // TODO
+}
+
+void Enable_Interrupts()
+{
+    // TODO
+}
+
+void Init_Watchdog()
+{
+    // TODO
+}
+
 } // namespace bootloader

@@ -36,7 +36,6 @@ SECTIONS
   .metadata_table :
   {
     . = ALIGN(8);
-    /* __bootloader__ = .; */
     KEEP(*(.metadata_table)) /* Bootloader Code */
     . = ALIGN(8);
   } >BOOTROM
