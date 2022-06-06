@@ -8,7 +8,7 @@ using namespace std;
  *  Exposed Parameters
  * ***************************************************************************/
 
-constexpr size_t NUMBER_OF_IMAGES = 8;
+constexpr size_t NUMBER_OF_IMAGES = 7;
 
 constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
 // TODO Check BootNVM Size!
@@ -27,6 +27,8 @@ static_assert(
     MAX_IMAGE_LENGTH + BOOT_ROM_SIZE <= SRAM_SIZE,
     "At least one Image + Bootloader needs to fit to Code SRAM");
 
+// TODO Double check and visualize and test this calculation
+// TODO Check if uintptr_t is enough
 constexpr uintptr_t IMAGE_BEGIN_ADDRESSES[NUMBER_OF_IMAGES] = {
     APP_NVM_BEGIN_ADDRESS + 0 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 1 * MAX_IMAGE_LENGTH,
     APP_NVM_BEGIN_ADDRESS + 2 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 3 * MAX_IMAGE_LENGTH,

@@ -6,10 +6,12 @@
 
 namespace bootloader {
 
+using namespace bootloader::va41620;
+using namespace bootloader::architecture;
+
 /*******************************************************************************
  * Global Functions for that every Microcontroller needs to implement
  ******************************************************************************/
-
 void Move_Vector_Table()
 {
     constexpr uint32_t TBLOFF = 0xE000ED08;

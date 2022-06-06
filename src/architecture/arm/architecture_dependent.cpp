@@ -1,6 +1,6 @@
 #include "architecture/architecture_dependent.h"
 
-namespace bootloader {
+namespace bootloader::architecture {
 
 struct AppVectorTable {
     /* Stack pointer */
@@ -26,4 +26,4 @@ void Memory_Barrier()
     __asm__ volatile("" : : : "memory");
 }
 
-} // namespace bootloader
+} // namespace bootloader::architecture

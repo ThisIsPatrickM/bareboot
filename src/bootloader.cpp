@@ -3,6 +3,7 @@
 namespace bootloader {
 
 using namespace std;
+using namespace architecture;
 
 void Bootloader::run()
 {
@@ -25,7 +26,7 @@ void Bootloader::run()
 
 int32_t Bootloader::selectImageSlot()
 {
-    if (m_metadataInterface.getGlobalImageMetadata()->globalBootcounter == -1) {
+    if (!m_metadataInterface.getGlobalImageMetadata()->initialized) {
         m_metadataInterface.init();
         // Boot first Image, if this is the first boot. This will set the addresses
         return 0;

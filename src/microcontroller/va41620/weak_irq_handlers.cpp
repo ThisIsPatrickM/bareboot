@@ -7,7 +7,7 @@ extern "C" void Default_Handler()
     }
 }
 
-namespace bootloader {
+namespace bootloader::va41620 {
 
 [[gnu::weak, gnu::alias("Default_Handler")]] void NMI_Handler();
 [[gnu::weak, gnu::alias("Default_Handler")]] void HardFault_Handler();

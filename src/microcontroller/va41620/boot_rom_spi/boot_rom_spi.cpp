@@ -1,6 +1,6 @@
 #include "boot_rom_spi.h"
 
-namespace bootloader {
+namespace bootloader::va41620::boot_rom_spi {
 
 void BootRomSpi::getBootRomGlobalImageMetadataOverSpi(GlobalImageMetadata& globalImageMetadata)
 {
@@ -29,11 +29,22 @@ void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
     disableWriting();
 }
 
-void BootRomSpi::updateGlobalBootcounterOverSpi(int32_t bootcounter)
+void BootRomSpi::updateGlobalBootcounterOverSpi(uint32_t bootcounter)
 {
-    SpiWrite<sizeof(int32_t)> writeMessage {};
+    SpiWrite<sizeof(uint32_t)> writeMessage {};
     putAddressOffsetInto18bits(writeMessage.address18bit, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
-    rodos::memcpy(writeMessage.data, &bootcounter, sizeof(int32_t));
+    rodos::memcpy(writeMessage.data, &bootcounter, sizeof(uint32_t));
+
+    enableWriting();
+    m_halSpi.write(&writeMessage, sizeof(writeMessage));
+    disableWriting();
+}
+
+void BootRomSpi::updateGlobalInitializedOverSpi(bool initialized)
+{
+    SpiWrite<sizeof(bool)> writeMessage {};
+    putAddressOffsetInto18bits(writeMessage.address18bit, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
+    rodos::memcpy(writeMessage.data, &initialized, sizeof(bool));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -61,8 +72,8 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
-
-    uint32_t address = IMAGE_BEGIN_ADDRESSES[imageIndex] + offsetof(Image, crc);
+    uint32_t address =
+        METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) + offsetof(ImageMetadata, crc);
     putAddressOffsetInto18bits(writeMessage.address18bit, address);
     rodos::memcpy(writeMessage.data, &crc, sizeof(crc));
     enableWriting();
@@ -106,7 +117,8 @@ void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
-    uint32_t address = IMAGE_BEGIN_ADDRESSES[imageIndex] + offsetof(Image, length);
+    uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
+                       offsetof(ImageMetadata, length);
     putAddressOffsetInto18bits(writeMessage.address18bit, address);
     rodos::memcpy(writeMessage.data, &length, sizeof(length));
     enableWriting();

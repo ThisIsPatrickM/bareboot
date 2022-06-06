@@ -2,7 +2,7 @@
 
 #include "metadata.h"
 
-namespace bootloader {
+namespace bootloader::architecture {
 
 // extern "C" [[noreturn, gnu::used]] void Reset_Handler();
 
@@ -20,4 +20,4 @@ void Memory_Barrier()
     asm volatile("mfence" ::: "memory");
 }
 
-} // namespace bootloader
+} // namespace bootloader::architecture

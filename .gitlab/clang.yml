@@ -24,12 +24,12 @@ clang-tidy:
   variables:
     CHECK: tidy
 
-clang-tidy-va41620:
-  extends: .check
-  variables:
-    CHECK: tidy
-    DEVICE: va41620
-    CROSS: --cross-file include/va41620/cross_files/cross.ini
+# clang-tidy-va41620:
+#   extends: .check
+#   variables:
+#     CHECK: tidy
+#     DEVICE: va41620
+#     CROSS: --cross-file include/va41620/cross_files/cross.ini
 
 clang-format:
   extends: .check   

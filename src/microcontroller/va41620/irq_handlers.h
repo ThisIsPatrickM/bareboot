@@ -1,6 +1,6 @@
 #pragma once
 
-namespace bootloader {
+namespace bootloader::va41620 {
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler();
 extern "C" void NMI_Handler();
