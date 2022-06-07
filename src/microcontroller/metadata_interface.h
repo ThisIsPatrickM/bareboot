@@ -94,11 +94,12 @@ public:
      */
     uint32_t updateImageLength(uint32_t length, size_t imageIndex);
 
-    size_t getNumberOfImages();
+    static size_t getNumberOfImages();
+
+    static size_t getMaxImageLength();
 
 private:
     void* updateImageBegin(void* imageBegin, size_t imageIndex);
-    size_t m_numberOfImages;
 
     GlobalImageMetadata* m_globalImageMetadata =
         reinterpret_cast<GlobalImageMetadata*>(&__bootloader__); // NOLINT

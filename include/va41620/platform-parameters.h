@@ -3,11 +3,12 @@
 #include "../memory_map.h"
 #include <cstdint>
 
+namespace bootloader {
+
 using namespace std;
 /******************************************************************************
  *  Exposed Parameters
  * ***************************************************************************/
-
 constexpr size_t NUMBER_OF_IMAGES = 7;
 
 constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
@@ -35,3 +36,5 @@ constexpr uintptr_t IMAGE_BEGIN_ADDRESSES[NUMBER_OF_IMAGES] = {
     APP_NVM_BEGIN_ADDRESS + 4 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 5 * MAX_IMAGE_LENGTH,
     APP_NVM_BEGIN_ADDRESS + 6 * MAX_IMAGE_LENGTH,
 };
+
+} // namespace bootloader

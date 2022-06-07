@@ -5,10 +5,7 @@
 
 namespace bootloader {
 
-MetadataInterface::MetadataInterface()
-    : m_numberOfImages { NUMBER_OF_IMAGES }
-{
-}
+MetadataInterface::MetadataInterface() {}
 
 void MetadataInterface::init()
 {
@@ -104,6 +101,16 @@ void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
     }
     m_globalImageMetadata->images[imageIndex].imageBegin = imageBegin;
     return m_globalImageMetadata->images[imageIndex].imageBegin;
+}
+
+size_t MetadataInterface::getNumberOfImages()
+{
+    return NUMBER_OF_IMAGES;
+}
+
+size_t MetadataInterface::getMaxImageLength()
+{
+    return MAX_IMAGE_LENGTH;
 }
 
 }

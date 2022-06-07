@@ -30,10 +30,7 @@ void Disable_Code_Memory_Protection()
  * MetadataInterface Implementations
  ******************************************************************************/
 
-MetadataInterface::MetadataInterface()
-    : m_numberOfImages { NUMBER_OF_IMAGES }
-{
-}
+MetadataInterface::MetadataInterface() {}
 
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
@@ -176,6 +173,16 @@ void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
     m_globalImageMetadata->images[imageIndex].imageBegin = imageBegin;
     Disable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].imageBegin;
+}
+
+size_t MetadataInterface::getNumberOfImages()
+{
+    return NUMBER_OF_IMAGES;
+}
+
+size_t MetadataInterface::getMaxImageLength()
+{
+    return MAX_IMAGE_LENGTH;
 }
 
 }

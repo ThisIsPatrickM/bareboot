@@ -65,10 +65,12 @@ bool Bootloader::verifyChecksum([[maybe_unused]] size_t index)
 void Bootloader::loadImage([[maybe_unused]] size_t index)
 {
     // TODO Lengthcheck at another place
-    // memcpy(
-    //     &__approm_start__,
-    //     m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
-    //     m_metadataInterface.getGlobalImageMetadata()->images[index].length);
+    // TODO Where do i get the initial length from? Or Just always copy everything?
+
+    memcpy(
+        &__approm_start__,
+        m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
+        m_metadataInterface.getMaxImageLength());
 }
 
 void* Bootloader::memcpy(void* destP, const void* srcP, size_t len)

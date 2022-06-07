@@ -6,30 +6,39 @@ namespace bootloader {
 
 using namespace std;
 
-// struct Image {
-//     size_t length = 14;
-//     uint32_t crc = 15;
-//     // Rest is data
-// };
+/**
+ * @brief Number of metadata images to allocate. Real number can be further reduced depending on
+ * microcontroller, its memory size and the expected size of images. This is just the upper limit.
+ *
+ */
+constexpr size_t MAX_NUMBER_OF_IMAGES = 10;
 
+/**
+ * @brief Number of bytes for an HMAC.
+ *
+ */
+constexpr size_t HMAC_LENGTH = 64;
+
+/**
+ * @brief Describe Metadata information for one Image.
+ *
+ */
 struct ImageMetadata {
     uint32_t version = 1;
-    uint32_t crc = 2; // Prepend to Image Slot? No Calculate it the first time with Init over
-    // full length?
+    uint32_t crc = 2;
     uint32_t bootCounter = 0;
     uint32_t successCounter = 4;
     uint32_t lastSuccessStatus = 5;
     void* imageBegin = nullptr; // TODO maybe uintptr_t?
-    uint32_t length = 6; // Prepend to Image Slot ?
+    uint32_t length = 6;
     bool complete = false;
     bool alwaysKeep = false;
 };
 
-// Depending on the size of the memory, less images might be used. So this number is higher than the
-// actual number, and amount of metadata is low.
-constexpr size_t MAX_NUMBER_OF_IMAGES = 10;
-constexpr size_t HMAC_LENGTH = 64;
-
+/**
+ * @brief Describes metadata for all images, and contains metadata for each Image.
+ *
+ */
 struct GlobalImageMetadata {
     uint32_t globalBootcounter = 0;
     size_t preferredImage = 7;

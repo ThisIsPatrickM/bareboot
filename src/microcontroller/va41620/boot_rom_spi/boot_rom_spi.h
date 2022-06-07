@@ -25,9 +25,6 @@ constexpr rodos::SpiIdx BOOTSPI_IDX = rodos::SPI_IDX3;
 constexpr uint8_t SPI_STATUS_REGISTER_WRITE_ALL = 0b0100'0000;
 constexpr uint32_t SPI_FREQUENCY = 1'000'000;
 
-// TODO Calculate MAX Image size
-constexpr uint32_t MAX_IMAGE_LENGTH = 0xFFFF;
-
 /**
  * @brief Interface class to interact with Non-Volatile-Memory over SPI to manage Metadata and
  * Images.
