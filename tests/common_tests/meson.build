@@ -12,7 +12,7 @@ common_tests_lib_deps = [
 
 common_tests = executable('common_tests', 
     [common_tests_sources, test_main], 
-    include_directories : inc,
+    include_directories : bootloader_inc,
     dependencies : [common_tests_deps,test_deps], 
     link_with : [common_tests_lib_deps, test_dep_libs])
 

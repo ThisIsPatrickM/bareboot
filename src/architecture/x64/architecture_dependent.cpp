@@ -4,8 +4,6 @@
 
 namespace bootloader::architecture {
 
-// extern "C" [[noreturn, gnu::used]] void Reset_Handler();
-
 void Start_App()
 {
     // TODO This only calls a Dummy_App.

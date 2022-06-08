@@ -11,7 +11,7 @@ project('BootloaderPlayground', ['c','cpp'],
         'cpp_rtti=false',])
 
 
-inc = include_directories('src', 'include') 
+bootloader_inc = include_directories('src', 'include') 
 bootloader_sources = []
 
 subdir('src')

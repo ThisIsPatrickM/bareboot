@@ -23,6 +23,6 @@ all_test_dep_libs += test_dep_libs
 
 all_tests = executable('all_tests', 
     project_test_sources, 
-    include_directories : inc, 
+    include_directories : bootloader_inc, 
     dependencies : all_test_deps, 
     link_with : all_test_dep_libs)
