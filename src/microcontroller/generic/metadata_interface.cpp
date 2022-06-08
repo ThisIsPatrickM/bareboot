@@ -10,7 +10,7 @@ MetadataInterface::MetadataInterface() {}
 void MetadataInterface::init()
 {
     // Reset imageBegin
-    // for (size_t i = 0; i < NUMBER_OF_IMAGES; i++) {
+    // for (size_t i = 0; i < PlatformParameters::NUMBER_OF_IMAGES; i++) {
     //     updateImageBegin(reinterpret_cast<Image*>(IMAGE_BEGIN_ADDRESSES[i]), i);
     // }
 
@@ -30,7 +30,7 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 
 size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->preferredImage;
     }
     m_globalImageMetadata->preferredImage = imageIndex;
@@ -51,7 +51,7 @@ uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
 
 uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->images[imageIndex].version;
     }
     m_globalImageMetadata->images[imageIndex].version = version;
@@ -60,7 +60,7 @@ uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageInd
 
 uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->images[imageIndex].crc;
     }
     m_globalImageMetadata->images[imageIndex].version = crc;
@@ -69,7 +69,7 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
 
 bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->images[imageIndex].complete;
     }
     m_globalImageMetadata->images[imageIndex].complete = complete;
@@ -78,7 +78,7 @@ bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
 
 bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->images[imageIndex].alwaysKeep;
     }
     m_globalImageMetadata->images[imageIndex].alwaysKeep = alwaysKeep;
@@ -87,7 +87,8 @@ bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex
 
 uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES || length > MAX_IMAGE_LENGTH) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
+        length > PlatformParameters::MAX_IMAGE_LENGTH) {
         return m_globalImageMetadata->images[imageIndex].length;
     }
     m_globalImageMetadata->images[imageIndex].length = length;
@@ -96,7 +97,7 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
 
 void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return nullptr;
     }
     m_globalImageMetadata->images[imageIndex].imageBegin = imageBegin;
@@ -105,12 +106,12 @@ void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
 
 size_t MetadataInterface::getNumberOfImages()
 {
-    return NUMBER_OF_IMAGES;
+    return PlatformParameters::NUMBER_OF_IMAGES;
 }
 
 size_t MetadataInterface::getMaxImageLength()
 {
-    return MAX_IMAGE_LENGTH;
+    return PlatformParameters::MAX_IMAGE_LENGTH;
 }
 
 }

@@ -17,7 +17,7 @@ void BootRomSpi::getBootRomGlobalImageMetadataOverSpi(GlobalImageMetadata& globa
 
 void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
 {
-    if (preferredImageIndex >= NUMBER_OF_IMAGES) {
+    if (preferredImageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(size_t)> writeMessage {};
@@ -53,7 +53,7 @@ void BootRomSpi::updateGlobalInitializedOverSpi(bool initialized)
 
 void BootRomSpi::updateImageVersionOverSpi(uint32_t version, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
@@ -68,7 +68,7 @@ void BootRomSpi::updateImageVersionOverSpi(uint32_t version, size_t imageIndex)
 
 void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
@@ -83,7 +83,7 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
 
 void BootRomSpi::updateImageCompleteOverSpi(bool complete, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
@@ -98,7 +98,7 @@ void BootRomSpi::updateImageCompleteOverSpi(bool complete, size_t imageIndex)
 
 void BootRomSpi::updateImageAlwaysKeepOverSpi(bool alwaysKeep, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
@@ -113,7 +113,7 @@ void BootRomSpi::updateImageAlwaysKeepOverSpi(bool alwaysKeep, size_t imageIndex
 
 void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(uint32_t)> writeMessage {};
@@ -128,7 +128,7 @@ void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
 
 void BootRomSpi::updateImageBeginOverSpi(void* imageBegin, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
     SpiWrite<sizeof(void*)> writeMessage {};

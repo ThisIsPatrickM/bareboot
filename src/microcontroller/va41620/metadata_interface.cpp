@@ -10,6 +10,7 @@ namespace bootloader {
  * Controller Specific
  ******************************************************************************/
 
+// TODO Move to Platform aprameter?
 constexpr uintptr_t ROM_PROT_ADDRESS = 0x40010010;
 
 using namespace bootloader::va41620::boot_rom_spi;
@@ -42,8 +43,9 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 void MetadataInterface::init()
 {
     // Reset imageBegin
-    for (size_t i = 0; i < NUMBER_OF_IMAGES; i++) {
-        updateImageBegin(reinterpret_cast<void*>(IMAGE_BEGIN_ADDRESSES[i]), i); // NOLINT
+    for (size_t i = 0; i < PlatformParameters::NUMBER_OF_IMAGES; i++) {
+        updateImageBegin(
+            reinterpret_cast<void*>(PlatformParameters::IMAGE_BEGIN_ADDRESSES[i]), i); // NOLINT
     }
     // TODO
     // Reset imageLength, But where do I get the value?
@@ -57,7 +59,7 @@ void MetadataInterface::init()
 
 size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->preferredImage;
     }
     // Update SPI
@@ -93,7 +95,7 @@ bool MetadataInterface::updateGlobalInitialized(bool initialized)
 
 uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return 0;
     }
     // Update SPI
@@ -107,7 +109,7 @@ uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageInd
 
 uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return 0;
     }
     // Update SPI
@@ -121,7 +123,7 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
 
 bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return false;
     }
     // Update SPI
@@ -135,7 +137,7 @@ bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
 
 bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return false;
     }
     // Update SPI
@@ -149,7 +151,8 @@ bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex
 
 uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES || length >= MAX_IMAGE_LENGTH) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
+        length >= PlatformParameters::MAX_IMAGE_LENGTH) {
         return 0;
     }
     // Update SPI
@@ -163,7 +166,7 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
 
 void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
 {
-    if (imageIndex >= NUMBER_OF_IMAGES) {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return nullptr;
     }
     // Update SPI
@@ -177,12 +180,12 @@ void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
 
 size_t MetadataInterface::getNumberOfImages()
 {
-    return NUMBER_OF_IMAGES;
+    return PlatformParameters::NUMBER_OF_IMAGES;
 }
 
 size_t MetadataInterface::getMaxImageLength()
 {
-    return MAX_IMAGE_LENGTH;
+    return PlatformParameters::MAX_IMAGE_LENGTH;
 }
 
 }
