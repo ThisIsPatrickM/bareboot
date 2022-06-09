@@ -16,6 +16,20 @@ bootloader_sources = []
 
 subdir('src')
 
+#####    Executable and Library    #####
+bootloader_exe = executable('bootloader',
+          sources : bootloader_sources,
+          link_args: linker_args,
+          include_directories: bootloader_inc
+          )
+
+bootloader_lib = static_library('bootloader_lib',
+                        bootloader_sources,
+                        include_directories : bootloader_inc)
+
+
+#####    Tests    #####
+
 # TODO Later only run tests in subproject
 if meson.can_run_host_binaries()
 # if not meson.is_subproject() and meson.can_run_host_binaries()
@@ -25,6 +39,10 @@ if meson.can_run_host_binaries()
     subdir('tests')
 
 endif
+
+
+
+#####    Clang tidy target    #####
 
 # This adds the clang format file to the build directory
 configure_file(input : '.clang-format',

@@ -31,8 +31,6 @@ void Disable_Code_Memory_Protection()
  * MetadataInterface Implementations
  ******************************************************************************/
 
-MetadataInterface::MetadataInterface() {}
-
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
     // TODO When to read? Always?

@@ -5,8 +5,6 @@
 
 namespace bootloader {
 
-MetadataInterface::MetadataInterface() {}
-
 void MetadataInterface::init()
 {
     // Reset imageBegin

@@ -13,7 +13,7 @@ namespace bootloader {
 
 class MetadataInterface {
 public:
-    MetadataInterface();
+    MetadataInterface() = default;
 
     [[nodiscard]] const GlobalImageMetadata* getGlobalImageMetadata();
 
