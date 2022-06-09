@@ -40,14 +40,6 @@ public:
     uint32_t updateGlobalBootcounter(uint32_t bootcounter);
 
     /**
-     * @brief Set global initialized status
-     *
-     * @param initialized
-     * @return alwaysKeep Status
-     */
-    bool updateGlobalInitialized(bool initialized);
-
-    /**
      * @brief Set image version of selected image
      *
      * @param version
@@ -102,7 +94,7 @@ private:
     void* updateImageBegin(void* imageBegin, size_t imageIndex);
 
     GlobalImageMetadata* m_globalImageMetadata =
-        reinterpret_cast<GlobalImageMetadata*>(&__bootloader__); // NOLINT
+        reinterpret_cast<GlobalImageMetadata*>(__bootloader__); // NOLINT
 };
 
 }

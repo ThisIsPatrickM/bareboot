@@ -35,12 +35,6 @@ size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
     return m_globalImageMetadata->preferredImage;
 }
 
-bool MetadataInterface::updateGlobalInitialized(bool initialized)
-{
-    m_globalImageMetadata->initialized = initialized;
-    return m_globalImageMetadata->initialized;
-}
-
 uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
 {
     m_globalImageMetadata->globalBootcounter = bootcounter;

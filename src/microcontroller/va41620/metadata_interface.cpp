@@ -80,17 +80,6 @@ uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
     return m_globalImageMetadata->globalBootcounter;
 }
 
-bool MetadataInterface::updateGlobalInitialized(bool initialized)
-{
-    // Update SPI
-    bootRomSpi.updateGlobalInitializedOverSpi(initialized);
-    // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->initialized = initialized;
-    Disable_Code_Memory_Protection();
-    return m_globalImageMetadata->initialized;
-}
-
 uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {

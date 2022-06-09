@@ -18,7 +18,6 @@ __bootrom_start__ = ORIGIN(BOOTROM);
 __bootrom_size__ = LENGTH(BOOTROM);
 __approm_start__ = ORIGIN(ROM);
 __approm_size__ = LENGTH(ROM);
-__bootloader__ = ORIGIN(BOOTROM)+0x350;
 
 
 /* Define output sections */

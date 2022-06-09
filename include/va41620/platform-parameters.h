@@ -14,6 +14,7 @@ private:
     static constexpr size_t BOOT_ROM_SIZE = 0x1000; // 4KB, see linkerscript
     static constexpr size_t APP_NVM_TOTAL_SIZE =
         NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BootRom, for Size see linker script
+    // TODO Use Label for Begin Address? Not possible, because i wanna use constexpr
     static constexpr uintptr_t APP_NVM_BEGIN_ADDRESS = BOOT_ROM_SIZE; // 4KB
 public:
     static constexpr size_t NUMBER_OF_IMAGES = 7;
@@ -27,12 +28,13 @@ public:
         APP_NVM_BEGIN_ADDRESS + 4 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 5 * MAX_IMAGE_LENGTH,
         APP_NVM_BEGIN_ADDRESS + 6 * MAX_IMAGE_LENGTH,
     };
-};
-// TODO Add Static Asserts
-// TODO Document this class properly
 
-// static_assert(
-//     MAX_IMAGE_LENGTH + BOOT_ROM_SIZE <= SRAM_SIZE,
-//     "At least one Image + Bootloader needs to fit to Code SRAM");
+    // TODO Add Static Asserts
+    // TODO Document this class properly
+    static_assert(
+        PlatformParameters::MAX_IMAGE_LENGTH + PlatformParameters::BOOT_ROM_SIZE <=
+            PlatformParameters::SRAM_SIZE,
+        "At least one Image + Bootloader needs to fit to Code SRAM");
+};
 
 } // namespace bootloader

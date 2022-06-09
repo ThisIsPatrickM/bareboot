@@ -1,25 +1,19 @@
+#include "generic/platform-parameters.h"
 #include "metadata.h"
 
 #include <iostream>
+#include <sys/mman.h>
 
 /* Dummy Implementations */
-bootloader::GlobalImageMetadata dummyBootloader;
-void Dummy_App()
-{
-    std::cout << "Dummy App called. Example ends here." << std::endl;
-    while (true) {
-        ;
-    }
-}
 
-// TODO this only fixes compiler/linker warnings, because I couldn't find a
-// proper linkerscript for linux
-// volatile uint32_t _sdata[1] = {}; // NOLINT
-// volatile uint32_t _sidata[1] = {}; // NOLINT
-// volatile uint32_t _sbss[1] = {}; // NOLINT
-// volatile uint32_t _ebss[1] = {}; // NOLINT
-// volatile uint32_t _estack[1] = {}; // NOLINT
+uint8_t imageBuffer
+    [bootloader::PlatformParameters::MAX_IMAGE_LENGTH *
+     bootloader::PlatformParameters::NUMBER_OF_IMAGES] = { 0 };
 
-void* __approm_start__ = (void*)Dummy_App; // NOLINT
-int __approm_size__ = 0; // NOLINT
-void* __bootloader__ = &dummyBootloader; // NOLINT
+// Initialize Dummy, Assuming there are 3 Images
+bootloader::GlobalImageMetadata dummyBootloader {};
+
+uintptr_t __approm_start__ = (uintptr_t)imageBuffer; // NOLINT
+int __approm_size__ = bootloader::PlatformParameters::MAX_IMAGE_LENGTH * // NOLINT
+                      bootloader::PlatformParameters::NUMBER_OF_IMAGES;
+uintptr_t __bootloader__ = (uintptr_t)&dummyBootloader; // NOLINT

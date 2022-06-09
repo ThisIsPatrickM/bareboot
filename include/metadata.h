@@ -25,12 +25,12 @@ constexpr size_t HMAC_LENGTH = 64;
  */
 struct ImageMetadata {
     uint32_t version = 1;
-    uint32_t crc = 2;
+    uint32_t crc = 0;
     uint32_t bootCounter = 0;
     uint32_t successCounter = 4;
     uint32_t lastSuccessStatus = 5;
-    void* imageBegin = nullptr; // TODO maybe uintptr_t?
-    uint32_t length = 6;
+    void* imageBegin = nullptr; // TODO maybe uintptr_t? // TODO Add const somewhere?
+    uint32_t length = 0;
     bool complete = false;
     bool alwaysKeep = false;
 };
@@ -43,7 +43,6 @@ struct GlobalImageMetadata {
     uint32_t globalBootcounter = 0;
     size_t preferredImage = 7;
     size_t currentImage = 8;
-    bool initialized = false;
     ImageMetadata images[MAX_NUMBER_OF_IMAGES] = {};
     // uint8_t hmac1[HMAC_LENGTH] = { 0 };
     // uint8_t hmac2[HMAC_LENGTH] = { 0 };

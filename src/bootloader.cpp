@@ -1,4 +1,5 @@
 #include "bootloader.h"
+#include <cstddef>
 
 namespace bootloader {
 
@@ -14,11 +15,9 @@ void Bootloader::run()
     }
 
     loadImage(selectedImage);
-
     // TODO Disable Interrupts before moving vector table?
-    // Logic to run the bootloader
     Move_Vector_Table();
-    // Memory_Barrier();
+
     Memory_Barrier();
 
     Start_App();
@@ -26,7 +25,7 @@ void Bootloader::run()
 
 int32_t Bootloader::selectImageSlot()
 {
-    if (!m_metadataInterface.getGlobalImageMetadata()->initialized) {
+    if (m_metadataInterface.getGlobalImageMetadata()->images[0].imageBegin == nullptr) {
         m_metadataInterface.init();
         // Boot first Image, if this is the first boot. This will set the addresses
         return 0;
@@ -61,16 +60,17 @@ bool Bootloader::verifyChecksum([[maybe_unused]] size_t index)
     // uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
     return true;
 }
-
-void Bootloader::loadImage([[maybe_unused]] size_t index)
+void Bootloader::loadImage(size_t index)
 {
     // TODO Lengthcheck at another place
-    // TODO Where do i get the initial length from? Or Just always copy everything?
-
+    // memcpy(
+    //     &__approm_start__,
+    //     m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
+    //     MetadataInterface::getMaxImageLength());
     memcpy(
-        &__approm_start__,
+        (void*)__approm_start__,
         m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
-        m_metadataInterface.getMaxImageLength());
+        m_metadataInterface.getGlobalImageMetadata()->images[index].length);
 }
 
 void* Bootloader::memcpy(void* destP, const void* srcP, size_t len)
