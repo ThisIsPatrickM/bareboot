@@ -1,5 +1,4 @@
 #include "bootloader.h"
-#include <cstddef>
 
 namespace bootloader {
 
@@ -12,6 +11,7 @@ void Bootloader::run()
 
     if (selectedImage < 0) {
         // TODO Error Handling, random Image?
+        selectedImage = 0;
     }
 
     loadImage(selectedImage);
@@ -25,12 +25,6 @@ void Bootloader::run()
 
 int32_t Bootloader::selectImageSlot()
 {
-    if (m_metadataInterface.getGlobalImageMetadata()->images[0].imageBegin == nullptr) {
-        m_metadataInterface.init();
-        // Boot first Image, if this is the first boot. This will set the addresses
-        return 0;
-    }
-
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
     if (isImageValid(preferredImage)) {
         return static_cast<int32_t>(preferredImage);
@@ -45,7 +39,7 @@ int32_t Bootloader::selectImageSlot()
 int32_t Bootloader::selectBestGuessImageSlot()
 {
     // TODO Implement Advanced Select logic
-    return m_metadataInterface.getGlobalImageMetadata()->preferredImage; // NOLINT
+    return static_cast<int32_t>(m_metadataInterface.getGlobalImageMetadata()->preferredImage);
 }
 
 bool Bootloader::isImageValid(size_t index)
@@ -54,40 +48,45 @@ bool Bootloader::isImageValid(size_t index)
            verifyChecksum(index);
 }
 
-bool Bootloader::verifyChecksum([[maybe_unused]] size_t index)
+bool Bootloader::verifyChecksum(size_t index)
 {
-    // TODO Implement
-    // uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
-    return true;
+    if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
+        return false;
+    }
+    uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
+    uint32_t actualChecksum = dosis::support::crc::CastagnoliCrc32::calculateCRC32(
+        reinterpret_cast<uint8_t*>( // NOLINT
+            m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
+        m_metadataInterface.getGlobalImageMetadata()->images[index].length);
+    return expectedChecksum == actualChecksum;
 }
+
 void Bootloader::loadImage(size_t index)
 {
-    // TODO Lengthcheck at another place
+    if (index >= MetadataInterface::getNumberOfImages()) {
+        return;
+    }
+
+    if (__approm_start__ ==
+        m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin) {
+        // Nothing to do
+        return;
+    }
+
+    if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
+        // TODO Error Handling
+        return;
+    }
+
     // memcpy(
     //     &__approm_start__,
     //     m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
     //     MetadataInterface::getMaxImageLength());
-    memcpy(
-        (void*)__approm_start__,
-        m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
+    rodos::memcpy(
+        reinterpret_cast<void*>(__approm_start__), // NOLINT
+        reinterpret_cast<void*>( // NOLINT
+            m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
         m_metadataInterface.getGlobalImageMetadata()->images[index].length);
-}
-
-void* Bootloader::memcpy(void* destP, const void* srcP, size_t len)
-{
-    if (destP == nullptr || srcP == nullptr) {
-        return nullptr;
-    }
-    auto* dest = static_cast<uint8_t*>(destP);
-    const auto* src = static_cast<const uint8_t*>(srcP);
-
-    while (len > 0) {
-        *dest = *src;
-        len--;
-        src++; // NOLINT (cppcoreguidelines-pro-bounds-pointer-arithmetic)
-        dest++; // NOLINT (cppcoreguidelines-pro-bounds-pointer-arithmetic)
-    }
-    return destP;
 }
 
 } // namespace bootloader

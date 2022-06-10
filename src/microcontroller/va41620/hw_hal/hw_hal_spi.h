@@ -1,6 +1,5 @@
 #pragma once
 
-// #include "microcontroller/va41620/hal/hal_spi.h"
 #include "microcontroller/va41620/peripheral_ctrl/peripheral_defs.h"
 #include "microcontroller/va41620/peripheral_ctrl/pin_config/enums.h"
 #include "microcontroller/va41620/peripheral_ctrl/register_maps/spi_registers.h"

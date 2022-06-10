@@ -115,7 +115,16 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
  ******************************************************************************/
 
 constinit const GlobalImageMetadata GLOBAL_IMAGE_METADATA
-    __attribute__((used, section(".metadata_table")));
+    __attribute__((used, section(".metadata_table"))) { .images {
+        // TODO Check Number of Images and entries
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[0] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[1] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[2] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[3] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[4] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[5] },
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[6] },
+    } };
 
 constinit const struct IrqTable { // NOLINT
     const volatile void* sp = _estack;

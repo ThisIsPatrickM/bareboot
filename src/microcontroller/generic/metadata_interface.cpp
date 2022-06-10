@@ -5,22 +5,6 @@
 
 namespace bootloader {
 
-void MetadataInterface::init()
-{
-    // Reset imageBegin
-    // for (size_t i = 0; i < PlatformParameters::NUMBER_OF_IMAGES; i++) {
-    //     updateImageBegin(reinterpret_cast<Image*>(IMAGE_BEGIN_ADDRESSES[i]), i);
-    // }
-
-    // Reset imageLength, But where do I get the value?
-
-    // Or where do I get the Initial CRC value? Maybe prepend Infos at Image Slot?
-
-    // Init complete?
-
-    // Init alwaysKeep?
-}
-
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
     return m_globalImageMetadata;
@@ -85,15 +69,6 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
     }
     m_globalImageMetadata->images[imageIndex].length = length;
     return m_globalImageMetadata->images[imageIndex].length;
-}
-
-void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return nullptr;
-    }
-    m_globalImageMetadata->images[imageIndex].imageBegin = imageBegin;
-    return m_globalImageMetadata->images[imageIndex].imageBegin;
 }
 
 size_t MetadataInterface::getNumberOfImages()

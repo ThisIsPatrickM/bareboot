@@ -18,7 +18,7 @@ public:
     [[nodiscard]] const GlobalImageMetadata* getGlobalImageMetadata();
 
     /**
-     * @brief Init Metadata Tables with imageBegin and Length
+     * @brief Currently no use. Delete Later. TODO
      *
      */
     void init();
@@ -91,7 +91,7 @@ public:
     static size_t getMaxImageLength();
 
 private:
-    void* updateImageBegin(void* imageBegin, size_t imageIndex);
+    // void* updateImageBegin(void* imageBegin, size_t imageIndex);
 
     GlobalImageMetadata* m_globalImageMetadata =
         reinterpret_cast<GlobalImageMetadata*>(__bootloader__); // NOLINT

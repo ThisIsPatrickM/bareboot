@@ -29,7 +29,8 @@ struct ImageMetadata {
     uint32_t bootCounter = 0;
     uint32_t successCounter = 4;
     uint32_t lastSuccessStatus = 5;
-    void* imageBegin = nullptr; // TODO maybe uintptr_t? // TODO Add const somewhere?
+    const uintptr_t imageBegin = 0; // TODO maybe uintptr_t? Yes for Initialization at compiletime
+
     uint32_t length = 0;
     bool complete = false;
     bool alwaysKeep = false;

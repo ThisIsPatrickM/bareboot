@@ -10,12 +10,10 @@ namespace bootloader {
  * Controller Specific
  ******************************************************************************/
 
-// TODO Move to Platform aprameter?
-constexpr uintptr_t ROM_PROT_ADDRESS = 0x40010010;
-
 using namespace bootloader::va41620::boot_rom_spi;
 BootRomSpi bootRomSpi {};
-uint32_t* romProtection = reinterpret_cast<uint32_t*>(ROM_PROT_ADDRESS); // NOLINT
+uint32_t* romProtection =
+    reinterpret_cast<uint32_t*>(PlatformParameters::ROM_PROT_ADDRESS); // NOLINT
 
 void Enable_Code_Memory_Protection()
 {
@@ -38,22 +36,7 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
     return m_globalImageMetadata;
 }
 
-void MetadataInterface::init()
-{
-    // Reset imageBegin
-    for (size_t i = 0; i < PlatformParameters::NUMBER_OF_IMAGES; i++) {
-        updateImageBegin(
-            reinterpret_cast<void*>(PlatformParameters::IMAGE_BEGIN_ADDRESSES[i]), i); // NOLINT
-    }
-    // TODO
-    // Reset imageLength, But where do I get the value?
-
-    // Or where do I get the Initial CRC value? Maybe prepend Infos at Image Slot?
-
-    // Init complete?
-
-    // Init alwaysKeep?
-}
+void MetadataInterface::init() {}
 
 size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
 {
@@ -151,19 +134,19 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
     return m_globalImageMetadata->images[imageIndex].length;
 }
 
-void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return nullptr;
-    }
-    // Update SPI
-    bootRomSpi.updateImageBeginOverSpi(imageBegin, imageIndex);
-    // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].imageBegin = imageBegin;
-    Disable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].imageBegin;
-}
+// void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
+// {
+//     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+//         return nullptr;
+//     }
+//     // Update SPI
+//     bootRomSpi.updateImageBeginOverSpi(imageBegin, imageIndex);
+//     // Update code Memory
+//     Enable_Code_Memory_Protection();
+//     m_globalImageMetadata->images[imageIndex].imageBegin =
+//     reinterpret_cast<uintptr_t>(imageBegin); Disable_Code_Memory_Protection(); return
+//     (void*)m_globalImageMetadata->images[imageIndex].imageBegin;
+// }
 
 size_t MetadataInterface::getNumberOfImages()
 {
