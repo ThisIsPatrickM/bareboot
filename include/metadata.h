@@ -25,13 +25,12 @@ constexpr size_t HMAC_LENGTH = 64;
  */
 struct ImageMetadata {
     uint32_t version = 1;
-    uint32_t crc = 0;
+    uint32_t crc = 0; // Initially set when building binary
     uint32_t bootCounter = 0;
-    uint32_t successCounter = 4;
-    uint32_t lastSuccessStatus = 5;
-    const uintptr_t imageBegin = 0; // TODO maybe uintptr_t? Yes for Initialization at compiletime
-
-    uint32_t length = 0;
+    uint32_t successCounter = 0;
+    uint32_t lastSuccessStatus = 0;
+    const uintptr_t imageBegin = 0; // Initially set during Initialization
+    uint32_t length = 0; // Initially set when building binary
     bool complete = false;
     bool alwaysKeep = false;
 };
@@ -42,12 +41,14 @@ struct ImageMetadata {
  */
 struct GlobalImageMetadata {
     uint32_t globalBootcounter = 0;
-    size_t preferredImage = 7;
-    size_t currentImage = 8;
+    size_t preferredImage = 0;
+    size_t currentImage = 0;
     ImageMetadata images[MAX_NUMBER_OF_IMAGES] = {};
     // uint8_t hmac1[HMAC_LENGTH] = { 0 };
     // uint8_t hmac2[HMAC_LENGTH] = { 0 };
     // uint8_t hmac3[HMAC_LENGTH] = { 0 };
+
+    // TODO Document every variable
 };
 
 } // namespace bootloader

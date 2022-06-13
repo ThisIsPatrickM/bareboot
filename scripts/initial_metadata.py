@@ -5,12 +5,12 @@ import subprocess
 
 # TODO This Offset might change, when memory_map.h is changed. And needs to be calculated for future images
 # Check BOOTROM SPI / Platform parameters for Constexpr offset calculation
-
 FIRST_CRC_OFFSET = 876
 FIRST_LENGTH_OFFSET = 904
 SIZE_OF_IMAGE_METADATA = 40
 IMAGE_BEGIN_ADDRESSES = [4096, 262144,
                          520192, 778240, 1036288, 1294336, 1552384]
+MAX_IMAGE_SIZE = IMAGE_BEGIN_ADDRESSES[1] - IMAGE_BEGIN_ADDRESSES[0]
 
 
 def calc_crc(filename):
@@ -71,8 +71,6 @@ def merge_image_and_bootloader(image_file,  outfile, index):
     crc = calc_crc(image_file)
 
     print(f"Writing CRC {hex(crc)} to outfile: {outfile}")
-    print(
-        f"Please compare it to the result after executing 'crc32 {image_file}'")
     write_crc(outfile, crc, index)
 
     print("Getting Length of Binary")
@@ -80,31 +78,26 @@ def merge_image_and_bootloader(image_file,  outfile, index):
     print(f"Writing Length {hex(length)} to outfile: {outfile}")
     write_length(outfile, length, index)
 
+    if index == None and length > 4 * 1024:
+        raise Exception("Bootloader is too big. Change linkerfile")
+    if index != None and length > MAX_IMAGE_SIZE:
+        raise Exception("Image is bigger than Slot")
+
 
 if __name__ == '__main__':
     print("Files should already be objcopied to binary!")
     parser = argparse.ArgumentParser(description='Patch Binary')
-    parser.add_argument('--image0', type=str,
-                        help='path to first image file')
-    parser.add_argument('--image1', type=str, default=None,
-                        help='path to second image file')
-    parser.add_argument('--image2', type=str, default=None,
-                        help='path to third image file')
+    parser.add_argument("--images", nargs="+", help='paths to image files')
     parser.add_argument('--bootloader', type=str,
                         help='path to bootloader file')
     parser.add_argument('--out', type=str, default="python-vorago.bin",
-                        help='path to third image file')
+                        help='path to output image file')
 
     args = parser.parse_args()
 
-    # TODO Get newest result of objcopy? Or  just do it in Shell?
-
     dd_prototype(args.bootloader, args.out)
 
-    merge_image_and_bootloader(args.image0,  args.out, 0)
-    if args.image1 is not None:
-        merge_image_and_bootloader(args.image1, args.out, 1)
-    if args.image2 is not None:
-        merge_image_and_bootloader(args.image2, args.out, 2)
+    for index, image_file in enumerate(args.images):
+        merge_image_and_bootloader(image_file, args.out, index)
 
     print("Done")

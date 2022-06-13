@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../metadata.h"
+#include "metadata.h"
 #include <cstdint>
 
 namespace bootloader {

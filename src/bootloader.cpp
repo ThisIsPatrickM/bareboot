@@ -16,7 +16,9 @@ void Bootloader::run()
 
     loadImage(selectedImage);
     // TODO Disable Interrupts before moving vector table?
+    Disable_Interrupts();
     Move_Vector_Table();
+    Enable_Interrupts();
 
     Memory_Barrier();
 

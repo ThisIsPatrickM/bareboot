@@ -1,6 +1,7 @@
 #include "microcontroller/microcontroller_dependent.h"
 
 /* Controller specific includes */
+#include "architecture/architecture_dependent.h"
 #include "microcontroller/va41620/irq_handlers.h"
 #include "va41620/platform-parameters.h"
 
@@ -94,6 +95,8 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     // TODO remove before flight
     Wait_About_5_Seconds();
 
+    Init_Watchdog();
+
     Memory_Barrier();
 
     Init_Data_Section();
@@ -105,6 +108,7 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 
     Bootloader boot {};
     boot.run();
+
     while (true) {
         ;
     }

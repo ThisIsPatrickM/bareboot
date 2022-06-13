@@ -6,6 +6,8 @@
 
 namespace bootloader {
 
+// TODO Sync some Method names of Bootloader and Bootmanager
+
 /**
  * @brief Provides interfaces to Image Metadata and functionality to make changes.
  * Implementation is hardware dependent.
@@ -16,12 +18,6 @@ public:
     MetadataInterface() = default;
 
     [[nodiscard]] const GlobalImageMetadata* getGlobalImageMetadata();
-
-    /**
-     * @brief Currently no use. Delete Later. TODO
-     *
-     */
-    void init();
 
     /**
      * @brief Sets the preferred image for next reboot.
@@ -57,8 +53,6 @@ public:
      */
     uint32_t updateImageCrc(uint32_t crc, size_t imageIndex);
 
-    // void updateImageLastSuccessStatus(uint32_t lastSuccessStatus, size_t imageIndex);
-
     /**
      * @brief Set image Complete status of selected image
      *
@@ -86,13 +80,21 @@ public:
      */
     uint32_t updateImageLength(uint32_t length, size_t imageIndex);
 
+    /**
+     * @brief Get the Number of actual Images in the system. Depends on Hardware.
+     *
+     * @return size_t
+     */
     static size_t getNumberOfImages();
 
+    /**
+     * @brief Get the Max Image Length object. Depends on hardware.
+     *
+     * @return size_t
+     */
     static size_t getMaxImageLength();
 
 private:
-    // void* updateImageBegin(void* imageBegin, size_t imageIndex);
-
     GlobalImageMetadata* m_globalImageMetadata =
         reinterpret_cast<GlobalImageMetadata*>(__bootloader__); // NOLINT
 };

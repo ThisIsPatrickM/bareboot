@@ -36,8 +36,6 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
     return m_globalImageMetadata;
 }
 
-void MetadataInterface::init() {}
-
 size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
@@ -133,20 +131,6 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
     Disable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].length;
 }
-
-// void* MetadataInterface::updateImageBegin(void* imageBegin, size_t imageIndex)
-// {
-//     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-//         return nullptr;
-//     }
-//     // Update SPI
-//     bootRomSpi.updateImageBeginOverSpi(imageBegin, imageIndex);
-//     // Update code Memory
-//     Enable_Code_Memory_Protection();
-//     m_globalImageMetadata->images[imageIndex].imageBegin =
-//     reinterpret_cast<uintptr_t>(imageBegin); Disable_Code_Memory_Protection(); return
-//     (void*)m_globalImageMetadata->images[imageIndex].imageBegin;
-// }
 
 size_t MetadataInterface::getNumberOfImages()
 {

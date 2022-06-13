@@ -1,11 +1,17 @@
 #pragma once
 
-#include "../metadata.h"
+#include "metadata.h"
 #include <cstdint>
 
 namespace bootloader {
 
 using namespace std;
+
+/**
+ * @brief Calculates, collects and gives access to all parameters for the platform that are known at
+ * compile time.
+ *
+ */
 class PlatformParameters {
 private:
     static constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
@@ -24,22 +30,35 @@ public:
      *
      */
     static constexpr size_t NUMBER_OF_IMAGES = 7;
+
+    /**
+     * @brief Max size of an image in NVM. It is limited by the size of the NVM divided by the
+     * number of images and the size of Code SRAM without dedicated space for BOOT ROM Part.
+     *
+     */
     static constexpr size_t MAX_IMAGE_LENGTH =
         APP_NVM_TOTAL_SIZE / NUMBER_OF_IMAGES > SRAM_SIZE - BOOT_ROM_SIZE
             ? SRAM_SIZE - BOOT_ROM_SIZE
             : APP_NVM_TOTAL_SIZE / NUMBER_OF_IMAGES;
+
+    /**
+     * @brief Addresses where Image slots begin in NVM.
+     *
+     */
     static constexpr uintptr_t IMAGE_BEGIN_ADDRESSES[NUMBER_OF_IMAGES] = {
         APP_NVM_BEGIN_ADDRESS + 0 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 1 * MAX_IMAGE_LENGTH,
         APP_NVM_BEGIN_ADDRESS + 2 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 3 * MAX_IMAGE_LENGTH,
         APP_NVM_BEGIN_ADDRESS + 4 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 5 * MAX_IMAGE_LENGTH,
-        APP_NVM_BEGIN_ADDRESS + 6 * MAX_IMAGE_LENGTH,
+        APP_NVM_BEGIN_ADDRESS + 6 * MAX_IMAGE_LENGTH
     };
 
+    /**
+     * @brief Location of Register that protects writing to Code ROM.
+     *
+     */
     static constexpr uintptr_t ROM_PROT_ADDRESS = 0x40010010;
 
     // TODO Add Static Asserts
-    // TODO Document this class properly
-    // TODO Collect all the static asserts in one place
     static_assert(
         PlatformParameters::MAX_IMAGE_LENGTH + PlatformParameters::BOOT_ROM_SIZE <=
             PlatformParameters::SRAM_SIZE,
