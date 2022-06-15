@@ -10,7 +10,7 @@ using namespace std;
 class PlatformParameters {
 private:
 public:
-    static constexpr size_t NUMBER_OF_IMAGES = 3;
+    static constexpr size_t NUMBER_OF_IMAGES = 4;
     // TODO Dont know what MAX_IMAGE Length makes sense for generic
     static constexpr uint32_t MAX_IMAGE_LENGTH = 128;
     // TODO How to declare IMAGE_BEGIN_ADDRESSES? For Dummy implementation and generic?

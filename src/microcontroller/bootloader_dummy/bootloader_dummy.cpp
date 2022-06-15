@@ -6,7 +6,7 @@ uint8_t imageBuffer
     [bootloader::PlatformParameters::MAX_IMAGE_LENGTH *
      bootloader::PlatformParameters::NUMBER_OF_IMAGES] = { 0 };
 
-// Initialize Dummy, Assuming there are 3 Images
+// Initialize Dummy, Assuming there are 4 Images
 bootloader::GlobalImageMetadata dummyBootloader {};
 
 uintptr_t __approm_start__ = reinterpret_cast<uintptr_t>(imageBuffer); // NOLINT
