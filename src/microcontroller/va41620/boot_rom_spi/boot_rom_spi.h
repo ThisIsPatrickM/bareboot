@@ -12,6 +12,7 @@ namespace bootloader::va41620::boot_rom_spi {
 
 // TODO Get BOOTLOADER_OFFSET From somewhere else. Maybe sizeof(Interrupt Table)? or form Memory
 // Map? __bootloader__
+// TODO Sync with rodos boot_rom_spi
 constexpr uint32_t METADATA_OFFSET = 0x350;
 constexpr uint32_t METADATA_PREFERRED_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, preferredImage);

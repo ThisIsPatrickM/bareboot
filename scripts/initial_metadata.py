@@ -2,15 +2,9 @@ import argparse
 import zlib
 import os
 import subprocess
+from platform_config import CONFIG_MAP
 
-# TODO This Offset might change, when memory_map.h is changed. And needs to be calculated for future images
-# Check BOOTROM SPI / Platform parameters for Constexpr offset calculation
-FIRST_CRC_OFFSET = 876
-FIRST_LENGTH_OFFSET = 904
-SIZE_OF_IMAGE_METADATA = 40
-IMAGE_BEGIN_ADDRESSES = [4096, 262144,
-                         520192, 778240, 1036288, 1294336, 1552384]
-MAX_IMAGE_SIZE = IMAGE_BEGIN_ADDRESSES[1] - IMAGE_BEGIN_ADDRESSES[0]
+CONFIG = None
 
 
 def calc_crc(filename):
@@ -26,61 +20,66 @@ def get_length(file_name):
 
 
 def write_crc(file_name, crc, index):
+    offset = CONFIG.FIRST_CRC_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
+    print(
+        f"Write Crc {hex(crc)} to {hex(offset)}")
     with open(file_name, 'rb+') as f:
-        f.seek(FIRST_CRC_OFFSET + SIZE_OF_IMAGE_METADATA * index)
-        f.write(crc.to_bytes(4, byteorder='little'))
+        f.seek(offset)
+        f.write(crc.to_bytes(CONFIG.UINT32_T_SIZE, byteorder=CONFIG.BYTE_ORDER))
 
 
 def write_length(file_name, length, index):
+    offset = CONFIG.FIRST_LENGTH_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
+    print(
+        f"Write Length {(length)} to {hex(offset)} for index {index}")
+
     with open(file_name, 'rb+') as f:
-        f.seek(FIRST_LENGTH_OFFSET + SIZE_OF_IMAGE_METADATA * index)
-        f.write(length.to_bytes(4, byteorder='little'))
+        f.seek(offset)
+        f.write(length.to_bytes(CONFIG.UINT32_T_SIZE, byteorder=CONFIG.BYTE_ORDER))
 
 
-def dd_prototype(input_file, output_file, index=None):
+def write_complete(file_name, index):
+    offset = CONFIG.FIRST_COMPLETE_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
+    print(
+        f"Write to complete to {hex(offset)}")
+    with open(file_name, 'rb+') as f:
+        f.seek(offset)
+        f.write((1).to_bytes(1, byteorder=CONFIG.BYTE_ORDER))
+
+
+def put_image_to_file_at_index(input_file, output_file, index=None):
     if index is None:
         # Bootloader, no offset
         offset = 0
     else:
-        offset = IMAGE_BEGIN_ADDRESSES[index]
+        offset = CONFIG.IMAGE_BEGIN_ADDRESSES[index]
 
     print(f"DD: Writing file {input_file} to {output_file} with index {index}")
     cmd = ["dd", "conv=notrunc",  f"if={input_file}", f"of={output_file}",
            "bs=1", f"seek={offset}", "status=progress"]
 
-    process = subprocess.Popen(cmd, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE, close_fds=True, universal_newlines=True)
 
-    line = ''
-    while True:
-        out = process.stderr.read(1)
-        if out == b'' and process.poll() != None:
-            break
-        if out != b'':
-            s = out.decode("utf-8")
-            if s == '\r':
-                print(line)
-                line = ''
-            else:
-                line = line + s
+    print(process.stdout.read())
 
 
-def merge_image_and_bootloader(image_file,  outfile, index):
-    dd_prototype(image_file, outfile, index)
+def merge_image_and_fix_metadata(image_file,  output_file, index):
+    print(
+        f"\nMerge Image {image_file}:{index} into file {output_file} and fix Metadata")
+    put_image_to_file_at_index(image_file, output_file, index)
 
-    print(f"Calculating CRC for file: {image_file}")
     crc = calc_crc(image_file)
+    write_crc(output_file, crc, index)
 
-    print(f"Writing CRC {hex(crc)} to outfile: {outfile}")
-    write_crc(outfile, crc, index)
-
-    print("Getting Length of Binary")
     length = get_length(image_file)
-    print(f"Writing Length {hex(length)} to outfile: {outfile}")
-    write_length(outfile, length, index)
+    write_length(output_file, length, index)
 
-    if index == None and length > 4 * 1024:
+    write_complete(output_file, index)
+
+    if index == None and length > CONFIG.BOOTLOADER_SIZE:
         raise Exception("Bootloader is too big. Change linkerfile")
-    if index != None and length > MAX_IMAGE_SIZE:
+    if index != None and length > CONFIG.MAX_IMAGE_SIZE:
         raise Exception("Image is bigger than Slot")
 
 
@@ -92,12 +91,18 @@ if __name__ == '__main__':
                         help='path to bootloader file')
     parser.add_argument('--out', type=str, default="python-vorago.bin",
                         help='path to output image file')
+    parser.add_argument('--config', type=str, default="va41620",
+                        help='name of the configuration. See platform_config.py for reference')
 
     args = parser.parse_args()
 
-    dd_prototype(args.bootloader, args.out)
+    CONFIG = CONFIG_MAP[args.config]
+
+    put_image_to_file_at_index(
+        input_file=args.bootloader, output_file=args.out, index=None)
 
     for index, image_file in enumerate(args.images):
-        merge_image_and_bootloader(image_file, args.out, index)
+        merge_image_and_fix_metadata(
+            image_file=image_file, output_file=args.out, index=index)
 
     print("Done")
