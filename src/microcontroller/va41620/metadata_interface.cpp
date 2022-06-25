@@ -15,24 +15,34 @@ BootRomSpi bootRomSpi {};
 uint32_t* romProtection =
     reinterpret_cast<uint32_t*>(PlatformParameters::ROM_PROT_ADDRESS); // NOLINT
 
-void Enable_Code_Memory_Protection()
-{
-    *romProtection = 0x1;
-}
-
 void Disable_Code_Memory_Protection()
 {
+    *romProtection = 0x1;
+    __asm__ volatile("" : : : "memory");
+}
+
+void Enable_Code_Memory_Protection()
+{
     *romProtection = 0x0;
+    __asm__ volatile("" : : : "memory");
 }
 
 /*******************************************************************************
  * MetadataInterface Implementations
  ******************************************************************************/
 
+MetadataInterface::MetadataInterface()
+    : m_globalImageMetadata { reinterpret_cast<GlobalImageMetadata*>(&__bootloader__) } // NOLINT
+{
+}
+
+void MetadataInterface::init() // NOLINT(readability-convert-member-functions-to-static)
+{
+    bootRomSpi.init();
+}
+
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
-    // TODO When to read? Always?
-    bootRomSpi.getBootRomGlobalImageMetadataOverSpi(*m_globalImageMetadata);
     return m_globalImageMetadata;
 }
 
@@ -140,6 +150,43 @@ size_t MetadataInterface::getNumberOfImages()
 size_t MetadataInterface::getMaxImageLength()
 {
     return PlatformParameters::MAX_IMAGE_LENGTH;
+}
+
+void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
+{
+    uintptr_t sourceImagePointer = m_globalImageMetadata->images[srcImageIndex].imageBegin;
+    uintptr_t destinationImagePointer = m_globalImageMetadata->images[dstImageIndex].imageBegin;
+    auto length = static_cast<int32_t>(m_globalImageMetadata->images[srcImageIndex].length);
+
+    if (sourceImagePointer == 0 || destinationImagePointer == 0) {
+        return;
+    }
+
+    if (srcImageIndex == dstImageIndex) {
+        return;
+    }
+    bootRomSpi.copyImage(sourceImagePointer, length, destinationImagePointer);
+}
+
+void MetadataInterface::updateImage(
+    const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset)
+{
+    uintptr_t imagePointer = m_globalImageMetadata->images[imageIndex].imageBegin;
+    imagePointer += imageOffset;
+
+    bootRomSpi.updateImage(data, length, imagePointer);
+}
+
+void MetadataInterface::loadImage(void* destination, size_t imageIndex)
+{
+    Disable_Code_Memory_Protection();
+
+    bootRomSpi.loadImage(
+        destination,
+        static_cast<int32_t>(m_globalImageMetadata->images[imageIndex].length),
+        m_globalImageMetadata->images[imageIndex].imageBegin);
+
+    Enable_Code_Memory_Protection();
 }
 
 }

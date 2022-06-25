@@ -11,7 +11,7 @@ using namespace std;
  * microcontroller, its memory size and the expected size of images. This is just the upper limit.
  *
  */
-constexpr size_t MAX_NUMBER_OF_IMAGES = 10;
+constexpr size_t MAX_NUMBER_OF_IMAGES = 7;
 
 /**
  * @brief Number of bytes for an HMAC.
@@ -26,13 +26,15 @@ constexpr size_t HMAC_LENGTH = 64;
 struct ImageMetadata {
     uint32_t version = 1;
     uint32_t crc = 0; // Initially set when building binary
-    uint32_t bootCounter = 0;
-    uint32_t successCounter = 0;
-    uint32_t lastSuccessStatus = 0;
+    uint32_t bootCounter = 13;
+    uint32_t successCounter = 14;
+    uint32_t lastSuccessStatus = 15;
     const uintptr_t imageBegin = 0; // Initially set during Initialization
     uint32_t length = 0; // Initially set when building binary
     bool complete = false;
     bool alwaysKeep = false;
+    // TODO Remove padding later. Dont forget to adjust Python script.
+    bool padding[2] = { false, false };
 };
 
 /**
@@ -40,7 +42,7 @@ struct ImageMetadata {
  *
  */
 struct GlobalImageMetadata {
-    uint32_t globalBootcounter = 0;
+    uint32_t globalBootcounter = 3;
     size_t preferredImage = 0;
     size_t currentImage = 0;
     ImageMetadata images[MAX_NUMBER_OF_IMAGES] = {};

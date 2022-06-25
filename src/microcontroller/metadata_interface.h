@@ -15,7 +15,7 @@ namespace bootloader {
 
 class MetadataInterface {
 public:
-    MetadataInterface() = default;
+    MetadataInterface();
 
     [[nodiscard]] const GlobalImageMetadata* getGlobalImageMetadata();
 
@@ -94,9 +94,16 @@ public:
      */
     static size_t getMaxImageLength();
 
+    void init();
+
+    void copyImage(size_t srcImageIndex, size_t dstImageIndex);
+
+    void updateImage(const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset);
+
+    void loadImage(void* destination, size_t imageIndex);
+
 private:
-    GlobalImageMetadata* m_globalImageMetadata =
-        reinterpret_cast<GlobalImageMetadata*>(__bootloader__); // NOLINT
+    GlobalImageMetadata* m_globalImageMetadata;
 };
 
 }

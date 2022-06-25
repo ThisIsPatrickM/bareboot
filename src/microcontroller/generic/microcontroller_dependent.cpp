@@ -22,8 +22,8 @@ void Init_Watchdog()
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) // NOLINT
 {
-    bootloader::Bootloader boot {};
     std::cout << "Starting bootloader" << std::endl;
+    bootloader::Bootloader boot {};
     boot.run();
     return 0;
 }

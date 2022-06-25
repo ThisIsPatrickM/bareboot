@@ -7,13 +7,19 @@ using namespace architecture;
 
 void Bootloader::run()
 {
+    m_metadataInterface.init();
+
     int32_t selectedImage = selectImageSlot();
+    // int32_t selectedImage = 1;
 
     if (selectedImage < 0) {
         // TODO Error Handling, random Image?
         selectedImage = 0;
     }
 
+    Memory_Barrier();
+    // TODO Error when loading Image?
+    // TODO If FRAM is too small?
     loadImage(selectedImage);
     // TODO Disable Interrupts before moving vector table?
     Disable_Interrupts();
@@ -56,7 +62,7 @@ bool Bootloader::verifyChecksum(size_t index)
         return false;
     }
     uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
-    uint32_t actualChecksum = dosis::support::crc::CastagnoliCrc32::calculateCRC32(
+    uint32_t actualChecksum = checksums::Checksums::calculateCrc32NoTable(
         reinterpret_cast<uint8_t*>( // NOLINT
             m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
         m_metadataInterface.getGlobalImageMetadata()->images[index].length);
@@ -69,7 +75,7 @@ void Bootloader::loadImage(size_t index)
         return;
     }
 
-    if (__approm_start__ ==
+    if (reinterpret_cast<uintptr_t>(&__approm_start__) == // NOLINT
         m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin) {
         // Nothing to do
         return;
@@ -80,15 +86,7 @@ void Bootloader::loadImage(size_t index)
         return;
     }
 
-    // memcpy(
-    //     &__approm_start__,
-    //     m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin,
-    //     MetadataInterface::getMaxImageLength());
-    rodos::memcpy(
-        reinterpret_cast<void*>(__approm_start__), // NOLINT
-        reinterpret_cast<void*>( // NOLINT
-            m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
-        m_metadataInterface.getGlobalImageMetadata()->images[index].length);
+    m_metadataInterface.loadImage(reinterpret_cast<void*>(&__approm_start__), index); // NOLINT
 }
 
 } // namespace bootloader

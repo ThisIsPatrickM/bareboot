@@ -22,6 +22,12 @@ void Move_Vector_Table()
     *vtor = ((uintptr_t)vector_table & 0xFFFFFFF8); // NOLINT
     // TODO If anything fails, try this:
     // *vtor = ((uint32_t)vector_table & 0xFFFFFFF8); // NOLINT
+
+    // Hardcoded to boot Image 2:
+    // TODO Dont hardcode
+    // uint32_t* vector_table = (uint32_t*)68608; // NOLINT
+    // auto* vtor = reinterpret_cast<uint32_t*>(TBLOFF); // NOLINT
+    // *vtor = ((uintptr_t)vector_table & 0xFFFFFFF8); // NOLINT
 }
 
 void Toggle_ROM_Writeable(bool writeable)
@@ -106,8 +112,18 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Call_Constructors();
     Memory_Barrier();
 
+    // TODO Somehow it is stuck here?
     Bootloader boot {};
     boot.run();
+
+    // loadImage(selectedImage);
+    // Disable_Interrupts();
+    // Move_Vector_Table();
+    // Enable_Interrupts();
+
+    // Memory_Barrier();
+
+    // Start_App();
 
     while (true) {
         ;
@@ -120,15 +136,10 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 
 constinit const GlobalImageMetadata GLOBAL_IMAGE_METADATA
     __attribute__((used, section(".metadata_table"))) { .images {
-        // TODO Check Number of Images and entries
         { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[0] },
         { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[1] },
         { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[2] },
-        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[3] },
-        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[4] },
-        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[5] },
-        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[6] },
-    } };
+        { .imageBegin = bootloader::PlatformParameters::IMAGE_BEGIN_ADDRESSES[3] } } };
 
 constinit const struct IrqTable { // NOLINT
     const volatile void* sp = _estack;

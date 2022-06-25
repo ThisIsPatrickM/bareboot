@@ -1,7 +1,7 @@
 #pragma once
 
 #include "architecture/architecture_dependent.h"
-#include "checksums/castagnoli_crc32/castagnoli_crc32.h"
+#include "checksums/checksums.h"
 #include "metadata.h"
 #include "microcontroller/metadata_interface.h"
 #include "microcontroller/microcontroller_dependent.h"

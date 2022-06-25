@@ -3,7 +3,6 @@
 #include "metadata.h"
 
 #include <iostream>
-#include <sys/mman.h>
 
 namespace bootloader::architecture {
 

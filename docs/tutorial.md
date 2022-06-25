@@ -8,5 +8,7 @@
 
 ## Include Files
 
+# GDB Quick Tips
 
+- **Remove ROM Protection:** `set {int}0x40010010 = 1`
 

@@ -78,13 +78,15 @@ def merge_image_and_fix_metadata(image_file,  output_file, index):
     write_complete(output_file, index)
 
     if index == None and length > CONFIG.BOOTLOADER_SIZE:
-        raise Exception("Bootloader is too big. Change linkerfile")
-    if index != None and length > CONFIG.MAX_IMAGE_SIZE:
-        raise Exception("Image is bigger than Slot")
+        raise Exception(
+            f"Bootloader is too big. Has {length} but only {CONFIG.BOOTLOADER_SIZE} allowed. Check linkerfile")
+    if index != None and length > CONFIG.MAX_BINARY_IMAGE_SIZE:
+        print("Files should already be objcopied to binary!")
+        raise Exception(
+            f"Image {image_file} has {length} bytes, but only {CONFIG.MAX_BINARY_IMAGE_SIZE} fit in Slot")
 
 
 if __name__ == '__main__':
-    print("Files should already be objcopied to binary!")
     parser = argparse.ArgumentParser(description='Patch Binary')
     parser.add_argument("--images", nargs="+", help='paths to image files')
     parser.add_argument('--bootloader', type=str,

@@ -18,7 +18,6 @@
       exit 1
     fi
 
-
 clang-tidy:
   extends: .check
   variables:

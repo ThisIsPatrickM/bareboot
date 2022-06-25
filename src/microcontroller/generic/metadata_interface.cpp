@@ -2,8 +2,14 @@
 
 /* Controller specific includes */
 #include "generic/platform-parameters.h"
+#include "rodos_includes/string_pico.h"
 
 namespace bootloader {
+
+MetadataInterface::MetadataInterface()
+    : m_globalImageMetadata { reinterpret_cast<GlobalImageMetadata*>(__bootloader__) } // NOLINT
+{
+}
 
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
@@ -79,6 +85,47 @@ size_t MetadataInterface::getNumberOfImages()
 size_t MetadataInterface::getMaxImageLength()
 {
     return PlatformParameters::MAX_IMAGE_LENGTH;
+}
+
+void MetadataInterface::init() {}
+
+void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
+{
+    void* sourceImagePointer =
+        reinterpret_cast<void*>(m_globalImageMetadata->images[srcImageIndex].imageBegin); // NOLINT
+    void* destinationImagePointer =
+        reinterpret_cast<void*>(m_globalImageMetadata->images[dstImageIndex].imageBegin); // NOLINT
+    size_t length = m_globalImageMetadata->images[srcImageIndex].length;
+
+    if (sourceImagePointer == nullptr || destinationImagePointer == nullptr) {
+        return;
+    }
+
+    rodos::memcpy(destinationImagePointer, sourceImagePointer, length);
+}
+
+void MetadataInterface::updateImage(
+    const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset)
+{
+    void* imagePointer = reinterpret_cast<void*>( // NOLINT
+        m_globalImageMetadata->images[imageIndex].imageBegin + imageOffset);
+
+    if (imagePointer == nullptr) {
+        return;
+    }
+    // TODO Length check?
+
+    rodos::memcpy(imagePointer, data, length);
+}
+
+void MetadataInterface::loadImage(void* destination, size_t imageIndex)
+{
+    void* source =
+        reinterpret_cast<void*>(m_globalImageMetadata->images[imageIndex].imageBegin); // NOLINT
+    if (source == nullptr) {
+        return;
+    }
+    rodos::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
 }
 
 }

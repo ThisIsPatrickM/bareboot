@@ -26,6 +26,8 @@ constexpr rodos::SpiIdx BOOTSPI_IDX = rodos::SPI_IDX3;
 constexpr uint8_t SPI_STATUS_REGISTER_WRITE_ALL = 0b0100'0000;
 constexpr uint32_t SPI_FREQUENCY = 1'000'000;
 
+constexpr int32_t BUFFER_SIZE = 128;
+
 /**
  * @brief Interface class to interact with Non-Volatile-Memory over SPI to manage Metadata and
  * Images.
@@ -122,10 +124,16 @@ public:
 
     void init();
 
+    void copyImage(uintptr_t srcImagePointer, int32_t length, uintptr_t dstImagePointer);
+
+    void updateImage(const void* data, int32_t length, uintptr_t imagePointer);
+
+    void loadImage(void* destination, int32_t length, uintptr_t imagePointer);
+
 private:
     void enableWriting();
     void disableWriting();
-    static void putAddressOffsetInto18bits(
+    static void putAddressOffsetIntoMessage(
         uint8_t address[SPI_ADDRESS_SPACE_BYTES], uint32_t addressOffset);
 
     rodos::HalSpi m_halSpi { BOOTSPI_IDX };
