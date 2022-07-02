@@ -17,6 +17,8 @@ void Bootloader::run()
         selectedImage = 0;
     }
 
+    m_metadataInterface.updateCurrentImage(selectedImage);
+
     Memory_Barrier();
     // TODO Error when loading Image?
     // TODO If FRAM is too small?
@@ -52,21 +54,26 @@ int32_t Bootloader::selectBestGuessImageSlot()
 
 bool Bootloader::isImageValid(size_t index)
 {
-    return m_metadataInterface.getGlobalImageMetadata()->images[index].complete &&
+    return m_metadataInterface.getGlobalImageMetadata()->images[index].completionStatus ==
+               CompletionStatus::COMPLETE &&
            verifyChecksum(index);
 }
 
 bool Bootloader::verifyChecksum(size_t index)
 {
-    if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
-        return false;
-    }
-    uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
-    uint32_t actualChecksum = checksums::Checksums::calculateCrc32NoTable(
-        reinterpret_cast<uint8_t*>( // NOLINT
-            m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
-        m_metadataInterface.getGlobalImageMetadata()->images[index].length);
-    return expectedChecksum == actualChecksum;
+    // if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
+    //     return false;
+    // }
+    return m_metadataInterface.verifyChecksum(index);
+    // uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
+    // TODO Need to laod Image to check checksum. Also Fix in Main
+
+    // uint32_t actualChecksum = checksums::Checksums::calculateCrc32NoTable(
+    //     reinterpret_cast<uint8_t*>( // NOLINT
+    //         m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
+    //     m_metadataInterface.getGlobalImageMetadata()->images[index].length);
+    // return true;
+    // return expectedChecksum == actualChecksum;
 }
 
 void Bootloader::loadImage(size_t index)

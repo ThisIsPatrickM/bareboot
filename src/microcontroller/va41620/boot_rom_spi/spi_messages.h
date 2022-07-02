@@ -61,7 +61,7 @@ using SpiStatusWriteProtectEnable = rodos::UInt8SubValue<7, 1>;
  */
 struct [[gnu::packed]] SpiRead {
     const uint8_t opcode = static_cast<uint8_t>(SpiOpCodes::READ);
-    uint8_t address18bit[SPI_ADDRESS_SPACE_BYTES] = { 0 };
+    uint8_t address[SPI_ADDRESS_SPACE_BYTES] = { 0 };
 };
 
 /**
@@ -74,7 +74,7 @@ struct [[gnu::packed]] SpiRead {
  */
 struct [[gnu::packed]] SpiFastRead {
     const uint8_t opcode = static_cast<uint8_t>(SpiOpCodes::FSTRD);
-    uint8_t address18bit[SPI_ADDRESS_SPACE_BYTES] = { 0 };
+    uint8_t address[SPI_ADDRESS_SPACE_BYTES] = { 0 };
     uint8_t dummyByte = { 0 };
 };
 
@@ -114,7 +114,7 @@ struct [[gnu::packed]] SpiWriteStatusRegister {
 template <size_t DATA_LENGTH>
 struct [[gnu::packed]] SpiWrite {
     const uint8_t opcode = static_cast<uint8_t>(SpiOpCodes::WRITE);
-    uint8_t address18bit[SPI_ADDRESS_SPACE_BYTES] = { 0 };
+    uint8_t address[SPI_ADDRESS_SPACE_BYTES] = { 0 };
     uint8_t data[DATA_LENGTH] = {};
     // TODO test this further, but its complicated
     // uint32_t padding : 14 = 0;

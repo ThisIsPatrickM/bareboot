@@ -1,7 +1,6 @@
 #pragma once
 
 #include "architecture/architecture_dependent.h"
-#include "checksums/checksums.h"
 #include "metadata.h"
 #include "microcontroller/metadata_interface.h"
 #include "microcontroller/microcontroller_dependent.h"
@@ -64,7 +63,6 @@ private:
      * @param index
      */
     void loadImage(size_t index);
-    // static void* memcpy(void* destP, const void* srcP, size_t len);
 
     MetadataInterface m_metadataInterface {};
 };

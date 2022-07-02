@@ -16,6 +16,8 @@ namespace bootloader::va41620::boot_rom_spi {
 constexpr uint32_t METADATA_OFFSET = 0x350;
 constexpr uint32_t METADATA_PREFERRED_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, preferredImage);
+constexpr uint32_t METADATA_CURRENT_IMAGE_OFFSET =
+    METADATA_OFFSET + offsetof(GlobalImageMetadata, currentImage);
 constexpr uint32_t METADATA_IMAGES_OFFSET = METADATA_OFFSET + offsetof(GlobalImageMetadata, images);
 
 constexpr uint32_t METADATA_GLOBAL_BOOTCOUNTER_OFFSET =
@@ -51,6 +53,13 @@ public:
      * @return void
      */
     void updatePreferredImageOverSpi(size_t preferredImageIndex);
+
+    /**
+     * @brief Update the current image in the Metadata over SPI
+     *
+     * @param currentImageIndex
+     */
+    void updateCurrentImageOverSpi(size_t currentImageIndex);
 
     /**
      * @brief Set the global bootcounter.
@@ -89,20 +98,18 @@ public:
     /**
      * @brief Set image complete status of selected image
      *
-     * @param size
+     * @param completionStatus
      * @param imageIndex
-     * @return void
      */
-    void updateImageCompleteOverSpi(bool complete, size_t imageIndex);
+    void updateImageCompletionStatusOverSpi(CompletionStatus completionStatus, size_t imageIndex);
 
     /**
-     * @brief Set image alwaysKeep status of selected image
+     * @brief Set image protectionStatus of selected image
      *
-     * @param complete
+     * @param protectionStatus
      * @param imageIndex
-     * @return Returns
      */
-    void updateImageAlwaysKeepOverSpi(bool alwaysKeep, size_t imageIndex);
+    void updateImageProtectionStatusOverSpi(ProtectionStatus protectionStatus, size_t imageIndex);
 
     /**
      * @brief Set image length of selected image
@@ -121,6 +128,8 @@ public:
      * @return Returns
      */
     void updateImageBeginOverSpi(void* imageBegin, size_t imageIndex);
+
+    uint8_t* getDataOverSpi(uintptr_t address, uint32_t length, uint8_t* receiveBuffer);
 
     void init();
 

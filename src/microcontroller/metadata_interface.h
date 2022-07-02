@@ -1,12 +1,14 @@
 #pragma once
 
 /* Bootloader Includes */
+#include "checksums/checksums.h"
 #include "memory_map.h"
 #include "metadata.h"
 
 namespace bootloader {
 
 // TODO Sync some Method names of Bootloader and Bootmanager
+using namespace checksums;
 
 /**
  * @brief Provides interfaces to Image Metadata and functionality to make changes.
@@ -15,8 +17,18 @@ namespace bootloader {
 
 class MetadataInterface {
 public:
+    /**
+     * @brief Construct a new Metadata Interface object. Sets pointer to m_globalImageMetadata based
+     * on label __bootloader__.
+     *
+     */
     MetadataInterface();
 
+    /**
+     * @brief Get the Global Image Metadata object
+     *
+     * @return const GlobalImageMetadata*
+     */
     [[nodiscard]] const GlobalImageMetadata* getGlobalImageMetadata();
 
     /**
@@ -26,6 +38,14 @@ public:
      * @return size_t Index of the image for next boot.
      */
     size_t updatePreferredImage(size_t imageIndex);
+
+    /**
+     * @brief Updates the current image in the metadata-
+     *
+     * @param imageIndex Image to set as current image
+     * @return size_t Image in the metadata after the update operation
+     */
+    size_t updateCurrentImage(size_t imageIndex);
 
     /**
      * @brief Sets the preferred image for next reboot.
@@ -54,22 +74,24 @@ public:
     uint32_t updateImageCrc(uint32_t crc, size_t imageIndex);
 
     /**
-     * @brief Set image Complete status of selected image
+     * @brief Set image CompletionStatus of selected image
      *
-     * @param complete
+     * @param completionStatus
      * @param imageIndex
      * @return complete Status
      */
-    bool updateImageComplete(bool complete, size_t imageIndex);
+    CompletionStatus updateImageCompletionStatus(
+        CompletionStatus completionStatus, size_t imageIndex);
 
     /**
-     * @brief Set image alwaysKeep status of selected image
+     * @brief Set image ProtectionStatus status of selected image
      *
-     * @param complete
+     * @param protectionStatus
      * @param imageIndex
      * @return alwaysKeep Status
      */
-    bool updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex);
+    ProtectionStatus updateImageProtectionStatus(
+        ProtectionStatus protectionStatus, size_t imageIndex);
 
     /**
      * @brief Set image length of selected image
@@ -101,6 +123,8 @@ public:
     void updateImage(const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset);
 
     void loadImage(void* destination, size_t imageIndex);
+
+    bool verifyChecksum(size_t index);
 
 private:
     GlobalImageMetadata* m_globalImageMetadata;

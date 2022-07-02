@@ -1,5 +1,6 @@
 common_tests_sources = [
-    'basic.cpp'
+    'basic.cpp',
+    'memcpy_tests.cpp'
 ]
 
 common_tests_deps = [

@@ -2,7 +2,7 @@
 
 #include "microcontroller/va41620/peripheral_ctrl/peripheral_defs.h"
 #include "microcontroller/va41620/peripheral_ctrl/pin_config/enums.h"
-#include "microcontroller/va41620/peripheral_ctrl/register_maps/spi_registers.h"
+#include "microcontroller/va41620/peripheral_ctrl/register_maps/spi_registers.h" // Directly needed
 
 // TODO How is this selected?
 #include "microcontroller/va41620/subtargets/peb1_100mhz/clkgen_config.h"

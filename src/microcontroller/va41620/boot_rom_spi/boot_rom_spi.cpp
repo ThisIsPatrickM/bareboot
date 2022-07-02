@@ -4,9 +4,10 @@ namespace bootloader::va41620::boot_rom_spi {
 
 void BootRomSpi::getBootRomGlobalImageMetadataOverSpi(GlobalImageMetadata& globalImageMetadata)
 {
-    // TODO The same code failed on bootmanager
+    // TODO The same code failed on bootmanager. Failed because of memcopy, copying 1 byte each, but
+    // only uint16 or bigger is possible. TODO Fix in both implementaitons
     SpiRead readMessage {};
-    putAddressOffsetIntoMessage(readMessage.address18bit, METADATA_OFFSET);
+    putAddressOffsetIntoMessage(readMessage.address, METADATA_OFFSET);
     uint8_t receiveBuffer[sizeof(GlobalImageMetadata) + SPI_RECEIVE_ADDRESSED_DATA_OFFSET] = { 0 };
     int32_t numberOfBytesReceived = m_halSpi.writeRead(
         &readMessage, sizeof(readMessage), &globalImageMetadata, sizeof(GlobalImageMetadata));
@@ -25,8 +26,22 @@ void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
         return;
     }
     SpiWrite<sizeof(size_t)> writeMessage {};
-    putAddressOffsetIntoMessage(writeMessage.address18bit, METADATA_PREFERRED_IMAGE_OFFSET);
+    putAddressOffsetIntoMessage(writeMessage.address, METADATA_PREFERRED_IMAGE_OFFSET);
     rodos::memcpy(writeMessage.data, &preferredImageIndex, sizeof(size_t));
+
+    enableWriting();
+    m_halSpi.write(&writeMessage, sizeof(writeMessage));
+    disableWriting();
+}
+
+void BootRomSpi::updateCurrentImageOverSpi(size_t currentImageIndex)
+{
+    if (currentImageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return;
+    }
+    SpiWrite<sizeof(size_t)> writeMessage {};
+    putAddressOffsetIntoMessage(writeMessage.address, METADATA_CURRENT_IMAGE_OFFSET);
+    rodos::memcpy(writeMessage.data, &currentImageIndex, sizeof(size_t));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -36,7 +51,7 @@ void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
 void BootRomSpi::updateGlobalBootcounterOverSpi(uint32_t bootcounter)
 {
     SpiWrite<sizeof(uint32_t)> writeMessage {};
-    putAddressOffsetIntoMessage(writeMessage.address18bit, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
+    putAddressOffsetIntoMessage(writeMessage.address, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
     rodos::memcpy(writeMessage.data, &bootcounter, sizeof(uint32_t));
 
     enableWriting();
@@ -47,7 +62,7 @@ void BootRomSpi::updateGlobalBootcounterOverSpi(uint32_t bootcounter)
 void BootRomSpi::updateGlobalInitializedOverSpi(bool initialized)
 {
     SpiWrite<sizeof(bool)> writeMessage {};
-    putAddressOffsetIntoMessage(writeMessage.address18bit, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
+    putAddressOffsetIntoMessage(writeMessage.address, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
     rodos::memcpy(writeMessage.data, &initialized, sizeof(bool));
 
     enableWriting();
@@ -63,7 +78,7 @@ void BootRomSpi::updateImageVersionOverSpi(uint32_t version, size_t imageIndex)
     SpiWrite<sizeof(uint32_t)> writeMessage {};
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, version);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
     rodos::memcpy(writeMessage.data, &version, sizeof(version));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -78,38 +93,40 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
     SpiWrite<sizeof(uint32_t)> writeMessage {};
     uint32_t address =
         METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) + offsetof(ImageMetadata, crc);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
     rodos::memcpy(writeMessage.data, &crc, sizeof(crc));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
 }
 
-void BootRomSpi::updateImageCompleteOverSpi(bool complete, size_t imageIndex)
+void BootRomSpi::updateImageCompletionStatusOverSpi(
+    CompletionStatus completionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
-    SpiWrite<sizeof(uint32_t)> writeMessage {};
+    SpiWrite<sizeof(completionStatus)> writeMessage {};
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
-                       offsetof(ImageMetadata, complete);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
-    rodos::memcpy(writeMessage.data, &complete, sizeof(complete));
+                       offsetof(ImageMetadata, completionStatus);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
+    rodos::memcpy(writeMessage.data, &completionStatus, sizeof(completionStatus));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
 }
 
-void BootRomSpi::updateImageAlwaysKeepOverSpi(bool alwaysKeep, size_t imageIndex)
+void BootRomSpi::updateImageProtectionStatusOverSpi(
+    ProtectionStatus protectionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
-    SpiWrite<sizeof(uint32_t)> writeMessage {};
+    SpiWrite<sizeof(protectionStatus)> writeMessage {};
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
-                       offsetof(ImageMetadata, alwaysKeep);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
-    rodos::memcpy(writeMessage.data, &alwaysKeep, sizeof(alwaysKeep));
+                       offsetof(ImageMetadata, protectionStatus);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
+    rodos::memcpy(writeMessage.data, &protectionStatus, sizeof(protectionStatus));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -123,7 +140,7 @@ void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
     SpiWrite<sizeof(uint32_t)> writeMessage {};
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, length);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
     rodos::memcpy(writeMessage.data, &length, sizeof(length));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -138,11 +155,21 @@ void BootRomSpi::updateImageBeginOverSpi(void* imageBegin, size_t imageIndex)
     SpiWrite<sizeof(void*)> writeMessage {};
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, imageBegin);
-    putAddressOffsetIntoMessage(writeMessage.address18bit, address);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
     rodos::memcpy(writeMessage.data, &imageBegin, sizeof(imageBegin));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
+}
+
+uint8_t* BootRomSpi::getDataOverSpi(uintptr_t address, uint32_t length, uint8_t* receiveBuffer)
+{
+    SpiRead readMessage {};
+    putAddressOffsetIntoMessage(readMessage.address, static_cast<uint32_t>(address));
+
+    m_halSpi.writeRead(&readMessage, sizeof(readMessage), &receiveBuffer, length);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+    return &receiveBuffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET];
 }
 
 void BootRomSpi::init()
@@ -180,13 +207,14 @@ void BootRomSpi::updateImage(const void* data, int32_t length, uintptr_t imagePo
 {
     // Writes data to SPI Address
     int32_t remainingLength = length;
+    const auto* dataPtr = static_cast<const uint8_t*>(data);
 
     while (remainingLength > 0) {
         int32_t fragmentSize = remainingLength > BUFFER_SIZE ? BUFFER_SIZE : remainingLength;
 
         // Write Fragment
         SpiWrite<BUFFER_SIZE> spiWrite {};
-        putAddressOffsetIntoMessage(spiWrite.address18bit, imagePointer);
+        putAddressOffsetIntoMessage(spiWrite.address, imagePointer);
         rodos::memcpy(spiWrite.data, data, fragmentSize);
         enableWriting();
         m_halSpi.write(&spiWrite, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
@@ -194,6 +222,7 @@ void BootRomSpi::updateImage(const void* data, int32_t length, uintptr_t imagePo
 
         // Update parameters
         remainingLength -= fragmentSize;
+        dataPtr += fragmentSize; // NOLINT
         imagePointer += fragmentSize;
     }
 }
@@ -209,12 +238,13 @@ void BootRomSpi::copyImage(uintptr_t srcImagePointer, int32_t length, uintptr_t 
         uint8_t buffer[BUFFER_SIZE + SPI_RECEIVE_ADDRESSED_DATA_OFFSET] = { 0 };
         // Read Fragment
         SpiRead spiRead {};
-        putAddressOffsetIntoMessage(spiRead.address18bit, srcImagePointer);
-        m_halSpi.writeRead(&spiRead, sizeof(spiRead), buffer, fragmentSize);
+        putAddressOffsetIntoMessage(spiRead.address, srcImagePointer);
+        m_halSpi.writeRead(
+            &spiRead, sizeof(spiRead), buffer, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
 
         // Write Fragment
         SpiWrite<BUFFER_SIZE> spiWrite {};
-        putAddressOffsetIntoMessage(spiWrite.address18bit, dstImagePointer);
+        putAddressOffsetIntoMessage(spiWrite.address, dstImagePointer);
         rodos::memcpy(spiWrite.data, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
         enableWriting();
         m_halSpi.write(&spiWrite, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
@@ -239,15 +269,17 @@ void BootRomSpi::loadImage(void* destination, int32_t length, uintptr_t imagePoi
 
         // Write Fragment
         SpiRead spiRead {};
-        putAddressOffsetIntoMessage(spiRead.address18bit, imagePointer);
+        putAddressOffsetIntoMessage(spiRead.address, imagePointer);
         m_halSpi.writeRead(
             &spiRead, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET, buffer, sizeof(buffer));
 
+        // TODO Replace this memcopy. it probably wont work!
         rodos::memcpy(destinationPtr, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
 
         // Update parameters
         remainingLength -= fragmentSize;
         imagePointer += fragmentSize;
+        destinationPtr += fragmentSize;
     }
 }
 

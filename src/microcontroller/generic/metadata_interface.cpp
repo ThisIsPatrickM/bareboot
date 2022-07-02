@@ -25,6 +25,15 @@ size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
     return m_globalImageMetadata->preferredImage;
 }
 
+size_t MetadataInterface::updateCurrentImage(size_t imageIndex)
+{
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return m_globalImageMetadata->currentImage;
+    }
+    m_globalImageMetadata->currentImage = imageIndex;
+    return m_globalImageMetadata->currentImage;
+}
+
 uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
 {
     m_globalImageMetadata->globalBootcounter = bootcounter;
@@ -49,22 +58,24 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
     return m_globalImageMetadata->images[imageIndex].crc;
 }
 
-bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
+CompletionStatus MetadataInterface::updateImageCompletionStatus(
+    CompletionStatus completionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].complete;
+        return m_globalImageMetadata->images[imageIndex].completionStatus;
     }
-    m_globalImageMetadata->images[imageIndex].complete = complete;
-    return m_globalImageMetadata->images[imageIndex].complete;
+    m_globalImageMetadata->images[imageIndex].completionStatus = completionStatus;
+    return m_globalImageMetadata->images[imageIndex].completionStatus;
 }
 
-bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex)
+ProtectionStatus MetadataInterface::updateImageProtectionStatus(
+    ProtectionStatus protectionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].alwaysKeep;
+        return m_globalImageMetadata->images[imageIndex].protectionStatus;
     }
-    m_globalImageMetadata->images[imageIndex].alwaysKeep = alwaysKeep;
-    return m_globalImageMetadata->images[imageIndex].alwaysKeep;
+    m_globalImageMetadata->images[imageIndex].protectionStatus = protectionStatus;
+    return m_globalImageMetadata->images[imageIndex].protectionStatus;
 }
 
 uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
@@ -126,6 +137,20 @@ void MetadataInterface::loadImage(void* destination, size_t imageIndex)
         return;
     }
     rodos::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
+}
+
+bool MetadataInterface::verifyChecksum(size_t index)
+{
+    if (m_globalImageMetadata->images[index].imageBegin == 0) {
+        return false;
+    }
+    uint32_t expectedChecksum = m_globalImageMetadata->images[index].crc;
+
+    uint32_t actualChecksum = Checksums::calculateCrc32NoTable(
+        reinterpret_cast<uint8_t*>( // NOLINT
+            m_globalImageMetadata->images[index].imageBegin),
+        m_globalImageMetadata->images[index].length);
+    return expectedChecksum == actualChecksum;
 }
 
 }

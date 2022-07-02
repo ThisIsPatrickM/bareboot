@@ -17,12 +17,14 @@ uint32_t* romProtection =
 
 void Disable_Code_Memory_Protection()
 {
+    __asm__ volatile("" : : : "memory");
     *romProtection = 0x1;
     __asm__ volatile("" : : : "memory");
 }
 
 void Enable_Code_Memory_Protection()
 {
+    __asm__ volatile("" : : : "memory");
     *romProtection = 0x0;
     __asm__ volatile("" : : : "memory");
 }
@@ -54,10 +56,24 @@ size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
     // Update SPI
     bootRomSpi.updatePreferredImageOverSpi(imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->preferredImage = imageIndex;
     Disable_Code_Memory_Protection();
+    m_globalImageMetadata->preferredImage = imageIndex;
+    Enable_Code_Memory_Protection();
     return m_globalImageMetadata->preferredImage;
+}
+
+size_t MetadataInterface::updateCurrentImage(size_t imageIndex)
+{
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return m_globalImageMetadata->currentImage;
+    }
+    // Update SPI
+    bootRomSpi.updateCurrentImageOverSpi(imageIndex);
+    // Update code Memory
+    Disable_Code_Memory_Protection();
+    m_globalImageMetadata->currentImage = imageIndex;
+    Enable_Code_Memory_Protection();
+    return m_globalImageMetadata->currentImage;
 }
 
 uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
@@ -65,9 +81,9 @@ uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
     // Update SPI
     bootRomSpi.updateGlobalBootcounterOverSpi(bootcounter);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->globalBootcounter = bootcounter;
     Disable_Code_Memory_Protection();
+    m_globalImageMetadata->globalBootcounter = bootcounter;
+    Enable_Code_Memory_Protection();
     return m_globalImageMetadata->globalBootcounter;
 }
 
@@ -79,9 +95,9 @@ uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageInd
     // Update SPI
     bootRomSpi.updateImageVersionOverSpi(version, imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].version = version;
     Disable_Code_Memory_Protection();
+    m_globalImageMetadata->images[imageIndex].version = version;
+    Enable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].version;
 }
 
@@ -93,38 +109,40 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
     // Update SPI
     bootRomSpi.updateImageCrcOverSpi(crc, imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].crc = crc;
     Disable_Code_Memory_Protection();
+    m_globalImageMetadata->images[imageIndex].crc = crc;
+    Enable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].crc;
 }
 
-bool MetadataInterface::updateImageComplete(bool complete, size_t imageIndex)
+CompletionStatus MetadataInterface::updateImageCompletionStatus(
+    CompletionStatus completionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return false;
+        return m_globalImageMetadata->images[imageIndex].completionStatus;
     }
     // Update SPI
-    bootRomSpi.updateImageCompleteOverSpi(complete, imageIndex);
+    bootRomSpi.updateImageCompletionStatusOverSpi(completionStatus, imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].complete = complete;
     Disable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].complete;
+    m_globalImageMetadata->images[imageIndex].completionStatus = completionStatus;
+    Enable_Code_Memory_Protection();
+    return m_globalImageMetadata->images[imageIndex].completionStatus;
 }
 
-bool MetadataInterface::updateImageAlwaysKeep(bool alwaysKeep, size_t imageIndex)
+ProtectionStatus MetadataInterface::updateImageProtectionStatus(
+    ProtectionStatus protectionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return false;
+        return m_globalImageMetadata->images[imageIndex].protectionStatus;
     }
     // Update SPI
-    bootRomSpi.updateImageAlwaysKeepOverSpi(alwaysKeep, imageIndex);
+    bootRomSpi.updateImageProtectionStatusOverSpi(protectionStatus, imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].alwaysKeep = alwaysKeep;
     Disable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].alwaysKeep;
+    m_globalImageMetadata->images[imageIndex].protectionStatus = protectionStatus;
+    Enable_Code_Memory_Protection();
+    return m_globalImageMetadata->images[imageIndex].protectionStatus;
 }
 
 uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
@@ -136,9 +154,9 @@ uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex
     // Update SPI
     bootRomSpi.updateImageLengthOverSpi(length, imageIndex);
     // Update code Memory
-    Enable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].length = length;
     Disable_Code_Memory_Protection();
+    m_globalImageMetadata->images[imageIndex].length = length;
+    Enable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].length;
 }
 
@@ -187,6 +205,30 @@ void MetadataInterface::loadImage(void* destination, size_t imageIndex)
         m_globalImageMetadata->images[imageIndex].imageBegin);
 
     Enable_Code_Memory_Protection();
+}
+
+bool MetadataInterface::verifyChecksum(size_t index)
+{
+    uint32_t expectedChecksum = m_globalImageMetadata->images[index].crc;
+
+    uintptr_t currentData = m_globalImageMetadata->images[index].imageBegin;
+    uint8_t buffer[BUFFER_SIZE] = { 0 };
+    auto remainingLength = static_cast<int32_t>(m_globalImageMetadata->images[index].length);
+    uint32_t iterativeChecksum = Checksums::CRC_INITIAL_VALUE;
+
+    while (remainingLength > 0) {
+        uint32_t fragmentSize =
+            remainingLength > BUFFER_SIZE - static_cast<int32_t>(SPI_RECEIVE_ADDRESSED_DATA_OFFSET)
+                ? BUFFER_SIZE - SPI_RECEIVE_ADDRESSED_DATA_OFFSET
+                : remainingLength;
+
+        uint8_t* localDataBeginPtr = bootRomSpi.getDataOverSpi(currentData, fragmentSize, buffer);
+        iterativeChecksum = Checksums::calculateIterativeCrc32NoTable(
+            localDataBeginPtr, fragmentSize, iterativeChecksum);
+        remainingLength -= static_cast<int32_t>(fragmentSize);
+    }
+
+    return expectedChecksum == ~iterativeChecksum;
 }
 
 }

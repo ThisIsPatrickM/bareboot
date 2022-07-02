@@ -4,6 +4,14 @@
 
 namespace bootloader {
 
+enum class CompletionStatus : uint16_t { COMPLETE, INCOMPLETE };
+
+enum class ProtectionStatus : uint16_t {
+    PROTECTED,
+    UNPROTECTED
+
+};
+
 using namespace std;
 
 /**
@@ -31,10 +39,9 @@ struct ImageMetadata {
     uint32_t lastSuccessStatus = 15;
     const uintptr_t imageBegin = 0; // Initially set during Initialization
     uint32_t length = 0; // Initially set when building binary
-    bool complete = false;
-    bool alwaysKeep = false;
-    // TODO Remove padding later. Dont forget to adjust Python script.
-    bool padding[2] = { false, false };
+    CompletionStatus completionStatus = CompletionStatus::INCOMPLETE;
+    ProtectionStatus protectionStatus = ProtectionStatus::UNPROTECTED;
+    // TODO use uint32_t, because vorago cannot read uint8 and boolean ?
 };
 
 /**
