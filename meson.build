@@ -27,6 +27,11 @@ bootloader_lib = static_library('bootloader_lib',
                         bootloader_sources,
                         include_directories : bootloader_inc)
 
+bootloader = declare_dependency(
+    link_with           : bootloader_lib,
+    include_directories : bootloader_inc,
+    dependencies        : [],
+)
 
 #####    Tests    #####
 
@@ -39,8 +44,6 @@ if meson.can_run_host_binaries()
     subdir('tests')
 
 endif
-
-
 
 #####    Clang tidy target    #####
 
