@@ -3,7 +3,6 @@ project('Bootloader', ['c','cpp'],
   default_options : ['warning_level=3',
         'cpp_std=c++2a',
         'optimization=s',
-        'warning_level=3',
         'werror=true',
         'b_staticpic=false',
         'b_lto=true',
@@ -13,6 +12,7 @@ project('Bootloader', ['c','cpp'],
 
 bootloader_inc = include_directories('src', 'include') 
 bootloader_sources = []
+linker_args = []
 
 subdir('src')
 
@@ -20,7 +20,7 @@ subdir('src')
 bootloader_exe = executable('bootloader',
           sources : bootloader_sources,
           link_args: linker_args,
-          include_directories: bootloader_inc
+          include_directories: bootloader_inc,
           )
 
 bootloader_lib = static_library('bootloader_lib',

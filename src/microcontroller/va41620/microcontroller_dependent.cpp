@@ -112,18 +112,8 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Call_Constructors();
     Memory_Barrier();
 
-    // TODO Somehow it is stuck here?
     Bootloader boot {};
     boot.run();
-
-    // loadImage(selectedImage);
-    // Disable_Interrupts();
-    // Move_Vector_Table();
-    // Enable_Interrupts();
-
-    // Memory_Barrier();
-
-    // Start_App();
 
     while (true) {
         ;

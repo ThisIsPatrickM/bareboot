@@ -28,16 +28,16 @@ private:
     /**
      * @brief First stage Image selection based on preferred image and last image.
      *
-     * @return int32_t Index of the image to use or -1 in case of error.
+     * @return size_t Index of the image to use
      */
-    int32_t selectImageSlot();
+    size_t selectImageSlot();
 
     /**
      * @brief Second stage Image selection if first stage failed.
      *
-     * @return int32_t Index of the image to use or -1 in case of error.
+     * @return size_t Index of the image to use
      */
-    int32_t selectBestGuessImageSlot();
+    size_t selectBestGuessImageSlot();
 
     /**
      * @brief Image is valid if it has a valid checksum and is considered complete.

@@ -1,6 +1,10 @@
+
+# TODO Split tests into different Test Groups
+
 common_tests_sources = [
     'basic.cpp',
-    'memcpy_tests.cpp'
+    'memcpy_tests.cpp',
+    'crc_tests.cpp',
 ]
 
 common_tests_deps = [

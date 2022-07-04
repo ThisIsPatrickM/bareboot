@@ -10,20 +10,17 @@ void Bootloader::run()
     m_metadataInterface.init();
 
     int32_t selectedImage = selectImageSlot();
-    // int32_t selectedImage = 1;
 
     if (selectedImage < 0) {
-        // TODO Error Handling, random Image?
+        // TODO Error Handling, random Image? Should never happen
         selectedImage = 0;
     }
 
     m_metadataInterface.updateCurrentImage(selectedImage);
 
     Memory_Barrier();
-    // TODO Error when loading Image?
-    // TODO If FRAM is too small?
+
     loadImage(selectedImage);
-    // TODO Disable Interrupts before moving vector table?
     Disable_Interrupts();
     Move_Vector_Table();
     Enable_Interrupts();
@@ -33,7 +30,7 @@ void Bootloader::run()
     Start_App();
 }
 
-int32_t Bootloader::selectImageSlot()
+size_t Bootloader::selectImageSlot()
 {
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
     if (isImageValid(preferredImage)) {
@@ -46,10 +43,21 @@ int32_t Bootloader::selectImageSlot()
     return selectBestGuessImageSlot();
 }
 
-int32_t Bootloader::selectBestGuessImageSlot()
+size_t Bootloader::selectBestGuessImageSlot()
 {
     // TODO Implement Advanced Select logic
-    return static_cast<int32_t>(m_metadataInterface.getGlobalImageMetadata()->preferredImage);
+
+    // Find Any image where Completionstatus and Checksum is correct, so that round robin system is
+    // used
+    size_t currentImage = m_metadataInterface.getGlobalImageMetadata()->currentImage;
+    for (size_t i = 0; i < MetadataInterface::getNumberOfImages(); i++) {
+        if (isImageValid((currentImage + i) % MetadataInterface::getNumberOfImages())) {
+            return (currentImage + i) % MetadataInterface::getNumberOfImages();
+        }
+    }
+
+    // Otherwise only use round robin
+    return (currentImage + 1) % MetadataInterface::getNumberOfImages();
 }
 
 bool Bootloader::isImageValid(size_t index)
@@ -61,19 +69,7 @@ bool Bootloader::isImageValid(size_t index)
 
 bool Bootloader::verifyChecksum(size_t index)
 {
-    // if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
-    //     return false;
-    // }
     return m_metadataInterface.verifyChecksum(index);
-    // uint32_t expectedChecksum = m_metadataInterface.getGlobalImageMetadata()->images[index].crc;
-    // TODO Need to laod Image to check checksum. Also Fix in Main
-
-    // uint32_t actualChecksum = checksums::Checksums::calculateCrc32NoTable(
-    //     reinterpret_cast<uint8_t*>( // NOLINT
-    //         m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin),
-    //     m_metadataInterface.getGlobalImageMetadata()->images[index].length);
-    // return true;
-    // return expectedChecksum == actualChecksum;
 }
 
 void Bootloader::loadImage(size_t index)

@@ -37,7 +37,6 @@ public:
         unsigned int byte, mask; // NOLINT
 
         i = 0;
-        // crc = 0xFFFFFFFF; // NOLINT
         while (length-- != 0) {
             byte = message[i]; // Get next byte.// NOLINT
             crc = crc ^ byte;
@@ -47,7 +46,6 @@ public:
             }
             i = i + 1;
         }
-        // return ~crc;
         return crc;
     }
 };

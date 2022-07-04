@@ -3,11 +3,13 @@ all_test_dep_libs = []
 project_test_sources = []
 
 gtest_dep = gtest_proj.get_variable('gtest_dep')
+gmock_dep = gtest_proj.get_variable('gmock_dep')
 thread_dep = dependency('threads')
 test_main = files('tests_main.cpp')
 
 test_deps = [
     gtest_dep, 
+    gmock_dep,
     thread_dep
 ]
 
