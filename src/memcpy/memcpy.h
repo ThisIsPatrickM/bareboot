@@ -10,7 +10,9 @@ using namespace std;
  * Copies bytes using unsigned-sized values and the masks the remaining bytes.
  *
  * @note va41620 does not allow to assign 1-byte-sized values in code SRAM.
- * @warning Dont use for overlapping memory regions
+ * @todo Check if byteorder effects this implementation.
+ * @todo Improve by aligning source and destination address.
+ * @warning Don't use for overlapping memory regions
  *
  * @param dest pointer to destination
  * @param src pointer to source

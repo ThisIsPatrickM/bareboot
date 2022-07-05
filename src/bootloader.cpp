@@ -9,12 +9,7 @@ void Bootloader::run()
 {
     m_metadataInterface.init();
 
-    int32_t selectedImage = selectImageSlot();
-
-    if (selectedImage < 0) {
-        // TODO Error Handling, random Image? Should never happen
-        selectedImage = 0;
-    }
+    size_t selectedImage = selectImageSlot();
 
     m_metadataInterface.updateCurrentImage(selectedImage);
 

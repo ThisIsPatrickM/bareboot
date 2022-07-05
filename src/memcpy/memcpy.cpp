@@ -21,8 +21,6 @@ void* Memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
         srcP++; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     }
 
-    // TODO is byteoder important?
-
     // Adjust Remain
     if (remain > 0) {
         // Reset bytes that will be overwritten

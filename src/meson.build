@@ -1,4 +1,3 @@
-# TODO Remove memcpy
 bootloader_common_sources = files(
     'bootloader.cpp',
     'call_constructors.cpp',

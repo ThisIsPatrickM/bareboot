@@ -1,9 +1,9 @@
 
 
 #include "memcpy/memcpy.h"
+#include "gmock/gmock-matchers.h"
 #include "gtest/gtest.h"
 #include <cstring>
-#include <gmock/gmock-matchers.h>
 
 using namespace bootloader::memcpy;
 using namespace testing;
@@ -182,71 +182,5 @@ TEST_F(MemCopyTestSuite, CopyNullptr)
     myMemcpy(nullptr, nullptr, COPY_SIZE);
     buffer1HasInitialValues();
 }
-
-// Even real Memcopy declares this as undefined behaviour
-// TEST_F(MemCopyTestSuite, CopySameAddress)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(buffer1, buffer1, COPY_SIZE);
-//     buffer1HasInitialValues();
-//     defaultMemcpy(buffer1, buffer1, COPY_SIZE);
-//     buffer1HasInitialValues();
-// }
-
-// TEST_F(MemCopyTestSuite, CopyBackwardOverlappingOffsetOne)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(buffer1, &buffer1[1], COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyBackwardOverlappingOffsetTwo)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(buffer1, &buffer1[2], COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 3, 4, 5, 4, 5, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyBackwardOverlappingOffsetThree)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(buffer1, &buffer1[3], COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 4, 5, 6, 4, 5, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyBackwardOverlappingOffsetFour)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(buffer1, &buffer1[4], COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 5, 6, 7, 4, 5, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyForwardOverlappingOffsetOne)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(&buffer1[1], buffer1, COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 1, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyForwardOverlappingOffsetTwo)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(&buffer1[2], buffer1, COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 1, 2, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12 }));
-// }
-
-// TEST_F(MemCopyTestSuite, CopyForwardOverlappingOffsetThree)
-// {
-//     constexpr size_t COPY_SIZE = 3;
-//     myMemcpy(&buffer1[3], buffer1, COPY_SIZE);
-
-//     EXPECT_THAT(buffer1, ElementsAreArray({ 1, 2, 3, 1, 2, 3, 7, 8, 9, 10, 11, 12 }));
-// }
 
 }
