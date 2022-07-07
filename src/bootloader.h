@@ -6,7 +6,7 @@
 #include "microcontroller/microcontroller_dependent.h"
 
 /* RODOS includes */
-#include "rodos_includes/string_pico.h"
+#include "memcpy/memcpy.h"
 
 #include <cstddef>
 
@@ -56,13 +56,6 @@ private:
      * @return false
      */
     bool verifyChecksum(size_t index);
-
-    /**
-     * @brief Load Image to to Application Memory
-     *
-     * @param index
-     */
-    void loadImage(size_t index);
 
     MetadataInterface m_metadataInterface {};
 };

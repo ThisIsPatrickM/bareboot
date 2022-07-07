@@ -1,16 +1,14 @@
-
-
 #include "memcpy/memcpy.h"
 #include "gmock/gmock-matchers.h"
 #include "gtest/gtest.h"
 #include <cstring>
 
-using namespace bootloader::memcpy;
 using namespace testing;
 namespace {
 
 const auto& defaultMemcpy = memcpy;
-const auto& myMemcpy = Memcpy;
+const auto& myMemcpy = bootloader::memcpy::memcpy;
+// const auto& rodosMemcpy = rodos::memcpy;
 
 class MemCopyTestSuite : public ::testing::Test {
 public:

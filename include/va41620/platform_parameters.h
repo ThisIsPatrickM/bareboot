@@ -17,7 +17,7 @@ private:
     static constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
 
     static constexpr size_t NVM_TOTAL_SIZE = 256 * 1024; // 256KB
-    static constexpr size_t BOOT_ROM_SIZE = 4 * 1024; // 4KB, see linkerscript
+    static constexpr size_t BOOT_ROM_SIZE = 6 * 1024; // 6KB, see linkerscript
     static constexpr size_t APP_NVM_TOTAL_SIZE =
         NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BootRom, for Size see linker script
     static constexpr uintptr_t APP_NVM_BEGIN_ADDRESS = BOOT_ROM_SIZE; // 4KB

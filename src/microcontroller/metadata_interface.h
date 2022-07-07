@@ -122,7 +122,7 @@ public:
 
     void updateImage(const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset);
 
-    void loadImage(void* destination, size_t imageIndex);
+    void loadImage(size_t imageIndex);
 
     bool verifyChecksum(size_t index);
 

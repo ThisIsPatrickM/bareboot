@@ -2,7 +2,7 @@
 
 /* Controller specific includes */
 #include "microcontroller/va41620/boot_rom_spi/boot_rom_spi.h"
-#include "va41620/platform-parameters.h"
+#include "platform_parameters.h"
 
 namespace bootloader {
 
@@ -195,8 +195,24 @@ void MetadataInterface::updateImage(
     bootRomSpi.updateImage(data, length, imagePointer);
 }
 
-void MetadataInterface::loadImage(void* destination, size_t imageIndex)
+void MetadataInterface::loadImage(size_t imageIndex)
 {
+    if (imageIndex >= MetadataInterface::getNumberOfImages()) {
+        return;
+    }
+
+    if (reinterpret_cast<uintptr_t>(__approm_start__) == // NOLINT
+        m_globalImageMetadata->images[imageIndex].imageBegin) {
+        // Nothing to do
+        return;
+    }
+
+    if (m_globalImageMetadata->images[imageIndex].imageBegin == 0) {
+        // TODO Error Handling
+        return;
+    }
+
+    void* destination = reinterpret_cast<void*>(&__approm_start__); // NOLINT
     Disable_Code_Memory_Protection();
 
     bootRomSpi.loadImage(

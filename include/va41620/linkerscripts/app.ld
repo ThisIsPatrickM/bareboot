@@ -10,9 +10,9 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
 RAM (xrw)   : ORIGIN = 0x1fff8000, LENGTH = 64K
-BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
+BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 6K
 /* TODO Set fixed length and use in Code at the size of one Image. Problem is Compiletime/Linktime. Because Imagesize < ROM Size. Static check helps to prevent errors */ 
-ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K
+ROM (rx)    : ORIGIN = 0x00000000+6K, LENGTH = 250K
 /* ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 64512 */
 }
 

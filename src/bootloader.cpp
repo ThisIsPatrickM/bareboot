@@ -15,7 +15,7 @@ void Bootloader::run()
 
     Memory_Barrier();
 
-    loadImage(selectedImage);
+    m_metadataInterface.loadImage(selectedImage);
     Disable_Interrupts();
     Move_Vector_Table();
     Enable_Interrupts();
@@ -65,26 +65,6 @@ bool Bootloader::isImageValid(size_t index)
 bool Bootloader::verifyChecksum(size_t index)
 {
     return m_metadataInterface.verifyChecksum(index);
-}
-
-void Bootloader::loadImage(size_t index)
-{
-    if (index >= MetadataInterface::getNumberOfImages()) {
-        return;
-    }
-
-    if (reinterpret_cast<uintptr_t>(&__approm_start__) == // NOLINT
-        m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin) {
-        // Nothing to do
-        return;
-    }
-
-    if (m_metadataInterface.getGlobalImageMetadata()->images[index].imageBegin == 0) {
-        // TODO Error Handling
-        return;
-    }
-
-    m_metadataInterface.loadImage(reinterpret_cast<void*>(&__approm_start__), index); // NOLINT
 }
 
 } // namespace bootloader

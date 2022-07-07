@@ -3,7 +3,7 @@
 /* Controller specific includes */
 #include "architecture/architecture_dependent.h"
 #include "microcontroller/va41620/irq_handlers.h"
-#include "va41620/platform-parameters.h"
+#include "platform_parameters.h"
 
 namespace bootloader {
 

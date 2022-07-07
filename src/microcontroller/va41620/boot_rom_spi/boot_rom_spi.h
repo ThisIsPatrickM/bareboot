@@ -4,9 +4,9 @@
 #include "metadata.h"
 #include "microcontroller/va41620/boot_rom_spi/spi_messages.h"
 #include "microcontroller/va41620/hal/hal_spi.h"
-#include "va41620/platform-parameters.h"
+#include "platform_parameters.h"
 
-#include "rodos_includes/string_pico.h" // For memcpy
+#include "memcpy/memcpy.h"
 
 namespace bootloader::va41620::boot_rom_spi {
 
@@ -30,6 +30,8 @@ constexpr uint32_t SPI_FREQUENCY = 1'000'000;
 
 constexpr int32_t BUFFER_SIZE = 128;
 
+// TODO Fix return types without dosis!
+
 /**
  * @brief Interface class to interact with Non-Volatile-Memory over SPI to manage Metadata and
  * Images.
@@ -37,7 +39,6 @@ constexpr int32_t BUFFER_SIZE = 128;
  */
 class BootRomSpi {
 public:
-    // TODO Fix return types without dosis!
     /**
      * @brief Get ImageMetadata from NVM over SPI and save it to globalImageMetadata.
      *

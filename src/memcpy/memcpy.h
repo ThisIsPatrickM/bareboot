@@ -1,8 +1,7 @@
 #include <cstdint>
 
-namespace bootloader::memcpy {
-
 using namespace std;
+namespace bootloader::memcpy {
 
 /**
  * @brief Customized memcpy function. In Comparison to RODOS::memcpy it does not rely on copying
@@ -19,6 +18,12 @@ using namespace std;
  * @param n number of byte to copy
  * @return void* returns dest
  */
-void* Memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n);
+void* memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n); // NOLINT
 
 }
+
+namespace rodos {
+
+void* memcpy(void* dest, const void* src, size_t len) __attribute__((used)); // NOLINT
+
+} // namespace

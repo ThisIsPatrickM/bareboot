@@ -2,7 +2,7 @@
 
 namespace bootloader::memcpy {
 
-void* Memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
+void* memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
 
 {
     if (dest == nullptr || src == nullptr) {
@@ -32,4 +32,25 @@ void* Memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
     return dest;
 }
 
+}
+
+namespace rodos {
+
+// NOLINTBEGIN
+void* memcpy(void* destP, const void* sP, size_t len)
+{
+    uint8_t* dest = (uint8_t*)destP;
+    const uint8_t* s = (const uint8_t*)sP;
+    if (!dest || !s)
+        return 0;
+    while (len) {
+        // dest[len] = s[len];
+        *dest = *s;
+        len--;
+        s++;
+        dest++;
+    }
+    return destP;
+}
+// NOLINTEND
 }

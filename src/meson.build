@@ -1,8 +1,8 @@
 bootloader_common_sources = files(
     'bootloader.cpp',
     'call_constructors.cpp',
-    'rodos_includes/string_pico.cpp',
-    'memcpy/memcpy.cpp')
+    'memcpy/memcpy.cpp',
+    'hmac/hmac.cpp')
 
 bootloader_sources += bootloader_common_sources 
 

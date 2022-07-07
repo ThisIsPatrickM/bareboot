@@ -1,6 +1,7 @@
 project('Bootloader', ['c','cpp'],
   version : '0.0.1',
-  default_options : ['warning_level=3',
+  default_options : [
+        'warning_level=3',
         'cpp_std=c++2a',
         'optimization=s',
         'werror=true',
@@ -9,8 +10,11 @@ project('Bootloader', ['c','cpp'],
         'cpp_eh=none',
         'cpp_rtti=false',])
 
-
-bootloader_inc = include_directories('src', 'include') 
+if host_machine.system() == 'va41620'
+  bootloader_inc = include_directories('src', 'include', 'include/va41620') 
+else
+  bootloader_inc = include_directories('src', 'include', 'include/generic') 
+endif
 bootloader_sources = []
 linker_args = []
 

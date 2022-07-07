@@ -1,5 +1,5 @@
-#include "generic/platform-parameters.h"
 #include "metadata.h"
+#include "platform_parameters.h"
 
 using namespace bootloader;
 

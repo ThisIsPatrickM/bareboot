@@ -14,7 +14,8 @@ void BootRomSpi::getBootRomGlobalImageMetadataOverSpi(GlobalImageMetadata& globa
     if (numberOfBytesReceived <= 0) {
         return;
     }
-    rodos::memcpy(
+
+    bootloader::memcpy::memcpy(
         &globalImageMetadata,
         &receiveBuffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET],
         sizeof(GlobalImageMetadata));
@@ -27,7 +28,7 @@ void BootRomSpi::updatePreferredImageOverSpi(size_t preferredImageIndex)
     }
     SpiWrite<sizeof(size_t)> writeMessage {};
     putAddressOffsetIntoMessage(writeMessage.address, METADATA_PREFERRED_IMAGE_OFFSET);
-    rodos::memcpy(writeMessage.data, &preferredImageIndex, sizeof(size_t));
+    bootloader::memcpy::memcpy(writeMessage.data, &preferredImageIndex, sizeof(size_t));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -41,7 +42,7 @@ void BootRomSpi::updateCurrentImageOverSpi(size_t currentImageIndex)
     }
     SpiWrite<sizeof(size_t)> writeMessage {};
     putAddressOffsetIntoMessage(writeMessage.address, METADATA_CURRENT_IMAGE_OFFSET);
-    rodos::memcpy(writeMessage.data, &currentImageIndex, sizeof(size_t));
+    bootloader::memcpy::memcpy(writeMessage.data, &currentImageIndex, sizeof(size_t));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -52,7 +53,7 @@ void BootRomSpi::updateGlobalBootcounterOverSpi(uint32_t bootcounter)
 {
     SpiWrite<sizeof(uint32_t)> writeMessage {};
     putAddressOffsetIntoMessage(writeMessage.address, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
-    rodos::memcpy(writeMessage.data, &bootcounter, sizeof(uint32_t));
+    bootloader::memcpy::memcpy(writeMessage.data, &bootcounter, sizeof(uint32_t));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -63,7 +64,7 @@ void BootRomSpi::updateGlobalInitializedOverSpi(bool initialized)
 {
     SpiWrite<sizeof(bool)> writeMessage {};
     putAddressOffsetIntoMessage(writeMessage.address, METADATA_GLOBAL_BOOTCOUNTER_OFFSET);
-    rodos::memcpy(writeMessage.data, &initialized, sizeof(bool));
+    bootloader::memcpy::memcpy(writeMessage.data, &initialized, sizeof(bool));
 
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
@@ -79,7 +80,7 @@ void BootRomSpi::updateImageVersionOverSpi(uint32_t version, size_t imageIndex)
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, version);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &version, sizeof(version));
+    bootloader::memcpy::memcpy(writeMessage.data, &version, sizeof(version));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -94,7 +95,7 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
     uint32_t address =
         METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) + offsetof(ImageMetadata, crc);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &crc, sizeof(crc));
+    bootloader::memcpy::memcpy(writeMessage.data, &crc, sizeof(crc));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -110,7 +111,7 @@ void BootRomSpi::updateImageCompletionStatusOverSpi(
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, completionStatus);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &completionStatus, sizeof(completionStatus));
+    bootloader::memcpy::memcpy(writeMessage.data, &completionStatus, sizeof(completionStatus));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -126,7 +127,7 @@ void BootRomSpi::updateImageProtectionStatusOverSpi(
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, protectionStatus);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &protectionStatus, sizeof(protectionStatus));
+    bootloader::memcpy::memcpy(writeMessage.data, &protectionStatus, sizeof(protectionStatus));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -141,7 +142,7 @@ void BootRomSpi::updateImageLengthOverSpi(uint32_t length, size_t imageIndex)
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, length);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &length, sizeof(length));
+    bootloader::memcpy::memcpy(writeMessage.data, &length, sizeof(length));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -156,7 +157,7 @@ void BootRomSpi::updateImageBeginOverSpi(void* imageBegin, size_t imageIndex)
     uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
                        offsetof(ImageMetadata, imageBegin);
     putAddressOffsetIntoMessage(writeMessage.address, address);
-    rodos::memcpy(writeMessage.data, &imageBegin, sizeof(imageBegin));
+    bootloader::memcpy::memcpy(writeMessage.data, &imageBegin, sizeof(imageBegin));
     enableWriting();
     m_halSpi.write(&writeMessage, sizeof(writeMessage));
     disableWriting();
@@ -215,7 +216,7 @@ void BootRomSpi::updateImage(const void* data, int32_t length, uintptr_t imagePo
         // Write Fragment
         SpiWrite<BUFFER_SIZE> spiWrite {};
         putAddressOffsetIntoMessage(spiWrite.address, imagePointer);
-        rodos::memcpy(spiWrite.data, data, fragmentSize);
+        bootloader::memcpy::memcpy(spiWrite.data, data, fragmentSize);
         enableWriting();
         m_halSpi.write(&spiWrite, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
         disableWriting();
@@ -245,7 +246,8 @@ void BootRomSpi::copyImage(uintptr_t srcImagePointer, int32_t length, uintptr_t 
         // Write Fragment
         SpiWrite<BUFFER_SIZE> spiWrite {};
         putAddressOffsetIntoMessage(spiWrite.address, dstImagePointer);
-        rodos::memcpy(spiWrite.data, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
+        bootloader::memcpy::memcpy(
+            spiWrite.data, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
         enableWriting();
         m_halSpi.write(&spiWrite, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
         disableWriting();
@@ -274,7 +276,8 @@ void BootRomSpi::loadImage(void* destination, int32_t length, uintptr_t imagePoi
             &spiRead, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET, buffer, sizeof(buffer));
 
         // TODO Replace this memcopy. it probably wont work!
-        rodos::memcpy(destinationPtr, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
+        bootloader::memcpy::memcpy(
+            destinationPtr, &buffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET], fragmentSize);
 
         // Update parameters
         remainingLength -= fragmentSize;

@@ -1,8 +1,8 @@
 #include "microcontroller/metadata_interface.h"
 
 /* Controller specific includes */
-#include "generic/platform-parameters.h"
-#include "rodos_includes/string_pico.h"
+#include "memcpy/memcpy.h"
+#include "platform_parameters.h"
 
 namespace bootloader {
 
@@ -129,13 +129,27 @@ void MetadataInterface::updateImage(
     rodos::memcpy(imagePointer, data, length);
 }
 
-void MetadataInterface::loadImage(void* destination, size_t imageIndex)
+void MetadataInterface::loadImage(size_t imageIndex)
 {
-    void* source =
-        reinterpret_cast<void*>(m_globalImageMetadata->images[imageIndex].imageBegin); // NOLINT
-    if (source == nullptr) {
+    if (imageIndex >= MetadataInterface::getNumberOfImages()) {
         return;
     }
+
+    if (reinterpret_cast<uintptr_t>(__approm_start__) == // NOLINT
+        m_globalImageMetadata->images[imageIndex].imageBegin) {
+        // Nothing to do
+        return;
+    }
+
+    if (m_globalImageMetadata->images[imageIndex].imageBegin == 0) {
+        // TODO Error Handling
+        return;
+    }
+
+    void* destination = reinterpret_cast<void*>(__approm_start__); // NOLINT
+    void* source =
+        reinterpret_cast<void*>(m_globalImageMetadata->images[imageIndex].imageBegin); // NOLINT
+
     rodos::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
 }
 
