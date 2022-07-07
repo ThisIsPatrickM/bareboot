@@ -7,7 +7,7 @@ using namespace testing;
 namespace {
 
 const auto& defaultMemcpy = memcpy;
-const auto& myMemcpy = bootloader::memcpy::memcpy;
+const auto& myMemcpy = bootloader::memcpy::va41620UnsignedMemcpy;
 // const auto& rodosMemcpy = rodos::memcpy;
 
 class MemCopyTestSuite : public ::testing::Test {

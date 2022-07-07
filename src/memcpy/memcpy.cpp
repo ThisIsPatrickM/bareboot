@@ -2,7 +2,7 @@
 
 namespace bootloader::memcpy {
 
-void* memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
+void* va41620UnsignedMemcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n)
 
 {
     if (dest == nullptr || src == nullptr) {

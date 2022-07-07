@@ -18,7 +18,8 @@ namespace bootloader::memcpy {
  * @param n number of byte to copy
  * @return void* returns dest
  */
-void* memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n); // NOLINT
+void* va41620UnsignedMemcpy(
+    void* __restrict__ dest, const void* __restrict__ src, size_t n); // NOLINT
 
 }
 
