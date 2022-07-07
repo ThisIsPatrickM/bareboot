@@ -93,7 +93,7 @@ if __name__ == '__main__':
                         help='path to bootloader file')
     parser.add_argument('--out', type=str, default="python-vorago.bin",
                         help='path to output image file')
-    parser.add_argument('--config', type=str, default="va41620",
+    parser.add_argument('--config', type=str, default="va41620_dev_board",
                         help='name of the configuration. See platform_config.py for reference')
 
     args = parser.parse_args()

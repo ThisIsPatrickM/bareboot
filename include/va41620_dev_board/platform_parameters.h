@@ -16,7 +16,7 @@ class PlatformParameters {
 private:
     static constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
 
-    static constexpr size_t NVM_TOTAL_SIZE = 2 * 1024 * 1024; // 2MB
+    static constexpr size_t NVM_TOTAL_SIZE = 256 * 1024; // 256KB
     static constexpr size_t BOOT_ROM_SIZE = 4 * 1024; // 6KB, see linkerscript
     static constexpr size_t APP_NVM_TOTAL_SIZE =
         NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BootRom, for Size see linker script
@@ -27,7 +27,7 @@ public:
      * @brief Number of images that should be saved in NVM. WHen changing also linker scripts!
      *
      */
-    static constexpr size_t NUMBER_OF_IMAGES = 7;
+    static constexpr size_t NUMBER_OF_IMAGES = 3;
 
     /**
      * @brief Max size of an image in NVM. It is limited by the size of the NVM divided by the
@@ -44,10 +44,9 @@ public:
      *
      */
     static constexpr uintptr_t IMAGE_BEGIN_ADDRESSES[NUMBER_OF_IMAGES] = {
-        APP_NVM_BEGIN_ADDRESS + 0 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 1 * MAX_IMAGE_LENGTH,
-        APP_NVM_BEGIN_ADDRESS + 2 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 3 * MAX_IMAGE_LENGTH,
-        APP_NVM_BEGIN_ADDRESS + 4 * MAX_IMAGE_LENGTH, APP_NVM_BEGIN_ADDRESS + 5 * MAX_IMAGE_LENGTH,
-        APP_NVM_BEGIN_ADDRESS + 6 * MAX_IMAGE_LENGTH,
+        APP_NVM_BEGIN_ADDRESS + 0 * MAX_IMAGE_LENGTH,
+        APP_NVM_BEGIN_ADDRESS + 1 * MAX_IMAGE_LENGTH,
+        APP_NVM_BEGIN_ADDRESS + 2 * MAX_IMAGE_LENGTH
     };
 
     /**

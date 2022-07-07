@@ -1,4 +1,3 @@
-
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
@@ -6,12 +5,13 @@ _estack = 0x20008000;    /* end of RAM */
 /* Generate a link error if stack don't fit into RAM */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
-/* Specify the memory areas */
+
 MEMORY
 {
 RAM (xrw)   : ORIGIN = 0x1fff8000, LENGTH = 64K
 BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
-ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K
+/* ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K */
+ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 86016
 }
 
 __bootrom_start__ = ORIGIN(BOOTROM);
@@ -29,9 +29,17 @@ SECTIONS
     . = ALIGN(8);
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
 
-    __bootloader__ = . - LENGTH(BOOTROM);
+  /* TODO Unify naming bootloader/metadata */ 
+    __bootloader__ = .;
+
+  .metadata_table :
+  {
+    . = ALIGN(8);
+    KEEP(*(.metadata_table)) /* Bootloader Code */
+    . = ALIGN(8);
+  } >BOOTROM
 
   /* The program code and other data goes into FLASH */
   .text :
@@ -48,7 +56,7 @@ SECTIONS
 
     . = ALIGN(8);
     _etext = .;        /* define a global symbols at end of code */
-  } >ROM
+  } >BOOTROM
 
   /* Constant data goes into FLASH */
   .rodata :
@@ -57,7 +65,7 @@ SECTIONS
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
 
   .ARM.extab   : 
   { 
@@ -71,7 +79,7 @@ SECTIONS
     *(.ARM.exidx*)
     __exidx_end = .;
   . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
 
   .preinit_array     :
   {
@@ -80,7 +88,7 @@ SECTIONS
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
   . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
   
   .init_array :
   {
@@ -90,7 +98,7 @@ SECTIONS
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
   . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
   .fini_array :
   {
   . = ALIGN(8);
@@ -99,7 +107,7 @@ SECTIONS
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
   . = ALIGN(8);
-  } >ROM
+  } >BOOTROM
 
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
@@ -114,7 +122,7 @@ SECTIONS
 
     . = ALIGN(8);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM AT> ROM
+  } >RAM AT> BOOTROM
 
   
   /* Uninitialized data section */

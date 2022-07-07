@@ -10,20 +10,47 @@ project('Bootloader', ['c','cpp'],
         'cpp_eh=none',
         'cpp_rtti=false',])
 
+
+### System Specific Include directories for platform_parameters
 if host_machine.system() == 'va41620'
-  bootloader_inc = include_directories('src', 'include', 'include/va41620') 
+  if meson.get_cross_property('development_board') == 'true'
+    bootloader_inc = include_directories('src', 'include', 'include/va41620_dev_board') 
+  else
+    bootloader_inc = include_directories('src', 'include', 'include/va41620') 
+  endif
+  
 else
   bootloader_inc = include_directories('src', 'include', 'include/generic') 
 endif
-bootloader_sources = []
-linker_args = []
 
+### Prepare Linker Script Dependency
+# According to suggestion by phillipjohnston: https://github.com/mesonbuild/meson/issues/6888#issuecomment-607440358
+linker_script_flags = []
+linker_script_deps = []
+foreach entry : meson.get_cross_property('linker_paths', [''])
+	if entry != ''
+		linker_script_flags += '-L' + meson.source_root() / entry
+	endif
+endforeach
+foreach entry : meson.get_cross_property('linker_scripts', [''])
+	if entry != ''
+		linker_script_flags += '-T' + entry
+	endif
+endforeach
+foreach entry : meson.get_cross_property('link_depends', [''])
+	if entry != ''
+		linker_script_deps += meson.source_root() / entry
+	endif
+endforeach
+
+bootloader_sources = []
 subdir('src')
 
 #####    Executable and Library    #####
 bootloader_exe = executable('bootloader',
           sources : bootloader_sources,
-          link_args: linker_args,
+          link_args: linker_script_flags,
+          link_depends : linker_script_deps,
           include_directories: bootloader_inc,
           )
 
