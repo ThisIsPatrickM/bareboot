@@ -103,6 +103,21 @@ void BootRomSpi::updateImageCrcOverSpi(uint32_t crc, size_t imageIndex)
     disableWriting();
 }
 
+void BootRomSpi::updateImageBootcounterOverSpi(uint32_t bootcounter, size_t imageIndex)
+{
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return;
+    }
+    SpiWrite<sizeof(uint32_t)> writeMessage {};
+    uint32_t address = METADATA_IMAGES_OFFSET + imageIndex * sizeof(ImageMetadata) +
+                       offsetof(ImageMetadata, bootcounter);
+    putAddressOffsetIntoMessage(writeMessage.address, address);
+    bootloader::memcpy::va41620UnsignedMemcpy(writeMessage.data, &bootcounter, sizeof(bootcounter));
+    enableWriting();
+    m_halSpi.write(&writeMessage, sizeof(writeMessage));
+    disableWriting();
+}
+
 void BootRomSpi::updateImageCompletionStatusOverSpi(
     CompletionStatus completionStatus, size_t imageIndex)
 {

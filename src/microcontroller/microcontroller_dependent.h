@@ -16,13 +16,6 @@ namespace bootloader {
 void Move_Vector_Table();
 
 /**
- * @brief Allow writing to Code ROM if it is protected.
- *
- * @param writeable
- */
-void Toggle_ROM_Writeable(bool writeable);
-
-/**
  * @brief Disable interrupts while Vector Table is moved.
  *
  */

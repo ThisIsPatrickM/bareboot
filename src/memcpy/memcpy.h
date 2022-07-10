@@ -1,6 +1,5 @@
 #include <cstdint>
 
-using namespace std;
 namespace bootloader::memcpy {
 
 /**
@@ -21,12 +20,12 @@ namespace bootloader::memcpy {
 void* va41620UnsignedMemcpy( // NOLINT
     void* __restrict__ dest,
     const void* __restrict__ src,
-    size_t n);
+    std::size_t n);
 
 }
 
 namespace rodos {
 
-void* memcpy(void* dest, const void* src, size_t len) __attribute__((used)); // NOLINT
+void* memcpy(void* dest, const void* src, std::size_t len) __attribute__((used)); // NOLINT
 
 } // namespace

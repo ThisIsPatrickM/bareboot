@@ -8,7 +8,6 @@
 namespace bootloader {
 
 // TODO Sync some Method names of Bootloader and Bootmanager
-using namespace checksums;
 
 /**
  * @brief Provides interfaces to Image Metadata and functionality to make changes.
@@ -35,23 +34,23 @@ public:
      * @brief Sets the preferred image for next reboot.
      *
      * @param imageIndex
-     * @return size_t Index of the image for next boot.
+     * @return std::size_t Index of the image for next boot.
      */
-    size_t updatePreferredImage(size_t imageIndex);
+    std::size_t updatePreferredImage(std::size_t imageIndex);
 
     /**
      * @brief Updates the current image in the metadata-
      *
      * @param imageIndex Image to set as current image
-     * @return size_t Image in the metadata after the update operation
+     * @return std::size_t Image in the metadata after the update operation
      */
-    size_t updateCurrentImage(size_t imageIndex);
+    std::size_t updateCurrentImage(std::size_t imageIndex);
 
     /**
      * @brief Sets the preferred image for next reboot.
      *
      * @param bootcounter
-     * @return size_t Index of the image for next boot.
+     * @return std::size_t Index of the image for next boot.
      */
     uint32_t updateGlobalBootcounter(uint32_t bootcounter);
 
@@ -62,7 +61,7 @@ public:
      * @param imageIndex
      * @return uint32_t Version of selected image, 0 in case of wrong imageIndex
      */
-    uint32_t updateImageVersion(uint32_t version, size_t imageIndex);
+    uint32_t updateImageVersion(uint32_t version, std::size_t imageIndex);
 
     /**
      * @brief Set image crc of selected image
@@ -71,7 +70,16 @@ public:
      * @param imageIndex
      * @return uint32_t crc of selected image, 0 in case of wrong imageIndex
      */
-    uint32_t updateImageCrc(uint32_t crc, size_t imageIndex);
+    uint32_t updateImageCrc(uint32_t crc, std::size_t imageIndex);
+
+    /**
+     * @brief Set bootcounter of selected image
+     *
+     * @param bootcounter
+     * @param imageIndex
+     * @return uint32_t
+     */
+    uint32_t updateImageBootcounter(uint32_t bootcounter, std::size_t imageIndex);
 
     /**
      * @brief Set image CompletionStatus of selected image
@@ -81,7 +89,7 @@ public:
      * @return complete Status
      */
     CompletionStatus updateImageCompletionStatus(
-        CompletionStatus completionStatus, size_t imageIndex);
+        CompletionStatus completionStatus, std::size_t imageIndex);
 
     /**
      * @brief Set image ProtectionStatus status of selected image
@@ -91,7 +99,7 @@ public:
      * @return alwaysKeep Status
      */
     ProtectionStatus updateImageProtectionStatus(
-        ProtectionStatus protectionStatus, size_t imageIndex);
+        ProtectionStatus protectionStatus, std::size_t imageIndex);
 
     /**
      * @brief Set image length of selected image
@@ -100,31 +108,32 @@ public:
      * @param imageIndex
      * @return uint32_t Length of the selected image
      */
-    uint32_t updateImageLength(uint32_t length, size_t imageIndex);
+    uint32_t updateImageLength(uint32_t length, std::size_t imageIndex);
 
     /**
      * @brief Get the Number of actual Images in the system. Depends on Hardware.
      *
-     * @return size_t
+     * @return std::size_t
      */
-    static size_t getNumberOfImages();
+    static std::size_t getNumberOfImages();
 
     /**
      * @brief Get the Max Image Length object. Depends on hardware.
      *
-     * @return size_t
+     * @return std::size_t
      */
-    static size_t getMaxImageLength();
+    static std::size_t getMaxImageLength();
 
     void init();
 
-    void copyImage(size_t srcImageIndex, size_t dstImageIndex);
+    void copyImage(std::size_t srcImageIndex, std::size_t dstImageIndex);
 
-    void updateImage(const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset);
+    void updateImage(
+        const void* data, int32_t length, std::size_t imageIndex, uint32_t imageOffset);
 
-    void loadImage(size_t imageIndex);
+    void loadImage(std::size_t imageIndex);
 
-    bool verifyChecksum(size_t index);
+    bool verifyChecksum(std::size_t index);
 
 private:
     GlobalImageMetadata* m_globalImageMetadata;

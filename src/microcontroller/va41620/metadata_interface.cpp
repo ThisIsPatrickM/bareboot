@@ -115,6 +115,20 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
     return m_globalImageMetadata->images[imageIndex].crc;
 }
 
+uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, size_t imageIndex)
+{
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return 0;
+    }
+    // Update SPI
+    bootRomSpi.updateImageBootcounterOverSpi(bootcounter, imageIndex);
+    // Update code Memory
+    Disable_Code_Memory_Protection();
+    m_globalImageMetadata->images[imageIndex].bootcounter = bootcounter;
+    Enable_Code_Memory_Protection();
+    return m_globalImageMetadata->images[imageIndex].bootcounter;
+}
+
 CompletionStatus MetadataInterface::updateImageCompletionStatus(
     CompletionStatus completionStatus, size_t imageIndex)
 {
@@ -230,7 +244,7 @@ bool MetadataInterface::verifyChecksum(size_t index)
     uintptr_t currentData = m_globalImageMetadata->images[index].imageBegin;
     uint8_t buffer[BUFFER_SIZE] = { 0 };
     auto remainingLength = static_cast<int32_t>(m_globalImageMetadata->images[index].length);
-    uint32_t iterativeChecksum = Checksums::CRC_INITIAL_VALUE;
+    uint32_t iterativeChecksum = checksums::Checksums::CRC_INITIAL_VALUE;
 
     while (remainingLength > 0) {
         uint32_t fragmentSize =
@@ -239,7 +253,7 @@ bool MetadataInterface::verifyChecksum(size_t index)
                 : remainingLength;
 
         uint8_t* localDataBeginPtr = bootRomSpi.getDataOverSpi(currentData, fragmentSize, buffer);
-        iterativeChecksum = Checksums::calculateIterativeCrc32NoTable(
+        iterativeChecksum = checksums::Checksums::calculateIterativeCrc32NoTable(
             localDataBeginPtr, fragmentSize, iterativeChecksum);
         remainingLength -= static_cast<int32_t>(fragmentSize);
     }

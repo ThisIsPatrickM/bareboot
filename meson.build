@@ -43,6 +43,7 @@ foreach entry : meson.get_cross_property('link_depends', [''])
 	endif
 endforeach
 
+#####    Collect Source Files    #####
 bootloader_sources = []
 subdir('src')
 

@@ -97,6 +97,14 @@ public:
     void updateImageCrcOverSpi(uint32_t crc, size_t imageIndex);
 
     /**
+     * @brief Set bootcounter of selected image
+     *
+     * @param bootcounter
+     * @param imageIndex
+     */
+    void updateImageBootcounterOverSpi(uint32_t bootcounter, size_t imageIndex);
+
+    /**
      * @brief Set image complete status of selected image
      *
      * @param completionStatus

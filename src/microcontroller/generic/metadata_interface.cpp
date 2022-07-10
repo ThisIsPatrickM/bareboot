@@ -54,8 +54,17 @@ uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return m_globalImageMetadata->images[imageIndex].crc;
     }
-    m_globalImageMetadata->images[imageIndex].version = crc;
+    m_globalImageMetadata->images[imageIndex].crc = crc;
     return m_globalImageMetadata->images[imageIndex].crc;
+}
+
+uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, size_t imageIndex)
+{
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return m_globalImageMetadata->images[imageIndex].bootcounter;
+    }
+    m_globalImageMetadata->images[imageIndex].bootcounter = bootcounter;
+    return m_globalImageMetadata->images[imageIndex].bootcounter;
 }
 
 CompletionStatus MetadataInterface::updateImageCompletionStatus(
@@ -160,7 +169,7 @@ bool MetadataInterface::verifyChecksum(size_t index)
     }
     uint32_t expectedChecksum = m_globalImageMetadata->images[index].crc;
 
-    uint32_t actualChecksum = Checksums::calculateCrc32NoTable(
+    uint32_t actualChecksum = checksums::Checksums::calculateCrc32NoTable(
         reinterpret_cast<uint8_t*>( // NOLINT
             m_globalImageMetadata->images[index].imageBegin),
         m_globalImageMetadata->images[index].length);

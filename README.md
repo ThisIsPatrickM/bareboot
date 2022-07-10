@@ -1,6 +1,7 @@
 # BareBoot
 
 A bare-metal bootloader for low-power embedded systems.
+Mirrored from a private gitlab repository.
 
 ## Description
 
@@ -9,7 +10,7 @@ The goal is to develop a bootloader to allow safe and secure In-Ortit software u
 
 In order to reach this goal the bootloader is one component that manages, loads and verifies multiple images slots and picks a good image.
 
-Updating a new image at runtime is the other component, not part of this repository, but also in the scope of my thesis. It makes use of RODOS(Realtime Onboard Dependable Operating System) and DOSIS and might be published at a later point in time. 
+Updating a new image at runtime is done by the bootmanager, whcih is not part of this repository, but also in the scope of my thesis. It makes use of RODOS(Realtime Onboard Dependable Operating System) and might be published at a later point in time. 
 
 ## Features
 

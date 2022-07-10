@@ -11,7 +11,12 @@ void Bootloader::run()
 
     size_t selectedImage = selectImageSlot();
 
+    // Update Metadata
+    const GlobalImageMetadata* globalImageMetadata = m_metadataInterface.getGlobalImageMetadata();
     m_metadataInterface.updateCurrentImage(selectedImage);
+    m_metadataInterface.updateGlobalBootcounter(globalImageMetadata->globalBootcounter + 1);
+    m_metadataInterface.updateImageBootcounter(
+        globalImageMetadata->images[selectedImage].bootcounter + 1, selectedImage);
 
     Memory_Barrier();
 
@@ -60,6 +65,13 @@ bool Bootloader::isImageValid(size_t index)
     return m_metadataInterface.getGlobalImageMetadata()->images[index].completionStatus ==
                CompletionStatus::COMPLETE &&
            verifyChecksum(index);
+}
+
+bool Bootloader::lastBootSuccessful(size_t index)
+{
+    const GlobalImageMetadata* globalImageMetadata = m_metadataInterface.getGlobalImageMetadata();
+    return globalImageMetadata->images[index].bootcounter ==
+           globalImageMetadata->images[index].lastSuccessStatus;
 }
 
 bool Bootloader::verifyChecksum(size_t index)

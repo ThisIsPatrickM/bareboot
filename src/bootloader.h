@@ -48,6 +48,8 @@ private:
      */
     bool isImageValid(size_t index);
 
+    bool lastBootSuccessful(size_t index);
+
     /**
      * @brief Verifies Checksum of the given image
      *
