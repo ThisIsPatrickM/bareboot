@@ -1,3 +1,4 @@
+#include <bit>
 #include <cstdint>
 
 namespace bootloader::memcpy {
@@ -5,11 +6,10 @@ namespace bootloader::memcpy {
 /**
  * @brief Customized memcpy function. In Comparison to RODOS::memcpy it does not rely on copying
  * 1-byte-sized values.
- * Copies bytes using unsigned-sized values and the masks the remaining bytes.
+ * Copies bytes using unsigned-sized values and masks the remaining bytes.
  *
  * @note va41620 does not allow to assign 1-byte-sized values in code SRAM.
- * @todo Check if byteorder effects this implementation.
- * @todo Improve by aligning source and destination address.
+ * @todo Improve by aligning source/destination address.
  * @warning Don't use for overlapping memory regions
  *
  * @param dest pointer to destination
@@ -24,8 +24,8 @@ void* va41620UnsignedMemcpy( // NOLINT
 
 }
 
-namespace rodos {
+namespace RODOS {
 
-void* memcpy(void* dest, const void* src, std::size_t len) __attribute__((used)); // NOLINT
+void* memcpy(void* dest, const void* src, std::size_t len); // NOLINT
 
 } // namespace

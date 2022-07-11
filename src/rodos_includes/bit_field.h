@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace rodos {
+namespace RODOS {
 // NOLINTBEGIN
 template <typename integer_t>
 struct Integer {

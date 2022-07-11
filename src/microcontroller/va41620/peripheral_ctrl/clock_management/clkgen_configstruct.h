@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace rodos {
+namespace RODOS {
 
 enum class XtalMode { OFF = 0, XTAL = 1, EXT_CLK = 2 };
 

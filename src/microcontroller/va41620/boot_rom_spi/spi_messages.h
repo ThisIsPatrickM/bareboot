@@ -47,13 +47,13 @@ enum class SpiOpCodes : uint8_t {
  *
  * @TODO Check byteorder. Maybe I'm reading it the wrong way. I could write with 0b01000000
  */
-using SpiStatusRegister = rodos::UInt8BitField;
-using SpiStatusDontCare = rodos::UInt8SubValue<0, 1>;
-using SpiStatusWriteEnable = rodos::UInt8SubValue<1, 1>;
-using SpiStatusBlockProtect0 = rodos::UInt8SubValue<2, 1>;
-using SpiStatusBlockProtect1 = rodos::UInt8SubValue<3, 1>;
-using SpiStatusDontCare2 = rodos::UInt8SubValue<4, 3>;
-using SpiStatusWriteProtectEnable = rodos::UInt8SubValue<7, 1>;
+using SpiStatusRegister = RODOS::UInt8BitField;
+using SpiStatusDontCare = RODOS::UInt8SubValue<0, 1>;
+using SpiStatusWriteEnable = RODOS::UInt8SubValue<1, 1>;
+using SpiStatusBlockProtect0 = RODOS::UInt8SubValue<2, 1>;
+using SpiStatusBlockProtect1 = RODOS::UInt8SubValue<3, 1>;
+using SpiStatusDontCare2 = RODOS::UInt8SubValue<4, 3>;
+using SpiStatusWriteProtectEnable = RODOS::UInt8SubValue<7, 1>;
 
 /**
  * @brief Reads data over SPI from the given 18bit address.

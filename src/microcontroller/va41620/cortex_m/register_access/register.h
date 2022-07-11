@@ -3,7 +3,7 @@
 #include "microcontroller/va41620/cortex_m/register_access/mmio.h"
 #include "rodos_includes/bit_field.h"
 
-namespace rodos {
+namespace RODOS {
 
 using Register = BitField<MMIO>;
 using RegisterCopy = UInt32BitField;

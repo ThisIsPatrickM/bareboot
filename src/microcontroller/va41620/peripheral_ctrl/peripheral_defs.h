@@ -4,7 +4,7 @@
 #include "register_maps/spi_registers.h"
 #include "register_maps/sysconfig_peripheral_bitband.h"
 
-namespace rodos {
+namespace RODOS {
 
 inline SPIStruct* const SPIS = reinterpret_cast<SPIStruct*>(0x4001'5000); // NOLINT
 // inline CLKGENStruct* const CLKGEN = reinterpret_cast<CLKGENStruct*>(0x4000'6000); // NOLINT

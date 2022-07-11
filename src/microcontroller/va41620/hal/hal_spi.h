@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <new>
 
-namespace rodos {
+namespace RODOS {
 
 // TODO Update Namespace and Documentation
 // class HW_HAL_SPI;
@@ -25,7 +25,7 @@ class HalSpi {
     HwHalSpi m_context;
 
 public:
-    HalSpi(rodos::SpiIdx spiIdx);
+    HalSpi(RODOS::SpiIdx spiIdx);
 
     /**
      * @brief   Initialization of SPI interface & pins

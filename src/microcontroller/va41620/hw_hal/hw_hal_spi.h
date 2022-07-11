@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace rodos {
+namespace RODOS {
 
 enum SpiIdx { //  STM32F4
     SPI_IDX0, //  not available
@@ -32,13 +32,13 @@ enum SpiStatusType { SPI_STATUS_BAUDRATE, SPI_STATUS_MODE };
 
 class HwHalSpi {
 public:
-    HwHalSpi(rodos::SpiIdx spiIdx);
+    HwHalSpi(RODOS::SpiIdx spiIdx);
     void init(uint32_t baudrate);
 
     bool writeRead(const std::byte* txBuffer, size_t txLen, std::byte* rxBuffer, size_t rxLen);
 
 private:
-    const rodos::SpiIdx m_idx;
+    const RODOS::SpiIdx m_idx;
     SPIStruct& m_spi;
 
     struct SpiPrescalers {

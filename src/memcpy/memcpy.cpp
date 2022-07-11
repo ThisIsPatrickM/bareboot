@@ -16,17 +16,24 @@ void* va41620UnsignedMemcpy(void* __restrict__ dest, const void* __restrict__ sr
     const auto* srcP = static_cast<const unsigned*>(src);
 
     for (unsigned i = 0; i < iterations; i++) {
-        *destP = *srcP;
-        destP++; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-        srcP++; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+        destP[i] = srcP[i]; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     }
 
     // Adjust Remain
     if (remain > 0) {
+        unsigned mask = [&]() {
+            if constexpr (std::endian::native == std::endian::little) {
+                return (~0x0U) << (remain * 8);
+            } else {
+                return (~0x0U) >> (remain * 8);
+            }
+        }();
         // Reset bytes that will be overwritten
-        *destP = *destP & (~unsigned(0x0) << remain * 8);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+        destP[iterations] = destP[iterations] & mask;
         // Set bytes that will be overwritten
-        *destP |= *srcP & (~unsigned(0x0) >> (sizeof(unsigned) - remain) * 8);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+        destP[iterations] |= srcP[iterations] & ~mask;
     }
 
     return dest;
@@ -34,7 +41,7 @@ void* va41620UnsignedMemcpy(void* __restrict__ dest, const void* __restrict__ sr
 
 }
 
-namespace rodos {
+namespace RODOS {
 
 // NOLINTBEGIN
 void* memcpy(void* destP, const void* sP, std::size_t len)

@@ -3,12 +3,14 @@
 #include "gtest/gtest.h"
 #include <cstring>
 
+#include <iostream>
+
 using namespace testing;
 namespace {
 
 const auto& defaultMemcpy = memcpy;
 const auto& myMemcpy = bootloader::memcpy::va41620UnsignedMemcpy;
-// const auto& rodosMemcpy = rodos::memcpy;
+// const auto& rodosMemcpy = RODOS::memcpy;
 
 class MemCopyTestSuite : public ::testing::Test {
 public:

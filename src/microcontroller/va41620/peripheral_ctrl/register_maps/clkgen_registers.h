@@ -1,7 +1,7 @@
 #pragma once
 #include "microcontroller/va41620/cortex_m/register_access/register.h"
 
-namespace rodos {
+namespace RODOS {
 // NOLINTBEGIN
 namespace CLKGEN_CTRL0 {
     using REF_CL_SEL = RegSubValue<0, 2>;

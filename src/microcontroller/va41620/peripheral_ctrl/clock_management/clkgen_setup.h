@@ -2,7 +2,7 @@
 
 #include "clkgen_configstruct.h"
 
-namespace rodos {
+namespace RODOS {
 
 struct HBO {
     static constexpr int32_t FREQUENCY { 20'000'000 };

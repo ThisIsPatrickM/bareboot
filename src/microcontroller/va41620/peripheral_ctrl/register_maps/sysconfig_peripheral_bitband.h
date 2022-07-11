@@ -2,7 +2,7 @@
 #include "microcontroller/va41620/cortex_m/register_access/register.h"
 #include "microcontroller/va41620/cortex_m/register_access/reserved_bytes.h"
 
-namespace rodos {
+namespace RODOS {
 
 /**
  * represents the TIM_RESETS, TIM_CLK_ENABLES,

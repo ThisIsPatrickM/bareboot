@@ -1,6 +1,6 @@
 #include "microcontroller/va41620/hw_hal/hw_hal_spi.h"
 
-namespace rodos {
+namespace RODOS {
 
 HwHalSpi::HwHalSpi(SpiIdx spiIdx)
     : m_idx { spiIdx }

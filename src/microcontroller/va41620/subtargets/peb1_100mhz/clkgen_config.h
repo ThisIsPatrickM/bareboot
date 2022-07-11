@@ -2,7 +2,7 @@
 #include "microcontroller/va41620/peripheral_ctrl/clock_management/clkgen_configstruct.h"
 #include "microcontroller/va41620/peripheral_ctrl/clock_management/clkgen_setup.h"
 
-namespace rodos {
+namespace RODOS {
 
 /**
  * before changing anything, please look at the datasheet for limits to these values

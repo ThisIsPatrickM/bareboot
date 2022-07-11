@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace rodos {
+namespace RODOS {
 
 /**
  * Represents a single memory mapped IO m_register

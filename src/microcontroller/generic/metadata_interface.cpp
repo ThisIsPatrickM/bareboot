@@ -121,7 +121,7 @@ void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
         return;
     }
 
-    rodos::memcpy(destinationImagePointer, sourceImagePointer, length);
+    RODOS::memcpy(destinationImagePointer, sourceImagePointer, length);
 }
 
 void MetadataInterface::updateImage(
@@ -135,7 +135,7 @@ void MetadataInterface::updateImage(
     }
     // TODO Length check?
 
-    rodos::memcpy(imagePointer, data, length);
+    RODOS::memcpy(imagePointer, data, length);
 }
 
 void MetadataInterface::loadImage(size_t imageIndex)
@@ -159,7 +159,7 @@ void MetadataInterface::loadImage(size_t imageIndex)
     void* source =
         reinterpret_cast<void*>(m_globalImageMetadata->images[imageIndex].imageBegin); // NOLINT
 
-    rodos::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
+    RODOS::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
 }
 
 bool MetadataInterface::verifyChecksum(size_t index)

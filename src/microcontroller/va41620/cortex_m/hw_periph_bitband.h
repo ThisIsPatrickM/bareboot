@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace rodos {
+namespace RODOS {
 
 constexpr uint32_t PERIPH_BASE = 0x4000'0000;
 constexpr uint32_t PERIPH_BB_BASE = 0x4200'0000;

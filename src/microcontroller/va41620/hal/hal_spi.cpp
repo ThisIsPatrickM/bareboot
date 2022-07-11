@@ -1,8 +1,8 @@
 #include "microcontroller/va41620/hal/hal_spi.h"
 
-namespace rodos {
+namespace RODOS {
 
-HalSpi::HalSpi(rodos::SpiIdx spiIdx)
+HalSpi::HalSpi(RODOS::SpiIdx spiIdx)
     : m_context { spiIdx }
 {
 }

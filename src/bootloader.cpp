@@ -18,6 +18,8 @@ void Bootloader::run()
     m_metadataInterface.updateImageBootcounter(
         globalImageMetadata->images[selectedImage].bootcounter + 1, selectedImage);
 
+    // TODO Reset last successStatus when updating/copying image!
+
     Memory_Barrier();
 
     m_metadataInterface.loadImage(selectedImage);

@@ -12,7 +12,7 @@
 
 #pragma once
 
-namespace rodos {
+namespace RODOS {
 
 /** Version Number */
 #define OSVERSION "VA41620 Cortex-M4 V0.0"

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace rodos {
+namespace RODOS {
 
 class alignas(uint32_t) ReservedWord {
 };

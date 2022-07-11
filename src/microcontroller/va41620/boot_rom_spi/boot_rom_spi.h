@@ -24,7 +24,7 @@ constexpr uint32_t METADATA_GLOBAL_BOOTCOUNTER_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, globalBootcounter);
 
 constexpr size_t SPI_RECEIVE_ADDRESSED_DATA_OFFSET = 4;
-constexpr rodos::SpiIdx BOOTSPI_IDX = rodos::SPI_IDX3;
+constexpr RODOS::SpiIdx BOOTSPI_IDX = RODOS::SPI_IDX3;
 constexpr uint8_t SPI_STATUS_REGISTER_WRITE_ALL = 0b0100'0000;
 constexpr uint32_t SPI_FREQUENCY = 1'000'000;
 
@@ -154,7 +154,7 @@ private:
     static void putAddressOffsetIntoMessage(
         uint8_t address[SPI_ADDRESS_SPACE_BYTES], uint32_t addressOffset);
 
-    rodos::HalSpi m_halSpi { BOOTSPI_IDX };
+    RODOS::HalSpi m_halSpi { BOOTSPI_IDX };
 };
 
 }
