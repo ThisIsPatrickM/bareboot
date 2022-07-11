@@ -71,8 +71,6 @@ bootloader = declare_dependency(
 if meson.can_run_host_binaries()
 # if not meson.is_subproject() and meson.can_run_host_binaries()
     gtest_proj = subproject('gtest')
-    gtest_incdir = gtest_proj.get_variable('gtest_incdir')
-
     subdir('tests')
 
 endif

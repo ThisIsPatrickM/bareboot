@@ -1,24 +1,26 @@
-all_test_deps = []
-all_test_dep_libs = []
-project_test_sources = []
 
-gtest_dep = gtest_proj.get_variable('gtest_dep')
+gtest_main_dep = gtest_proj.get_variable('gtest_main_dep')
+# gtest_dep = gtest_proj.get_variable('gtest_dep')
+# gtest_incdir = gtest_proj.get_variable('gtest_incdir')
 gmock_dep = gtest_proj.get_variable('gmock_dep')
-thread_dep = dependency('threads')
-test_main = files('tests_main.cpp')
+# gmock_incdir = gtest_proj.get_variable('gmock_incdir')
 
-test_deps = [
-    gtest_dep, 
-    gmock_dep,
-    thread_dep
-]
-
-test_dep_libs = [
-]
-
+unit_tests = []
 subdir('common_tests')
+subdir('crc_tests')
+subdir('memcpy_tests')
 
-# This executable contains all the tests
-project_test_sources += test_main
-all_test_deps += test_deps
-all_test_dep_libs += test_dep_libs
+### Build and register tests ###
+foreach t : unit_tests
+    ### executable
+    test_exe = executable(t['name'].underscorify()+ '_exe',
+        sources             : t['src'],
+        dependencies        : [
+            t.get('deps', []),
+            gtest_main_dep, gmock_dep
+        ],
+        include_directories : bootloader_inc,
+        link_with : [bootloader_lib]
+    )
+    test(t['name'], test_exe, suite: 'unit-test')
+endforeach
