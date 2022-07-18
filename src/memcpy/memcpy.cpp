@@ -43,21 +43,20 @@ void* va41620UnsignedMemcpy(void* __restrict__ dest, const void* __restrict__ sr
 
 namespace RODOS {
 
-// NOLINTBEGIN
-void* memcpy(void* destP, const void* sP, std::size_t len)
+void* memcpy(void* destP, const void* sP, std::size_t len) // NOLINT
 {
-    uint8_t* dest = (uint8_t*)destP;
-    const uint8_t* s = (const uint8_t*)sP;
-    if (!dest || !s)
-        return 0;
-    while (len) {
+    uint8_t* dest = (uint8_t*)destP; // NOLINT
+    const uint8_t* s = (const uint8_t*)sP; // NOLINT
+    if (!dest || !s) // NOLINT
+        return 0; // NOLINT
+    while (len) { // NOLINT
         // dest[len] = s[len];
         *dest = *s;
         len--;
-        s++;
-        dest++;
+        s++; // NOLINT
+        dest++; // NOLINT
     }
     return destP;
 }
-// NOLINTEND
+
 }

@@ -3,5 +3,5 @@ bootloader_generic_sources = files(
     'metadata_interface.cpp'
 )
 
-
+bootloader_inc += include_directories('../../../include/generic') 
 bootloader_sources += bootloader_generic_sources

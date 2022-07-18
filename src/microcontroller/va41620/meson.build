@@ -10,5 +10,4 @@ bootloader_va41620_sources = files(
 
 subdir('init_structs')
 
-
 bootloader_sources += bootloader_va41620_sources

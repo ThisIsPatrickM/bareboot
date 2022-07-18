@@ -10,19 +10,6 @@ project('Bootloader', ['c','cpp'],
         'cpp_eh=none',
         'cpp_rtti=false',])
 
-
-### System Specific Include directories for platform_parameters
-if host_machine.system() == 'va41620'
-  if meson.get_cross_property('development_board') == 'true'
-    bootloader_inc = include_directories('src', 'include', 'include/va41620_dev_board') 
-  else
-    bootloader_inc = include_directories('src', 'include', 'include/va41620') 
-  endif
-  
-else
-  bootloader_inc = include_directories('src', 'include', 'include/generic') 
-endif
-
 ### Prepare Linker Script Dependency
 # According to suggestion by phillipjohnston: https://github.com/mesonbuild/meson/issues/6888#issuecomment-607440358
 linker_script_flags = []
@@ -43,8 +30,9 @@ foreach entry : meson.get_cross_property('link_depends', [''])
 	endif
 endforeach
 
-#####    Collect Source Files    #####
+#####    Collect Source Files and additional includes to platform_parameters.h depending on target    #####
 bootloader_sources = []
+bootloader_inc = [include_directories('src', 'include')]
 subdir('src')
 
 #####    Executable and Library    #####
@@ -72,7 +60,6 @@ if meson.can_run_host_binaries()
 # if not meson.is_subproject() and meson.can_run_host_binaries()
     gtest_proj = subproject('gtest')
     subdir('tests')
-
 endif
 
 #####    Clang tidy target    #####
