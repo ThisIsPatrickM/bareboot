@@ -7,5 +7,6 @@ bootloader_sources += bootloader_common_sources
 
 
 subdir('architecture')
+subdir('hash')
 subdir('hmac')
 subdir('microcontroller')

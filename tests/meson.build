@@ -8,6 +8,8 @@ gmock_dep = gtest_proj.get_variable('gmock_dep')
 unit_tests = []
 subdir('common_tests')
 subdir('crc_tests')
+subdir('hash_tests')
+subdir('mac_tests')
 subdir('memcpy_tests')
 
 ### Build and register tests ###
