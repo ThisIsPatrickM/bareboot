@@ -6,11 +6,7 @@ namespace bootloader {
 
 enum class CompletionStatus : uint16_t { COMPLETE, INCOMPLETE };
 
-enum class ProtectionStatus : uint16_t {
-    PROTECTED,
-    UNPROTECTED
-
-};
+enum class ProtectionStatus : uint16_t { PROTECTED, UNPROTECTED };
 
 /**
  * @brief Number of metadata images to allocate. Real number can be further reduced depending on
@@ -23,7 +19,8 @@ constexpr std::size_t MAX_NUMBER_OF_IMAGES = 7;
  * @brief Number of bytes for an HMAC.
  *
  */
-constexpr std::size_t HMAC_LENGTH = 64;
+constexpr std::size_t HMAC_KEY_LENGTH = 32;
+constexpr std::size_t HMAC_DIGEST_LENGTH = 32;
 
 /**
  * @brief Describe Metadata information for one Image.
@@ -50,11 +47,10 @@ struct GlobalImageMetadata {
     uint32_t globalBootcounter = 0;
     std::size_t preferredImage = 0;
     std::size_t currentImage = 0;
-    ImageMetadata images[MAX_NUMBER_OF_IMAGES] = {};
-    // uint8_t hmac1[HMAC_LENGTH] = { 0 };
-    // uint8_t hmac2[HMAC_LENGTH] = { 0 };
-    // uint8_t hmac3[HMAC_LENGTH] = { 0 };
-
+    uint8_t hmacKey1[HMAC_KEY_LENGTH] = { 0 };
+    ImageMetadata images[MAX_NUMBER_OF_IMAGES] {};
+    // uint8_t hmacKey2[HMAC_KEY_LENGTH] = { 0 };
+    // uint8_t hmacKey3[HMAC_KEY_LENGTH] = { 0 };
     // TODO Document every variable
 };
 

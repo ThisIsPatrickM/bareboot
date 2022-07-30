@@ -2,12 +2,17 @@ import argparse
 import zlib
 import os
 import subprocess
+import hmac
+import hashlib
 from platform_config import CONFIG_MAP
 
 CONFIG = None
 
 
 def calc_crc(filename):
+    """
+    Calculate the CRC32 of the given file
+    """
     with open(filename, "rb") as f:
         checksum = 0
         while (chunk := f.read()):
@@ -15,17 +20,27 @@ def calc_crc(filename):
         return checksum
 
 
-def get_length(file_name):
-    return os.path.getsize(file_name)
-
-
 def write_crc(file_name, crc, index):
+    """
+    Put the given CRC in the metadata of the given file to the given imageIndex
+    """
     offset = CONFIG.FIRST_CRC_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
     print(
         f"Write Crc {hex(crc)} to {hex(offset)}")
     with open(file_name, 'rb+') as f:
         f.seek(offset)
         f.write(crc.to_bytes(CONFIG.UINT32_T_SIZE, byteorder=CONFIG.BYTE_ORDER))
+
+
+def write_hmac_key(file_name, key_file):
+    with open(file_name, 'rb+') as f:
+        with open(key_file, 'rb') as key:
+            f.seek(CONFIG.HMAC_KEY_OFFSET)
+            f.write(key)
+
+
+def get_length(file_name):
+    return os.path.getsize(file_name)
 
 
 def write_length(file_name, length, index):
