@@ -112,22 +112,3 @@ if not meson.is_subproject()
         )
     endif
 endif
-
-
-
-# This adds the clang format file to the build directory
-# configure_file(input : '.clang-format',
-#                output : '.clang-format',
-# 	       copy: true)
-# run_target('format',
-#   command : ['clang-format','-i','-style=file',bootloader_sources])
-
-# # This regex excludes any sources from the third_party, tests, benchmarks 
-# # and gtest related files.
-# regex = '^((?!(third_party|tests|benchmarks|gtest)).)*$'
-# # This adds clang tidy support
-# configure_file(input : '.clang-tidy',
-#                output : '.clang-tidy',
-#                copy : true)
-# run_target('tidy',
-#   command : ['run-clang-tidy-13','-fix', '-j' , '8', 'files', regex ,'-format', '-p='+ meson.build_root()])
