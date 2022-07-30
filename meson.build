@@ -77,7 +77,7 @@ if not meson.is_subproject()
     if bash.found() and doxygen.found() and not meson.is_subproject()
         run_target('doxygen',
             command : [
-                meson.current_source_dir() + '/utils/build_doxygen.sh',
+                meson.current_source_dir() + '/.gitlab/utils/build_doxygen.sh',
                 meson.current_source_dir() + '/Doxyfile',
                 'PROJECT_NAME = ' + meson.project_name(),
                 'PROJECT_NUMBER = ' + meson.project_version(),
@@ -91,8 +91,8 @@ if not meson.is_subproject()
     if bash.found() and python_interpreter.found() and clang_format.found() and not meson.is_subproject()
         run_target('check-clang-format',
             command : [
-                meson.current_source_dir() + '/utils/clang-format.sh',
-                meson.current_source_dir() + '/utils/run-clang-format.py',
+                meson.current_source_dir() + '/.gitlab/utils/clang-format.sh',
+                meson.current_source_dir() + '/.gitlab/utils/run-clang-format.py',
                 'include',
                 'src',
             ]
@@ -105,7 +105,7 @@ if not meson.is_subproject()
     if bash.found() and clang_tidy.found() and gnu_parallel.found() and not meson.is_subproject()
         run_target('check-clang-tidy',
             command : [
-                meson.current_source_dir() + '/utils/clang-tidy.sh',
+                meson.current_source_dir() + '/.gitlab/utils/clang-tidy.sh',
                 '',
                 meson.current_build_dir()
             ],
