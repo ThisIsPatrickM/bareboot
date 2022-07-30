@@ -26,7 +26,7 @@ clang-tidy-va41620:
   variables:
     CHECK: clang-tidy
     DEVICE: va41620
-    CROSS: --cross-file include/va41620/cross_files/cross.ini
+    CROSS: --cross-file include/va41620/cross_files/clang.ini
 
 clang-format:
   extends: .check   

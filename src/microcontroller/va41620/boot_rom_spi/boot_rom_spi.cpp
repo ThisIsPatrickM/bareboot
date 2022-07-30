@@ -41,7 +41,7 @@ void BootRomSpi::updateCurrentImageOverSpi(size_t currentImageIndex)
     if (currentImageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
         return;
     }
-    SpiWrite<sizeof(size_t)> writeMessage {};
+    SpiWrite<sizeof(size_t)> writeMessage = {};
     putAddressOffsetIntoMessage(writeMessage.address, METADATA_CURRENT_IMAGE_OFFSET);
     bootloader::memcpy::va41620UnsignedMemcpy(
         writeMessage.data, &currentImageIndex, sizeof(size_t));
