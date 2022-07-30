@@ -45,17 +45,27 @@ public:
     static constexpr std::size_t SHA256_DIGEST_SIZE = 32;
 
     /**
-     * @brief Computes the Sha256 Hash and writes result to hash.
+     * @brief Computes a new Sha256 Hash with an empty context and writes result to hash.
      *
      * @param data Pointer to the data that should be hashed.
      * @param length Length of the data.
      * @param hash Output parameter that contains the resulting hash.
      */
+    static void sha256(const uint8_t* data, std::size_t length, uint8_t hash[SHA256_DIGEST_SIZE]);
+
+    /**
+     * @brief Computes the Sha256 Hash with a given context and writes result to hash.
+     *
+     * @param data Pointer to the data that should be hashed.
+     * @param length Length of the data.
+     * @param hash Output parameter that contains the resulting hash.
+     * @param givenContext Given computation context from previous calculations.
+     */
     static void sha256(
         const uint8_t* data,
         std::size_t length,
         uint8_t hash[SHA256_DIGEST_SIZE],
-        Sha256Context* givenContext = nullptr);
+        Sha256Context& givenContext);
 
     /**
      * @brief Computes the transformation step for one Block
@@ -104,6 +114,9 @@ private:
     inline static uint32_t bSig1(uint32_t x); // NOLINT(readability-identifier-length)
     inline static uint32_t sSig0(uint32_t x); // NOLINT(readability-identifier-length)
     inline static uint32_t sSig1(uint32_t x); // NOLINT(readability-identifier-length)
+
+    inline static void storeBitLength(uint8_t buffer[], uint64_t length);
+    inline static void storeHash(Sha256Context& context, uint8_t hash[]);
 
     /**
      * @brief  Array of constants (first 32 bits of the fractional parts of the cube roots of the

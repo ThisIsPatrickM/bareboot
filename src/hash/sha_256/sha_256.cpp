@@ -7,14 +7,9 @@ using namespace std;
 void Sha256Context::reset()
 {
     bitLength = 0;
-    state[0] = DEFAULT_STATE[0];
-    state[1] = DEFAULT_STATE[1];
-    state[2] = DEFAULT_STATE[2];
-    state[3] = DEFAULT_STATE[3];
-    state[4] = DEFAULT_STATE[4];
-    state[5] = DEFAULT_STATE[5];
-    state[6] = DEFAULT_STATE[6];
-    state[7] = DEFAULT_STATE[7];
+    for (size_t i = 0; i < 8; i++) {
+        state[i] = DEFAULT_STATE[i];
+    }
 }
 
 void Sha256::sha256Transform(Sha256Context& context, const uint8_t block[SHA256_BLOCK_SIZE])
@@ -61,34 +56,31 @@ void Sha256::sha256Transform(Sha256Context& context, const uint8_t block[SHA256_
     context.bitLength += SHA256_BLOCK_LENGTH_IN_BITS;
 }
 
+void Sha256::sha256(const uint8_t* data, size_t length, uint8_t hash[SHA256_DIGEST_SIZE])
+{
+    Sha256Context localContext {};
+    sha256(data, length, hash, localContext);
+}
+
 void Sha256::sha256(
     const uint8_t* data,
     size_t length,
     uint8_t hash[SHA256_DIGEST_SIZE],
-    Sha256Context* givenContext)
+    Sha256Context& givenContext)
 {
-    // TODO Use seperate method maybe that creates Context instead of this optional stuff, that will
-    // always create 2 contexts, but only uses 1!
-    Sha256Context localContext;
-
-    Sha256Context* context = nullptr;
-    if (givenContext == nullptr) {
-        context = &localContext;
-    } else {
-        context = givenContext;
-    }
     int remainingLength = static_cast<int>(length);
     size_t blockIndex = 0;
     while (remainingLength >= static_cast<int>(SHA256_BLOCK_SIZE)) {
         // Handle all complete blocks
         sha256Transform(
-            *context, &data[blockIndex]); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+            givenContext,
+            &data[blockIndex]); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         remainingLength -= SHA256_BLOCK_SIZE;
         blockIndex += SHA256_BLOCK_SIZE;
     }
     // Handle last block and return hash
     sha256Finalise(
-        *context,
+        givenContext,
         &data[blockIndex], // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         remainingLength,
         hash);
@@ -101,7 +93,6 @@ void Sha256::sha256Finalise(
     uint8_t hash[SHA256_DIGEST_SIZE])
 {
     if (lastBlockLength > SHA256_BLOCK_SIZE) {
-        // TODO Error handling
         return;
     }
 
@@ -122,31 +113,12 @@ void Sha256::sha256Finalise(
         }
     }
 
-    // Append padding to total messages length in bits and transform
-    temporaryLastBlock[63] = calculatedDataBitLength; // NOLINT
-    temporaryLastBlock[62] = calculatedDataBitLength >> 8; // NOLINT
-    temporaryLastBlock[61] = calculatedDataBitLength >> 16; // NOLINT
-    temporaryLastBlock[60] = calculatedDataBitLength >> 24; // NOLINT
-    temporaryLastBlock[59] = calculatedDataBitLength >> 32; // NOLINT
-    temporaryLastBlock[58] = calculatedDataBitLength >> 40; // NOLINT
-    temporaryLastBlock[57] = calculatedDataBitLength >> 48; // NOLINT
-    temporaryLastBlock[56] = calculatedDataBitLength >> 56; // NOLINT
+    // Store bitlength to end of last block and transform
+    storeBitLength(
+        &temporaryLastBlock[SHA256_EXTRA_PADDING_BLOCK_THRESHHOLD], calculatedDataBitLength);
     sha256Transform(context, temporaryLastBlock);
 
-    // Since this implementation uses little endian byte ordering and SHA uses big endian,
-    // reverse all the bytes when copying the final state to the output hash.
-    // TODO Explain this magic
-    // TODO Check byteorder like in memcpy
-    for (int i = 0; i < 4; ++i) {
-        hash[i] = (context.state[0] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 4] = (context.state[1] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 8] = (context.state[2] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 12] = (context.state[3] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 16] = (context.state[4] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 20] = (context.state[5] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 24] = (context.state[6] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-        hash[i + 28] = (context.state[7] >> (24 - i * 8)) & 0x000000ff; // NOLINT
-    }
+    storeHash(context, hash);
 }
 
 bool Sha256::sha256Verify(
@@ -202,6 +174,34 @@ inline uint32_t Sha256::sSig0(uint32_t x) // NOLINT(readability-identifier-lengt
 inline uint32_t Sha256::sSig1(uint32_t x) // NOLINT(readability-identifier-length)
 {
     return rotateRight(x, 17) ^ rotateRight(x, 19) ^ shiftRight(x, 10);
+}
+
+inline void Sha256::storeBitLength(uint8_t buffer[], uint64_t length)
+{
+    buffer[7] = static_cast<uint8_t>(length & 0xff); // NOLINT
+    buffer[6] = static_cast<uint8_t>((length >> 8) & 0xff); // NOLINT
+    buffer[5] = static_cast<uint8_t>((length >> 16) & 0xff); // NOLINT
+    buffer[4] = static_cast<uint8_t>((length >> 24) & 0xff); // NOLINT
+    buffer[3] = static_cast<uint8_t>((length >> 32) & 0xff); // NOLINT
+    buffer[2] = static_cast<uint8_t>((length >> 40) & 0xff); // NOLINT
+    buffer[1] = static_cast<uint8_t>((length >> 48) & 0xff); // NOLINT
+    buffer[0] = static_cast<uint8_t>((length >> 56) & 0xff); // NOLINT
+}
+
+inline void Sha256::storeHash(Sha256Context& context, uint8_t hash[])
+{
+    // Since this implementation uses little endian byte ordering and SHA uses big endian,
+    // reverse all the bytes when copying the final state to the output hash.
+    for (int i = 0; i < 4; ++i) {
+        hash[i] = (context.state[0] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 4] = (context.state[1] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 8] = (context.state[2] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 12] = (context.state[3] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 16] = (context.state[4] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 20] = (context.state[5] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 24] = (context.state[6] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+        hash[i + 28] = (context.state[7] >> (24 - i * 8)) & 0x000000ff; // NOLINT
+    }
 }
 
 }

@@ -15,15 +15,16 @@ void HMac::hmacSha256(
     // Create HMAC Context and Hash Inner Pad
     HMacContext innerContext = createContextForBlockwiseHMacSha256Transformation(key, keyLength);
     uint8_t innerHash[Sha256::SHA256_DIGEST_SIZE] = { 0 };
+
     // Hash Message
     Sha256::sha256(
-        static_cast<const uint8_t*>(data), dataLength, innerHash, &innerContext.shaContext);
+        static_cast<const uint8_t*>(data), dataLength, innerHash, innerContext.shaContext);
 
     // Perform outer Hash
     Sha256Context outerContext = {};
     Sha256::sha256Transform(outerContext, innerContext.keyedOuterPad);
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    Sha256::sha256(innerHash, sizeof(innerHash), hmac, &outerContext);
+    Sha256::sha256(innerHash, sizeof(innerHash), hmac, outerContext);
 }
 HMacContext HMac::createContextForBlockwiseHMacSha256Transformation(
     const uint8_t key[], size_t keyLength)
@@ -79,7 +80,7 @@ void HMac::hmacSha256FinaliseLastBlock(
     Sha256Context outerContext = {};
     Sha256::sha256Transform(outerContext, context.keyedOuterPad);
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    Sha256::sha256(innerHash, sizeof(innerHash), hmac, &outerContext);
+    Sha256::sha256(innerHash, sizeof(innerHash), hmac, outerContext);
 }
 
 }
