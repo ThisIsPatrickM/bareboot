@@ -26,11 +26,17 @@ struct Sha256Context {
     void reset();
 };
 
+/**
+ * @brief Class providing functionality to compute SHA256.
+ *
+ * Usage:
+ * - Either compute full SHA256 using call to sha256()
+ * - Or process data blockwise calling sha256Transform(..) for each block and sha256Finalise(..)
+ * with the last block. Blocks must be of size SHA256_BLOCK_SIZE(64 bytes) except the last block.
+ *
+ */
 class Sha256 {
-    // https://www.rfc-editor.org/rfc/rfc4634#page-6
-    // https://github.com/B-Con/crypto-algorithms/blob/master/sha256.c
-    // https://github.com/h5p9sl/hmac_sha256/blob/master/sha256.c
-    static constexpr uint8_t SHA256_PAD_BYTE = 0x80;
+    static constexpr uint8_t SHA256_PAD_BYTE = 0x80U;
     static constexpr std::size_t SHA256_EXTRA_PADDING_BLOCK_THRESHHOLD = 56;
 
 public:
@@ -45,7 +51,11 @@ public:
      * @param length Length of the data.
      * @param hash Output parameter that contains the resulting hash.
      */
-    static void sha256(const uint8_t* data, std::size_t length, uint8_t hash[SHA256_DIGEST_SIZE]);
+    static void sha256(
+        const uint8_t* data,
+        std::size_t length,
+        uint8_t hash[SHA256_DIGEST_SIZE],
+        Sha256Context* givenContext = nullptr);
 
     /**
      * @brief Computes the transformation step for one Block
@@ -81,7 +91,7 @@ public:
      * @return false
      */
     static bool sha256Verify(
-        const uint8_t* data, std::size_t length, const uint8_t expectedHash[SHA256_DIGEST_SIZE]);
+        const uint8_t* data, std::size_t length, const uint8_t (&expectedHash)[SHA256_DIGEST_SIZE]);
 
 private:
     inline static uint32_t rotateRight(uint32_t value, uint32_t rotation);
@@ -95,7 +105,6 @@ private:
     inline static uint32_t sSig0(uint32_t x); // NOLINT(readability-identifier-length)
     inline static uint32_t sSig1(uint32_t x); // NOLINT(readability-identifier-length)
 
-    //
     /**
      * @brief  Array of constants (first 32 bits of the fractional parts of the cube roots of the
      * first 64 prime numbers

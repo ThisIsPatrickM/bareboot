@@ -49,6 +49,14 @@ public:
         0xdb, 0xe4, 0xd,  0xdc, 0x54, 0x93, 0xea, 0x44, 0xed, 0x20
     };
 
+    static constexpr uint8_t PADDED_MESSAGE[] =
+        "oneblockoneblockoneblockoneblockoneblockoneblockonebloc";
+    static constexpr uint8_t EXPECTED_DIGEST_PADDED_MESSAGE[Sha256::SHA256_DIGEST_SIZE] = {
+        0xcb, 0x8,  0xc2, 0x46, 0xea, 0x59, 0x34, 0x6b, 0x5a, 0xb7, 0xfe,
+        0x66, 0x7f, 0xc6, 0xc2, 0xc3, 0xc0, 0xa6, 0xa7, 0xf0, 0xb4, 0x8e,
+        0x59, 0x46, 0x9d, 0xce, 0xa1, 0x1a, 0x37, 0x7d, 0xca, 0xb2
+    };
+
     uint8_t digestBuffer[Sha256::SHA256_DIGEST_SIZE] = { 0 };
 };
 
@@ -91,6 +99,19 @@ TEST_F(Sha256TestSuite, UnpaddedMessage)
         UNPADDED_MESSAGE, sizeof(UNPADDED_MESSAGE), EXPECTED_DIGEST_UNPADDED_MESSAGE));
 }
 
+TEST_F(Sha256TestSuite, PaddedMessage)
+{
+    Sha256::sha256(PADDED_MESSAGE, sizeof(PADDED_MESSAGE), digestBuffer);
+
+    // for (std::size_t i = 0; i < Sha256::SHA256_DIGEST_SIZE; i++) {
+    //     std::cerr << hex << (unsigned)digestBuffer[i] << " ";
+    // }
+
+    ASSERT_EQ(memcmp(EXPECTED_DIGEST_PADDED_MESSAGE, digestBuffer, Sha256::SHA256_DIGEST_SIZE), 0);
+    ASSERT_TRUE(Sha256::sha256Verify(
+        PADDED_MESSAGE, sizeof(PADDED_MESSAGE), EXPECTED_DIGEST_PADDED_MESSAGE));
+}
+
 TEST_F(Sha256TestSuite, SampleMessageManualUsage)
 {
     // There is only 1 block, so we can immediately finalize
@@ -119,9 +140,7 @@ TEST_F(Sha256TestSuite, LongMessageManualUsage)
         remainingLength -= Sha256::SHA256_BLOCK_SIZE;
     }
     Sha256::sha256Finalise(context, &LONG_MESSAGE[blockIndex], remainingLength, digestBuffer);
-    // for (std::size_t i = 0; i < Sha256::SHA256_DIGEST_SIZE; i++) {
-    //     std::cerr << hex << (unsigned)digestBuffer[i] << " ";
-    // }
+
     ASSERT_EQ(memcmp(EXPECTED_DIGEST_LONG_MESSAGE, digestBuffer, Sha256::SHA256_DIGEST_SIZE), 0);
 }
 

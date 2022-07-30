@@ -61,21 +61,34 @@ void Sha256::sha256Transform(Sha256Context& context, const uint8_t block[SHA256_
     context.bitLength += SHA256_BLOCK_LENGTH_IN_BITS;
 }
 
-void Sha256::sha256(const uint8_t* data, size_t length, uint8_t hash[SHA256_DIGEST_SIZE])
+void Sha256::sha256(
+    const uint8_t* data,
+    size_t length,
+    uint8_t hash[SHA256_DIGEST_SIZE],
+    Sha256Context* givenContext)
 {
-    Sha256Context context {};
+    // TODO Use seperate method maybe that creates Context instead of this optional stuff, that will
+    // always create 2 contexts, but only uses 1!
+    Sha256Context localContext;
+
+    Sha256Context* context = nullptr;
+    if (givenContext == nullptr) {
+        context = &localContext;
+    } else {
+        context = givenContext;
+    }
     int remainingLength = static_cast<int>(length);
     size_t blockIndex = 0;
     while (remainingLength >= static_cast<int>(SHA256_BLOCK_SIZE)) {
         // Handle all complete blocks
         sha256Transform(
-            context, &data[blockIndex]); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+            *context, &data[blockIndex]); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         remainingLength -= SHA256_BLOCK_SIZE;
         blockIndex += SHA256_BLOCK_SIZE;
     }
     // Handle last block and return hash
     sha256Finalise(
-        context,
+        *context,
         &data[blockIndex], // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         remainingLength,
         hash);
@@ -93,9 +106,11 @@ void Sha256::sha256Finalise(
     }
 
     // Transform last data block ending with first bit set to 1 and following zeroes
-    uint8_t temporaryLastBlock[SHA256_BLOCK_SIZE] = { 0 };
+    uint8_t temporaryLastBlock[SHA256_BLOCK_SIZE] = { 0U };
     RODOS::memcpy(temporaryLastBlock, lastBlock, lastBlockLength);
     temporaryLastBlock[lastBlockLength] = SHA256_PAD_BYTE; // Set first bit to 1
+    // Has to be calculated here, because context is muted in next transform step
+    uint64_t calculatedDataBitLength = context.bitLength + lastBlockLength * 8;
 
     // Decide if an additional block is needed for padding
     if (lastBlockLength >= SHA256_EXTRA_PADDING_BLOCK_THRESHHOLD) {
@@ -103,20 +118,19 @@ void Sha256::sha256Finalise(
         sha256Transform(context, temporaryLastBlock);
         // Reinitialize temporary block for adding length
         for (size_t i = 0; i < SHA256_EXTRA_PADDING_BLOCK_THRESHHOLD; i++) {
-            temporaryLastBlock[i] = 0;
+            temporaryLastBlock[i] = 0U;
         }
     }
 
     // Append padding to total messages length in bits and transform
-    uint64_t calculatedBitLength = context.bitLength + lastBlockLength * 8;
-    temporaryLastBlock[63] = calculatedBitLength; // NOLINT
-    temporaryLastBlock[62] = calculatedBitLength >> 8; // NOLINT
-    temporaryLastBlock[61] = calculatedBitLength >> 16; // NOLINT
-    temporaryLastBlock[60] = calculatedBitLength >> 24; // NOLINT
-    temporaryLastBlock[59] = calculatedBitLength >> 32; // NOLINT
-    temporaryLastBlock[58] = calculatedBitLength >> 40; // NOLINT
-    temporaryLastBlock[57] = calculatedBitLength >> 48; // NOLINT
-    temporaryLastBlock[56] = calculatedBitLength >> 56; // NOLINT
+    temporaryLastBlock[63] = calculatedDataBitLength; // NOLINT
+    temporaryLastBlock[62] = calculatedDataBitLength >> 8; // NOLINT
+    temporaryLastBlock[61] = calculatedDataBitLength >> 16; // NOLINT
+    temporaryLastBlock[60] = calculatedDataBitLength >> 24; // NOLINT
+    temporaryLastBlock[59] = calculatedDataBitLength >> 32; // NOLINT
+    temporaryLastBlock[58] = calculatedDataBitLength >> 40; // NOLINT
+    temporaryLastBlock[57] = calculatedDataBitLength >> 48; // NOLINT
+    temporaryLastBlock[56] = calculatedDataBitLength >> 56; // NOLINT
     sha256Transform(context, temporaryLastBlock);
 
     // Since this implementation uses little endian byte ordering and SHA uses big endian,
@@ -136,7 +150,7 @@ void Sha256::sha256Finalise(
 }
 
 bool Sha256::sha256Verify(
-    const uint8_t* data, size_t length, const uint8_t expectedHash[Sha256::SHA256_DIGEST_SIZE])
+    const uint8_t* data, size_t length, const uint8_t (&expectedHash)[Sha256::SHA256_DIGEST_SIZE])
 {
     uint8_t calculatedHash[Sha256::SHA256_DIGEST_SIZE] = { 0 };
     sha256(data, length, calculatedHash);

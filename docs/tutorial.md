@@ -1,6 +1,13 @@
 # Placeholder
 
+## Project Setup
+
+
+
 ## Scripts
+
+
+
 
 ## How to Flash
 

@@ -1,3 +1,4 @@
+import hmac
 import hashlib
 
 
@@ -18,14 +19,14 @@ if __name__ == '__main__':
     BLOCK_SIZED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockoneblockonebloc\0'
     UNPADDED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockoneblo\0'
     PADDED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockonebloc\0'
-    # TODO Collect Messages somewhere seperate and share
+
     messages = [SAMPLE_MESSAGE, LONG_MESSAGE,
                 BLOCK_SIZED_MESSAGE, UNPADDED_MESSAGE, PADDED_MESSAGE]
+    key = b"ABCDEF"
 
     for m in messages:
-
-        sha = hashlib.sha256()
-        sha.update(m)
-        print("Digest of ", m)
-        print(sha.hexdigest())
-        formatToConstexprValue(sha.digest())
+        h = hmac.new(key, m, hashlib.sha256)
+        print("HMAC for message ", m)
+        print(h.hexdigest())
+        formatToConstexprValue(h.digest())
+        print("")
