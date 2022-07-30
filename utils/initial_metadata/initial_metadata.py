@@ -34,7 +34,7 @@ def write_hmac_key(file_name, key_file):
     with open(file_name, 'rb+') as f:
         with open(key_file, 'rb') as key:
             f.seek(CONFIG.HMAC_KEY_OFFSET)
-            f.write(key)
+            f.write(key.read())
 
 
 def get_length(file_name):
@@ -104,6 +104,8 @@ if __name__ == '__main__':
     parser.add_argument("--images", nargs="+", help='paths to image files')
     parser.add_argument('--bootloader', type=str,
                         help='path to bootloader file')
+    parser.add_argument("--keyfile", type=str,
+                        help="path to the keyfile for hmac")
     parser.add_argument('--out', type=str, default="python-vorago.bin",
                         help='path to output image file')
     parser.add_argument('--config', type=str, default="va41620_dev_board",
@@ -115,6 +117,8 @@ if __name__ == '__main__':
 
     put_image_to_file_at_index(
         input_file=args.bootloader, output_file=args.out, index=None)
+
+    write_hmac_key(args.out, args.keyfile)
 
     for index, image_file in enumerate(args.images):
         merge_image_and_fix_metadata(

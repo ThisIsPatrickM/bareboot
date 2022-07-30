@@ -6,7 +6,9 @@
 
 ## Scripts
 
+## Hot to Create a key
 
+`openssl rand 32 -out my.key`
 
 
 ## How to Flash
