@@ -1,5 +1,4 @@
 class Va41620Config:
-    # TODO Adapt this config
 
     # Size of Datatypes to calcate Offset.
     POINTER_SIZE = 4

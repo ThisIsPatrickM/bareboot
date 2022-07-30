@@ -2,8 +2,6 @@ import argparse
 import zlib
 import os
 import subprocess
-import hmac
-import hashlib
 from platform_config import CONFIG_MAP
 
 CONFIG = None
