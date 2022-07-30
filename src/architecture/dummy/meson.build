@@ -1,3 +1,3 @@
-bootloader_dummy_sources = files('architecture_dependent.cpp')
+bootloader_architecture_dummy_sources = files('architecture_dependent.cpp')
 
-bootloader_sources += bootloader_dummy_sources
+bootloader_sources += bootloader_architecture_dummy_sources
