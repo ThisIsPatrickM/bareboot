@@ -235,7 +235,7 @@ void BootRomSpi::updateImage(const void* data, int32_t length, uintptr_t imagePo
         // Write Fragment
         SpiWrite<BUFFER_SIZE> spiWrite {};
         putAddressOffsetIntoMessage(spiWrite.address, imagePointer);
-        bootloader::memcpy::va41620UnsignedMemcpy(spiWrite.data, data, fragmentSize);
+        bootloader::memcpy::va41620UnsignedMemcpy(spiWrite.data, dataPtr, fragmentSize);
         enableWriting();
         m_halSpi.write(&spiWrite, fragmentSize + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
         disableWriting();
