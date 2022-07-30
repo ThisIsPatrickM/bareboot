@@ -3,32 +3,41 @@
     - dosis
   stage: check
   variables:
-    CHECK: tidy
+    CHECK: clang-tidy
     CROSS: ""
     DEVICE: default
-  script: |
-    echo "Executing check named ${CHECK} for device ${DEVICE}"
-    rm -rf build-${DEVICE} && meson build-${DEVICE} ${CROSS}
-    echo "Executing ninja -C build-${DEVICE} ${CHECK}"
-    ninja -C build-${DEVICE} ${CHECK} >> build-${DEVICE}/tidy-output.log
-    if grep -eq "warning: \|error: " build-${DEVICE}/tidy-output.log;
-    then
-      echo "Errors or warnings detected. Please fix them"
-      ninja -C build-${DEVICE} ${CHECK}
-      exit 1
-    fi
+  script: 
+    - echo "Executing check named ${CHECK} for device ${DEVICE}:${MODEL}"
+    - rm -rf build && meson build ${CROSS} 
+    - ninja -Cbuild check-${CHECK}
+  artifacts:
+    name: "$CI_PROJECT_NAME-${CHECK}-${DEVICE}-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/meson-logs/
+    expire_in: 30 days
+  
+    # echo "Executing check named ${CHECK} for device ${DEVICE}"
+    # rm -rf build-${DEVICE} && meson build-${DEVICE} ${CROSS}
+    # echo "Executing ninja -C build-${DEVICE} ${CHECK}"
+    # ninja -C build-${DEVICE} ${CHECK} >> build-${DEVICE}/tidy-output.log
+    # if grep -eq "warning: \|error: " build-${DEVICE}/tidy-output.log;
+    # then
+    #   echo "Errors or warnings detected. Please fix them"
+    #   ninja -C build-${DEVICE} ${CHECK}
+    #   exit 1
+    # fi
 
 clang-tidy:
   extends: .check
   variables:
-    CHECK: tidy
+    CHECK: clang-tidy
 
-# clang-tidy-va41620:
-#   extends: .check
-#   variables:
-#     CHECK: tidy
-#     DEVICE: va41620
-#     CROSS: --cross-file include/va41620/cross_files/cross.ini
+clang-tidy-va41620:
+  extends: .check
+  variables:
+    CHECK: clang-tidy
+    DEVICE: va41620
+    CROSS: --cross-file include/va41620/cross_files/cross.ini
 
 clang-format:
   extends: .check   

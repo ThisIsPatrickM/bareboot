@@ -1,0 +1,170 @@
+---
+image: $CI_REGISTRY/move/software/docker-images/dosis:master
+
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  CROSS_FILE_PATH: cross-files
+  MESON_CONFIG: ""
+  DEFAULT_BRANCH: "main"
+
+stages:
+  - verify
+  - check
+  - build
+  - test
+  - doc
+  - deploy
+  - release
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Execute MR pipeline for MRs
+    - if: '$CI_PIPELINE_SOURCE == "schedule"' # Execute nightly scheduled pipelines
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS' # Do not run additional branch pipeline for MRs
+      when: never
+    - if: '$CI_COMMIT_BRANCH' # Run branch pipeline for every commit to a named branch
+
+
+.ccache_configuration:
+  before_script: &ccache_before_instructions
+    # ccache configuration + show ccache stats at beginning
+    - mkdir -p ccache
+    - export CCACHE_BASEDIR="$PWD"
+    - export CCACHE_DIR="$PWD/ccache"
+    - export CCACHE_COMPILERCHECK=content
+    - ccache --zero-stats
+    - ccache --show-stats
+  after_script: &ccache_after_instructions
+    # show ccache stats at end
+    - export CCACHE_DIR="$PWD/ccache"
+    - ccache --show-stats
+
+
+.cross_compile_before_script:
+  before_script:
+    - *ccache_before_instructions
+    # meson configuration
+    - export CROSS=""
+    - export MESON_CONFIG="${MESON_CONFIG}"
+    - >
+      if [ "$CROSS_FILE_NAME" != "" ]; then
+        export CROSS="--cross-file ${CROSS_FILE_PATH}/${CROSS_FILE_NAME}"
+      fi
+  after_script: *ccache_after_instructions
+
+.check:
+  extends: .cross_compile_before_script
+  tags:
+    - rodos
+  stage: check
+  variables:
+    CHECK: clang-tidy
+  script:
+    - echo "Executing check named ${CHECK} for device ${DEVICE}:${MODEL}"
+    - rm -rf build && meson build ${CROSS} ${MESON_CONFIG}
+    - ninja -Cbuild check-${CHECK}
+  artifacts:
+    name: "$CI_PROJECT_NAME-${CHECK}-${DEVICE}-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/meson-logs/
+    expire_in: 30 days
+
+
+.build:
+  extends: .cross_compile_before_script
+  tags:
+    - rodos
+  stage: build
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: '$CI_COMMIT_BRANCH == $DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH != $DEFAULT_BRANCH'
+      when: manual
+      allow_failure: true
+  dependencies:
+  script:
+    - echo "Building with cross file ${CROSS_FILE_NAME}"
+    - rm -rf build && meson build --werror ${CROSS} ${MESON_CONFIG}
+    - ninja -Cbuild
+    - if bash -c "[[ '${CROSS_FILE_NAME}' != '' ]]"; then pushd build && bash -c
+          "while IFS='' read line; do
+            echo \"Elf \$line\";
+            elf=\$(basename \$line);
+            arm-none-eabi-objcopy -O binary \$line \${elf/elf/bin};
+          done < <(find . -name \"*.elf\")";
+          popd;
+          echo "Binary sizes in Bytes:";
+          bash -c "find build/ -name \"*.bin\" -exec du -cb {} +";
+        fi
+  artifacts:
+    name: "$CI_PROJECT_NAME-${DEVICE}-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/meson-logs/
+      - build/tests/*/*
+      - build/examples/*/*
+    exclude:
+      - build/**/*.o
+      - build/**/*.p
+    expire_in: 30 days
+  cache:
+    paths:
+      - ccache/
+
+.doxygen:
+  stage: doc
+  tags:
+    - rodos
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: '$CI_COMMIT_BRANCH == $DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH != $DEFAULT_BRANCH'
+      when: manual
+      allow_failure: true
+  dependencies:
+  script:
+    - rm -rf build && meson build
+    - ninja -Cbuild doxygen
+  artifacts:
+    paths:
+      - build/doxygen
+    expire_in: 30 days
+
+.pages:
+  stage: deploy
+  tags:
+    - rodos
+  dependencies:
+  script:
+    - cp -r build/doxygen public
+  artifacts:
+    name: "$CI_PROJECT_NAME-${DEVICE}-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - public
+    expire_in: 30 days
+
+
+.tests:
+  extends: .ccache_configuration
+  stage: test
+  tags:
+    - rodos
+  dependencies:
+  script:
+    - rm -rf build && meson build -Db_coverage=true -Db_sanitize=undefined ${MESON_CONFIG}
+    - ninja -Cbuild
+    - (MESON_TESTTHREADS=1 ninja -Cbuild test | tee test-output; exit ${PIPESTATUS[0]})
+    - ninja -Cbuild coverage-text
+    - cat test-output
+    - cat build/meson-logs/coverage.txt
+  artifacts:
+    name: "$CI_PROJECT_NAME-${DEVICE}-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - build/meson-logs/
+      - build/tests/*/*
+    exclude:
+      - build/**/*.o
+      - build/**/*.p
+    expire_in: 30 days
+  cache:
+    paths:
+      - ccache/

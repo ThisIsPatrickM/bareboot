@@ -64,19 +64,70 @@ endif
 
 #####    Clang tidy target    #####
 
-# This adds the clang format file to the build directory
-configure_file(input : '.clang-format',
-               output : '.clang-format',
-	       copy: true)
-run_target('format',
-  command : ['clang-format','-i','-style=file',bootloader_sources])
 
-# This regex excludes any sources from the third_party, tests, benchmarks 
-# and gtest related files.
-regex = '^((?!(third_party|tests|benchmarks|gtest)).)*$'
-# This adds clang tidy support
-configure_file(input : '.clang-tidy',
-               output : '.clang-tidy',
-               copy : true)
-run_target('tidy',
-  command : ['run-clang-tidy-13','-fix', '-j' , '8', 'files', regex ,'-format', '-p='+ meson.build_root()])
+
+if not meson.is_subproject()
+
+    #####    External Programs    #####
+    bash = find_program('bash', required : false)
+    python_interpreter = import('python').find_installation('python3', required : false)
+
+    #####    Doxygen    #####
+    doxygen = find_program('doxygen', required : false)
+    if bash.found() and doxygen.found() and not meson.is_subproject()
+        run_target('doxygen',
+            command : [
+                meson.current_source_dir() + '/utils/build_doxygen.sh',
+                meson.current_source_dir() + '/Doxyfile',
+                'PROJECT_NAME = ' + meson.project_name(),
+                'PROJECT_NUMBER = ' + meson.project_version(),
+                'INPUT += include / src/'
+            ]
+        )
+    endif
+
+    #####    clang-format    #####
+    clang_format = find_program('clang-format', required : false)
+    if bash.found() and python_interpreter.found() and clang_format.found() and not meson.is_subproject()
+        run_target('check-clang-format',
+            command : [
+                meson.current_source_dir() + '/utils/clang-format.sh',
+                meson.current_source_dir() + '/utils/run-clang-format.py',
+                'include',
+                'src',
+            ]
+        )
+    endif
+
+    #####    clang-tidy    #####
+    clang_tidy = find_program('clang-tidy', required : false)
+    gnu_parallel = find_program('parallel', required : false)
+    if bash.found() and clang_tidy.found() and gnu_parallel.found() and not meson.is_subproject()
+        run_target('check-clang-tidy',
+            command : [
+                meson.current_source_dir() + '/utils/clang-tidy.sh',
+                '',
+                meson.current_build_dir()
+            ],
+        )
+    endif
+endif
+
+
+
+# This adds the clang format file to the build directory
+# configure_file(input : '.clang-format',
+#                output : '.clang-format',
+# 	       copy: true)
+# run_target('format',
+#   command : ['clang-format','-i','-style=file',bootloader_sources])
+
+# # This regex excludes any sources from the third_party, tests, benchmarks 
+# # and gtest related files.
+# regex = '^((?!(third_party|tests|benchmarks|gtest)).)*$'
+# # This adds clang tidy support
+# configure_file(input : '.clang-tidy',
+#                output : '.clang-tidy',
+#                copy : true)
+# run_target('tidy',
+#   command : ['run-clang-tidy-13','-fix', '-j' , '8', 'files', regex ,'-format', '-p='+ meson.build_root()])
