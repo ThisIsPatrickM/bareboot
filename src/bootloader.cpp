@@ -34,6 +34,7 @@ void Bootloader::run()
 
 size_t Bootloader::selectImageSlot()
 {
+    // TODO CHeck last success status!
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
     if (isImageValid(preferredImage)) {
         return static_cast<int32_t>(preferredImage);

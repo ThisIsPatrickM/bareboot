@@ -1,10 +1,14 @@
 import argparse
+import hashlib
 import zlib
 import os
+import hmac
 import subprocess
 from platform_config import CONFIG_MAP
 
 CONFIG = None
+
+# TODO Refactor this file to collect all Metadata and then write in one batch!
 
 
 def calc_crc(filename):
@@ -35,6 +39,20 @@ def write_hmac_key(file_name, key_file):
         with open(key_file, 'rb') as key:
             f.seek(CONFIG.HMAC_KEY_OFFSET)
             f.write(key.read())
+
+
+def calc_hmac(image_file, key_file):
+    with open(key_file, 'rb') as key:
+        with open(image_file, 'rb') as image:
+            h = hmac.new(key.read(), image.read(), hashlib.sha256)
+            return h.digest()
+
+
+def write_hmac(output_file, hmac_signature, index):
+    offset = CONFIG.FIRST_HMAC_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
+    with open(output_file, 'rb+') as f:
+        f.seek(offset)
+        f.write(hmac_signature)
 
 
 def get_length(file_name):
@@ -77,7 +95,7 @@ def put_image_to_file_at_index(input_file, output_file, index=None):
     print(process.stdout.read())
 
 
-def merge_image_and_fix_metadata(image_file,  output_file, index):
+def merge_image_and_fix_metadata(image_file,  output_file, index, key_file):
     print(
         f"\nMerge Image {image_file}:{index} into file {output_file} and fix Metadata")
     put_image_to_file_at_index(image_file, output_file, index)
@@ -89,6 +107,9 @@ def merge_image_and_fix_metadata(image_file,  output_file, index):
     write_length(output_file, length, index)
 
     write_complete(output_file, index)
+
+    hmac_signature = calc_hmac(image_file, key_file)
+    write_hmac(output_file, hmac_signature, index)
 
     if index == None and length > CONFIG.BOOTLOADER_SIZE:
         raise Exception(
@@ -122,6 +143,6 @@ if __name__ == '__main__':
 
     for index, image_file in enumerate(args.images):
         merge_image_and_fix_metadata(
-            image_file=image_file, output_file=args.out, index=index)
+            image_file=image_file, output_file=args.out, index=index, key_file=args.keyfile)
 
     print("Done")

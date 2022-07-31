@@ -36,6 +36,8 @@ struct ImageMetadata {
     uint32_t length = 0; // Initially set when building binary
     CompletionStatus completionStatus = CompletionStatus::INCOMPLETE;
     ProtectionStatus protectionStatus = ProtectionStatus::UNPROTECTED;
+    // Be careful with Memcopy and vorago
+    uint8_t hmacSignature[HMAC_DIGEST_LENGTH] = { 0 };
     // TODO use uint32_t, because vorago cannot read uint8 and boolean ?
 };
 
