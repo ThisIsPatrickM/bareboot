@@ -239,26 +239,32 @@ void MetadataInterface::loadImage(size_t imageIndex)
 
 bool MetadataInterface::verifyChecksum(size_t index)
 {
+    if (index >= MetadataInterface::getNumberOfImages()) {
+        return false;
+    }
+
+    if (m_globalImageMetadata->images[index].imageBegin == 0) {
+        return false;
+    }
+
     uint32_t expectedChecksum = m_globalImageMetadata->images[index].crc;
 
     uintptr_t currentData = m_globalImageMetadata->images[index].imageBegin;
-    uint8_t buffer[BUFFER_SIZE] = { 0 };
+    uint8_t buffer[BUFFER_SIZE + SPI_RECEIVE_ADDRESSED_DATA_OFFSET] = { 0 };
     auto remainingLength = static_cast<int32_t>(m_globalImageMetadata->images[index].length);
     uint32_t iterativeChecksum = checksums::Checksums::CRC_INITIAL_VALUE;
 
     while (remainingLength > 0) {
-        uint32_t fragmentSize =
-            remainingLength > BUFFER_SIZE - static_cast<int32_t>(SPI_RECEIVE_ADDRESSED_DATA_OFFSET)
-                ? BUFFER_SIZE - SPI_RECEIVE_ADDRESSED_DATA_OFFSET
-                : remainingLength;
+        uint32_t fragmentSize = remainingLength > BUFFER_SIZE ? BUFFER_SIZE : remainingLength;
 
         uint8_t* localDataBeginPtr = bootRomSpi.getDataOverSpi(currentData, fragmentSize, buffer);
         iterativeChecksum = checksums::Checksums::calculateIterativeCrc32NoTable(
             localDataBeginPtr, fragmentSize, iterativeChecksum);
         remainingLength -= static_cast<int32_t>(fragmentSize);
+        currentData += fragmentSize;
     }
 
-    return expectedChecksum == ~iterativeChecksum;
+    return expectedChecksum == (iterativeChecksum ^ checksums::Checksums::CRC_FINAL_XOR_VALUE);
 }
 
 }

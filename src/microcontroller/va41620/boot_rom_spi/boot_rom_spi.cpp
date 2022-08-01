@@ -187,7 +187,11 @@ uint8_t* BootRomSpi::getDataOverSpi(uintptr_t address, uint32_t length, uint8_t*
     SpiRead readMessage {};
     putAddressOffsetIntoMessage(readMessage.address, static_cast<uint32_t>(address));
 
-    m_halSpi.writeRead(&readMessage, sizeof(readMessage), &receiveBuffer, length);
+    m_halSpi.writeRead(
+        &readMessage,
+        sizeof(readMessage),
+        receiveBuffer,
+        length + SPI_RECEIVE_ADDRESSED_DATA_OFFSET);
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     return &receiveBuffer[SPI_RECEIVE_ADDRESSED_DATA_OFFSET];
 }

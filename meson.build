@@ -12,21 +12,21 @@ project('Bootloader', ['c','cpp'],
 
 ### Prepare Linker Script Dependency
 # According to suggestion by phillipjohnston: https://github.com/mesonbuild/meson/issues/6888#issuecomment-607440358
-linker_script_flags = []
-linker_script_deps = []
-foreach entry : meson.get_cross_property('linker_paths', [''])
+bootloader_linker_script_flags = []
+bootloader_linker_script_deps = []
+foreach entry : meson.get_cross_property('bootloader_linker_paths', [''])
 	if entry != ''
-		linker_script_flags += '-L' + meson.source_root() / entry
+		bootloader_linker_script_flags += '-L' + meson.source_root() / entry
 	endif
 endforeach
-foreach entry : meson.get_cross_property('linker_scripts', [''])
+foreach entry : meson.get_cross_property('bootloader_linker_scripts', [''])
 	if entry != ''
-		linker_script_flags += '-T' + entry
+		bootloader_linker_script_flags += '-T' + entry
 	endif
 endforeach
-foreach entry : meson.get_cross_property('link_depends', [''])
+foreach entry : meson.get_cross_property('bootloader_link_depends', [''])
 	if entry != ''
-		linker_script_deps += meson.source_root() / entry
+		bootloader_linker_script_deps += meson.source_root() / entry
 	endif
 endforeach
 
@@ -38,8 +38,8 @@ subdir('src')
 #####    Executable and Library    #####
 bootloader_exe = executable('bootloader',
           sources : bootloader_sources,
-          link_args: linker_script_flags,
-          link_depends : linker_script_deps,
+          link_args: bootloader_linker_script_flags,
+          link_depends : bootloader_linker_script_deps,
           include_directories: bootloader_inc,
           )
 

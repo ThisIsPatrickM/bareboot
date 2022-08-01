@@ -4,9 +4,9 @@
 
 namespace bootloader {
 
-enum class CompletionStatus : uint16_t { COMPLETE, INCOMPLETE };
+enum class CompletionStatus : uint16_t { INCOMPLETE, COMPLETE };
 
-enum class ProtectionStatus : uint16_t { PROTECTED, UNPROTECTED };
+enum class ProtectionStatus : uint16_t { UNPROTECTED, PROTECTED };
 
 /**
  * @brief Number of metadata images to allocate. Real number can be further reduced depending on

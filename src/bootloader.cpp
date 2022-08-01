@@ -10,7 +10,6 @@ void Bootloader::run()
     m_metadataInterface.init();
 
     size_t selectedImage = selectImageSlot();
-
     // Update Metadata
     const GlobalImageMetadata* globalImageMetadata = m_metadataInterface.getGlobalImageMetadata();
     m_metadataInterface.updateCurrentImage(selectedImage);

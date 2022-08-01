@@ -4,6 +4,7 @@ BLOCK_SIZED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockoneblock
 UNPADDED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockoneblo\0'
 PADDED_MESSAGE = b'oneblockoneblockoneblockoneblockoneblockoneblockonebloc\0'
 
+
 MESSAGES = [SAMPLE_MESSAGE, LONG_MESSAGE,
             BLOCK_SIZED_MESSAGE, UNPADDED_MESSAGE, PADDED_MESSAGE]
 
