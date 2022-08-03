@@ -28,6 +28,8 @@ void Bootloader::run()
 
     Memory_Barrier();
 
+    Trigger_Watchdog();
+
     Start_App();
 }
 

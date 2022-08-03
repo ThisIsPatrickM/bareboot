@@ -2,6 +2,7 @@
 
 /* Controller specific includes */
 #include "architecture/architecture_dependent.h"
+#include "microcontroller/va41620/hw_hal/hw_hal_watchdog.h"
 #include "microcontroller/va41620/irq_handlers.h"
 #include "platform_parameters.h"
 
@@ -22,19 +23,26 @@ void Move_Vector_Table()
     *vtor = ((uintptr_t)vector_table & 0xFFFFFFF8); // NOLINT
 }
 
+// TODO Group in Class Somewhere
 void Disable_Interrupts()
 {
-    // TODO
+    asm volatile("cpsid i");
 }
 
 void Enable_Interrupts()
 {
-    // TODO
+    asm volatile("cpsie i");
 }
 
 void Init_Watchdog()
 {
     // TODO
+    RODOS::HW_HAL_WATCHDOG::hwInitWatchdog(WATCHDOG_TIMEOUT_MS);
+}
+
+void Trigger_Watchdog()
+{
+    RODOS::HW_HAL_WATCHDOG::hwTriggerWatchdog();
 }
 
 /*******************************************************************************

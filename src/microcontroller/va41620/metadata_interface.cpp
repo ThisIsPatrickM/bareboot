@@ -1,7 +1,9 @@
 #include "microcontroller/metadata_interface.h"
 
 /* Controller specific includes */
+#include "architecture/architecture_dependent.h"
 #include "microcontroller/va41620/boot_rom_spi/boot_rom_spi.h"
+#include "microcontroller/va41620/peripheral_ctrl/peripheral_defs.h"
 #include "platform_parameters.h"
 
 namespace bootloader {
@@ -11,22 +13,25 @@ namespace bootloader {
  ******************************************************************************/
 
 using namespace bootloader::va41620::boot_rom_spi;
+using namespace bootloader::architecture;
 BootRomSpi bootRomSpi {};
 uint32_t* romProtection =
     reinterpret_cast<uint32_t*>(PlatformParameters::ROM_PROT_ADDRESS); // NOLINT
 
 void Disable_Code_Memory_Protection()
 {
-    __asm__ volatile("" : : : "memory");
-    *romProtection = 0x1;
-    __asm__ volatile("" : : : "memory");
+    Memory_Barrier();
+    // *romProtection = 0x1;
+    RODOS::SYSCONFIG->ROM_PROT.write(RODOS::SYSCONFIG_ROM_PROT::WREN(1));
+    Memory_Barrier();
 }
 
 void Enable_Code_Memory_Protection()
 {
-    __asm__ volatile("" : : : "memory");
-    *romProtection = 0x0;
-    __asm__ volatile("" : : : "memory");
+    Memory_Barrier();
+    // *romProtection = 0x0;
+    RODOS::SYSCONFIG->ROM_PROT.write(RODOS::SYSCONFIG_ROM_PROT::WREN(0));
+    Memory_Barrier();
 }
 
 /*******************************************************************************

@@ -8,6 +8,8 @@
 
 namespace bootloader {
 
+static constexpr int32_t WATCHDOG_TIMEOUT_MS = 20000;
+
 /**
  * @brief Move interrupt Vector table of application to expected location, or define Table Offset,
  * depending on architectural options.
@@ -33,6 +35,8 @@ void Enable_Interrupts();
  */
 void Init_Watchdog();
 
-// TODO Move to a class?
+void Trigger_Watchdog();
+
+// TODO Move to a class? Yes!
 
 } // namespace bootloader

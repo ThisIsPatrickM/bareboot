@@ -11,10 +11,9 @@ void Disable_Interrupts() {}
 
 void Enable_Interrupts() {}
 
-void Init_Watchdog()
-{
-    // TODO
-}
+void Init_Watchdog() {}
+
+void Trigger_Watchdog() {};
 
 } // namespace bootloader
 
