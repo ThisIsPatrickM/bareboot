@@ -13,7 +13,7 @@ void Enable_Interrupts() {}
 
 void Init_Watchdog() {}
 
-void Trigger_Watchdog() {};
+void Trigger_Watchdog() {}
 
 } // namespace bootloader
 
