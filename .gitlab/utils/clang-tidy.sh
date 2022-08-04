@@ -53,9 +53,9 @@ if [[ ${#FILEPATH_SOURCES[@]} -gt 0 ]]; then
         for file in {}; do \
             echo \"running for file: \" \`realpath --relative-to=. \"\$file\"\`; \
             clang-tidy \
-                -extra-arg=-Wno-unknown-warning-option \
+                --extra-arg=-Wno-unknown-warning-option \
                 -p \"$BUILD_DIR\" \
-                -header-filter='$HEADER_FILTER' \
+                --header-filter='$HEADER_FILTER' \
                 \"\$file\" 2>&1; \
         done" \
         ::: "${FILEPATH_SOURCES[@]}" \
