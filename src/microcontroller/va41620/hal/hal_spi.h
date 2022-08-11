@@ -14,12 +14,8 @@
 
 namespace RODOS {
 
-// TODO Update Namespace and Documentation
-// class HW_HAL_SPI;
-
 using namespace std;
 constexpr uint32_t DEFAULT_BAUDRATE = 1000000;
-// constexpr SPI_IDX BOOTSPI_IDX = SPI_IDX::SPI_IDX3;
 
 class HalSpi {
     HwHalSpi m_context;

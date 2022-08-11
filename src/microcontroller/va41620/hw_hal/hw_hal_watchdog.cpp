@@ -2,7 +2,7 @@
 
 namespace RODOS {
 
-constexpr uint32_t HW_HAL_WATCHDOG::convertMillisecondsToCycles(int32_t milliseconds)
+constexpr uint32_t HwHalWatchdog::convertMillisecondsToCycles(int32_t milliseconds)
 {
     if (static_cast<uint32_t>(milliseconds) >= MAX_TIMEOUT_MILLISECONDS) {
         return UINT32_MAX;
@@ -10,7 +10,7 @@ constexpr uint32_t HW_HAL_WATCHDOG::convertMillisecondsToCycles(int32_t millisec
     return GLOBAL_CLOCK_SETUP.getAPB2Frequency() * (static_cast<uint32_t>(milliseconds));
 }
 
-void HW_HAL_WATCHDOG::hwInitWatchdog(int32_t intervalMilliseconds)
+void HwHalWatchdog::hwInitWatchdog(int32_t intervalMilliseconds)
 {
     if (intervalMilliseconds <= 0) {
         return;
@@ -25,7 +25,7 @@ void HW_HAL_WATCHDOG::hwInitWatchdog(int32_t intervalMilliseconds)
     WATCHDOG->WDOGLOAD.write(convertMillisecondsToCycles(intervalMilliseconds));
 }
 
-void HW_HAL_WATCHDOG::hwTriggerWatchdog()
+void HwHalWatchdog::hwTriggerWatchdog()
 {
     WATCHDOG->WDOGLOAD.write(WATCHDOG->WDOGLOAD.read());
 }

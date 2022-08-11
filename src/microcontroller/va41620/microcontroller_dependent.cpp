@@ -36,12 +36,12 @@ void Enable_Interrupts()
 
 void Init_Watchdog()
 {
-    RODOS::HW_HAL_WATCHDOG::hwInitWatchdog(WATCHDOG_TIMEOUT_MS);
+    RODOS::HwHalWatchdog::hwInitWatchdog(WATCHDOG_TIMEOUT_MS);
 }
 
 void Trigger_Watchdog()
 {
-    RODOS::HW_HAL_WATCHDOG::hwTriggerWatchdog();
+    RODOS::HwHalWatchdog::hwTriggerWatchdog();
 }
 
 /*******************************************************************************

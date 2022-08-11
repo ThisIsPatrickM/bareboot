@@ -8,7 +8,7 @@
 namespace RODOS {
 
 // NOLINTNEXTLINE(readability-identifier-naming)
-class HW_HAL_WATCHDOG {
+class HwHalWatchdog {
 public:
     static void hwInitWatchdog(int32_t intervalMilliseconds);
     static void hwTriggerWatchdog();

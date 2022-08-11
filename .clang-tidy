@@ -73,4 +73,4 @@ CheckOptions:
   - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor, value: 1 }
   - { key: readability-function-cognitive-complexity.Threshold,             value: 100 }
 FormatStyle : 'webkit'
-HeaderFilterRegex : '(src|tests|include)/.*'
+HeaderFilterRegex : "^((?!/subprojects/).)*$"

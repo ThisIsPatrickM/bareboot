@@ -19,8 +19,7 @@ clang-tidy --version
 # Exclude headers in these directories
 HEADER_FILTER="$1"
 if [[ -z "$HEADER_FILTER" ]]; then
-    HEADER_FILTER=".*"
-    # HEADER_FILTER="^((?!subprojects/).)*$"
+    HEADER_FILTER="^((?!subprojects/).)*$"
 fi
 printf "With header filter: $HEADER_FILTER\n"
 
