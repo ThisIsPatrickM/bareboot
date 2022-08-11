@@ -36,7 +36,6 @@ void Enable_Interrupts()
 
 void Init_Watchdog()
 {
-    // TODO
     RODOS::HW_HAL_WATCHDOG::hwInitWatchdog(WATCHDOG_TIMEOUT_MS);
 }
 
@@ -87,10 +86,9 @@ void Wait_About_5_Seconds()
 
 extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
+    Init_Watchdog();
     // TODO remove before flight
     Wait_About_5_Seconds();
-
-    Init_Watchdog();
 
     Memory_Barrier();
 
@@ -100,6 +98,8 @@ extern "C" [[noreturn, gnu::used]] void Reset_Handler()
     Memory_Barrier();
     Call_Constructors();
     Memory_Barrier();
+
+    Trigger_Watchdog();
 
     Bootloader boot {};
     boot.run();

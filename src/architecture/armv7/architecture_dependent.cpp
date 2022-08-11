@@ -12,8 +12,6 @@ struct AppVectorTable {
 void Start_App()
 {
     auto* appVectors = reinterpret_cast<AppVectorTable*>(&__approm_start__); // NOLINT
-    // Image 2 App Vector
-    // auto* appVectors = reinterpret_cast<AppVectorTable*>(68608); // NOLINT
 
     __asm(
         "msr msp, %0;"
