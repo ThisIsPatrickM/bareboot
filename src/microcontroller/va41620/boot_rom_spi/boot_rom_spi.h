@@ -13,6 +13,7 @@ namespace bootloader::va41620::boot_rom_spi {
 // TODO Get BOOTLOADER_OFFSET From somewhere else. Maybe sizeof(Interrupt Table)? or form Memory
 // Map? __bootloader__
 // TODO Sync with rodos boot_rom_spi
+// TODO Remove methods here, that are not used in bootlaoder
 constexpr uint32_t METADATA_OFFSET = 0x350;
 constexpr uint32_t METADATA_PREFERRED_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, preferredImage);
@@ -69,14 +70,6 @@ public:
      * @return void
      */
     void updateGlobalBootcounterOverSpi(uint32_t bootcounter);
-
-    /**
-     * @brief Set the global initialized status.
-     *
-     * @param initialized
-     * @return void
-     */
-    void updateGlobalInitializedOverSpi(bool initialized);
 
     /**
      * @brief Set image version of selected image

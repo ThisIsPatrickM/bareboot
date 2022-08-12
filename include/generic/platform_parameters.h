@@ -5,12 +5,9 @@
 
 namespace bootloader {
 
-using namespace std;
-
 class PlatformParameters {
-private:
 public:
-    static constexpr size_t NUMBER_OF_IMAGES = 4;
+    static constexpr std::size_t NUMBER_OF_IMAGES = 4;
     static constexpr uint32_t MAX_IMAGE_LENGTH = 128;
 
     static_assert(

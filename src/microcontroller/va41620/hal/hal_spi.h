@@ -14,7 +14,6 @@
 
 namespace RODOS {
 
-using namespace std;
 constexpr uint32_t DEFAULT_BAUDRATE = 1000000;
 
 class HalSpi {

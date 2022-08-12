@@ -28,10 +28,9 @@ constexpr std::size_t HMAC_DIGEST_LENGTH = 32;
  */
 struct ImageMetadata {
     uint32_t version = 1;
-    uint32_t crc = 0; // Initially set when building binary
+    uint32_t crc = 0;
     uint32_t bootcounter = 0;
-    uint32_t successCounter = 14;
-    uint32_t lastSuccessStatus = 0;
+    uint32_t lastSuccessStatus = 0; // Equals bootcounter if image was fine the last time
     const uintptr_t imageBegin = 0; // Initially set during Initialization
     uint32_t length = 0; // Initially set when building binary
     CompletionStatus completionStatus = CompletionStatus::INCOMPLETE;

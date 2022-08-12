@@ -5,8 +5,6 @@
 
 namespace bootloader {
 
-using namespace std;
-
 /**
  * @brief Calculates, collects and gives access to all parameters for the platform that are known at
  * compile time.
@@ -14,11 +12,11 @@ using namespace std;
  */
 class PlatformParameters {
 private:
-    static constexpr size_t SRAM_SIZE = 256 * 1024; // 256 KB
+    static constexpr std::size_t SRAM_SIZE = 256 * 1024; // 256 KB
 
-    static constexpr size_t NVM_TOTAL_SIZE = 256 * 1024; // 256KB
-    static constexpr size_t BOOT_ROM_SIZE = 4 * 1024; // 6KB, see linkerscript
-    static constexpr size_t APP_NVM_TOTAL_SIZE =
+    static constexpr std::size_t NVM_TOTAL_SIZE = 256 * 1024; // 256KB
+    static constexpr std::size_t BOOT_ROM_SIZE = 4 * 1024; // 6KB, see linkerscript
+    static constexpr std::size_t APP_NVM_TOTAL_SIZE =
         NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BootRom, for Size see linker script
     static constexpr uintptr_t APP_NVM_BEGIN_ADDRESS = BOOT_ROM_SIZE; // 4KB
 
@@ -27,14 +25,14 @@ public:
      * @brief Number of images that should be saved in NVM. WHen changing also linker scripts!
      *
      */
-    static constexpr size_t NUMBER_OF_IMAGES = 3;
+    static constexpr std::size_t NUMBER_OF_IMAGES = 3;
 
     /**
      * @brief Max size of an image in NVM. It is limited by the size of the NVM divided by the
      * number of images and the size of Code SRAM without dedicated space for BOOT ROM Part.
      *
      */
-    static constexpr size_t MAX_IMAGE_LENGTH =
+    static constexpr std::size_t MAX_IMAGE_LENGTH =
         APP_NVM_TOTAL_SIZE / NUMBER_OF_IMAGES > SRAM_SIZE - BOOT_ROM_SIZE
             ? SRAM_SIZE - BOOT_ROM_SIZE
             : APP_NVM_TOTAL_SIZE / NUMBER_OF_IMAGES;

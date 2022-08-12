@@ -6,6 +6,8 @@
 
 namespace bootloader {
 
+using namespace std;
+
 MetadataInterface::MetadataInterface()
     : m_globalImageMetadata { reinterpret_cast<GlobalImageMetadata*>(__bootloader__) } // NOLINT
 {
