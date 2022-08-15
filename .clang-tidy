@@ -73,4 +73,5 @@ CheckOptions:
   - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor, value: 1 }
   - { key: readability-function-cognitive-complexity.Threshold,             value: 100 }
 FormatStyle : 'webkit'
-HeaderFilterRegex : "^((?!/subprojects/).)*$"
+HeaderFilterRegex : "^((?!(/subprojects/)).)*$"
+# HeaderFilterRegex : '^(.*subprojects.*|.peripheral_ctrl.*|.*rodos_includes/.*|.*rodos/includes/bit_field.h.*|.*bit_field.*|.*python/config.h|.*python/platform.h|.*thirdparty/ae/.*|.*vendored/.*|.*RcppExports.cpp.*|)$'
