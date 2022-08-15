@@ -21,4 +21,8 @@ void Start_App()
 
 void Memory_Barrier() {}
 
+void Disable_Interrupts() {}
+
+void Enable_Interrupts() {}
+
 } // namespace bootloader::architecture

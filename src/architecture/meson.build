@@ -1,5 +1,4 @@
 # Architecture dependent 
-
 architecture = host_machine.cpu()
 supported_architectures = ['armv7']
 

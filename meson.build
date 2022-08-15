@@ -30,10 +30,17 @@ foreach entry : meson.get_cross_property('bootloader_link_depends', [''])
 	endif
 endforeach
 
-#####    Collect Source Files and additional includes to platform_parameters.h depending on target    #####
+#####    Collect Source Files and decide on include paths depending on decisions in src    #####
+# Will be evaluated in src directory, depending on crossfile
 bootloader_sources = []
-bootloader_inc = [include_directories('src', 'include')]
+bootloader_generic_dependent_inc = include_directories('include/generic')
+bootloader_va41620_dependent_inc = include_directories('include/va41620')
+bootloader_va41620_dev_board_dependent_inc = include_directories('include/va41620_dev_board')
+bootloader_independent_inc = include_directories('src', 'include')
+bootloader_dependent_inc = []
 subdir('src')
+
+bootloader_inc = [bootloader_independent_inc, bootloader_dependent_inc]
 
 #####    Executable and Library    #####
 bootloader_exe = executable('bootloader',
@@ -63,9 +70,6 @@ if meson.can_run_host_binaries()
 endif
 
 #####    Clang tidy target    #####
-
-
-
 if not meson.is_subproject()
 
     #####    External Programs    #####

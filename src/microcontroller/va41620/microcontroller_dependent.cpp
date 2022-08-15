@@ -23,17 +23,6 @@ void Move_Vector_Table()
     *vtor = ((uintptr_t)vector_table & 0xFFFFFFF8); // NOLINT
 }
 
-// TODO Group in Class Somewhere
-void Disable_Interrupts()
-{
-    asm volatile("cpsid i");
-}
-
-void Enable_Interrupts()
-{
-    asm volatile("cpsie i");
-}
-
 void Init_Watchdog()
 {
     RODOS::HwHalWatchdog::hwInitWatchdog(WATCHDOG_TIMEOUT_MS);

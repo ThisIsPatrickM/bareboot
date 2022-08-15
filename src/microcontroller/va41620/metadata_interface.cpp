@@ -134,7 +134,7 @@ CompletionStatus MetadataInterface::updateImageCompletionStatus(
     CompletionStatus completionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].completionStatus;
+        return CompletionStatus::INCOMPLETE;
     }
     // Update SPI
     bootRomSpi.updateImageCompletionStatusOverSpi(completionStatus, imageIndex);
@@ -149,7 +149,7 @@ ProtectionStatus MetadataInterface::updateImageProtectionStatus(
     ProtectionStatus protectionStatus, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].protectionStatus;
+        return ProtectionStatus::UNPROTECTED;
     }
     // Update SPI
     bootRomSpi.updateImageProtectionStatusOverSpi(protectionStatus, imageIndex);

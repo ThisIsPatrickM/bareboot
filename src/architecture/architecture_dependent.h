@@ -16,4 +16,16 @@ void Start_App();
  */
 void Memory_Barrier();
 
+/**
+ * @brief Disable interrupts while Vector Table is moved.
+ *
+ */
+void Disable_Interrupts();
+
+/**
+ * @brief Enable interrupts after Vector Table is moved.
+ *
+ */
+void Enable_Interrupts();
+
 } // namespace bootloader::architecture

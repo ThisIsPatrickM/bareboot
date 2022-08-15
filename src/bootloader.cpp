@@ -35,13 +35,14 @@ void Bootloader::run()
 
 size_t Bootloader::selectImageSlot()
 {
-    // TODO CHeck last success status!
+    // TODO Check last success status!
+    // TODO Fix naming of lastbootSuccessful
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
-    if (isImageValid(preferredImage)) {
+    if (isImageValid(preferredImage) && lastBootSuccessful(preferredImage)) {
         return static_cast<int32_t>(preferredImage);
     }
     size_t lastImage = m_metadataInterface.getGlobalImageMetadata()->currentImage;
-    if (isImageValid(lastImage)) {
+    if (isImageValid(lastImage) && lastBootSuccessful(lastImage)) {
         return static_cast<int32_t>(lastImage);
     }
     return selectBestGuessImageSlot();
@@ -75,7 +76,9 @@ bool Bootloader::lastBootSuccessful(size_t index)
 {
     const GlobalImageMetadata* globalImageMetadata = m_metadataInterface.getGlobalImageMetadata();
     return globalImageMetadata->images[index].bootcounter ==
-           globalImageMetadata->images[index].lastSuccessStatus;
+               globalImageMetadata->images[index].lastSuccessStatus ||
+           globalImageMetadata->images[index].bootcounter ==
+               globalImageMetadata->images[index].lastSuccessStatus + 1;
 }
 
 bool Bootloader::verifyChecksum(size_t index)

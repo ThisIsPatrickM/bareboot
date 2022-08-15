@@ -4,4 +4,4 @@ bootloader_va41620_boot_rom_spi_sources = files(
     )
 
 
-bootloader_sources += bootloader_va41620_boot_rom_spi_sources
+bootloader_microcontroller_va41620_sources += bootloader_va41620_boot_rom_spi_sources

@@ -26,4 +26,15 @@ void Memory_Barrier()
     __asm__ volatile("" : : : "memory");
 }
 
+// TODO Group in Class Somewhere
+void Disable_Interrupts()
+{
+    asm volatile("cpsid i");
+}
+
+void Enable_Interrupts()
+{
+    asm volatile("cpsie i");
+}
+
 } // namespace bootloader::architecture
