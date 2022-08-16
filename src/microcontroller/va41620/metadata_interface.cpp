@@ -253,19 +253,19 @@ bool MetadataInterface::verifyChecksum(size_t index)
     uintptr_t currentData = m_globalImageMetadata->images[index].imageBegin;
     uint8_t buffer[BUFFER_SIZE + SPI_RECEIVE_ADDRESSED_DATA_OFFSET] = { 0 };
     auto remainingLength = static_cast<int32_t>(m_globalImageMetadata->images[index].length);
-    uint32_t iterativeChecksum = checksums::Checksums::CRC_INITIAL_VALUE;
+    uint32_t iterativeChecksum = checksums::Crc32::CRC_INITIAL_VALUE;
 
     while (remainingLength > 0) {
         uint32_t fragmentSize = remainingLength > BUFFER_SIZE ? BUFFER_SIZE : remainingLength;
 
         uint8_t* localDataBeginPtr = bootRomSpi.getDataOverSpi(currentData, fragmentSize, buffer);
-        iterativeChecksum = checksums::Checksums::calculateIterativeCrc32NoTable(
+        iterativeChecksum = checksums::Crc32::calculateCrc32Step(
             localDataBeginPtr, fragmentSize, iterativeChecksum);
         remainingLength -= static_cast<int32_t>(fragmentSize);
         currentData += fragmentSize;
     }
 
-    return expectedChecksum == (iterativeChecksum ^ checksums::Checksums::CRC_FINAL_XOR_VALUE);
+    return expectedChecksum == (iterativeChecksum ^ checksums::Crc32::CRC_FINAL_XOR_VALUE);
 }
 
 }

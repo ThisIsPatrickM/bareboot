@@ -1,7 +1,7 @@
 #pragma once
 
 /* Bootloader Includes */
-#include "checksums/checksums.h"
+#include "checksums/crc32.h"
 #include "memory_map.h"
 #include "metadata.h"
 
