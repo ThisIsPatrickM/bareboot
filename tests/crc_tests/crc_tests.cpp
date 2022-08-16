@@ -9,41 +9,45 @@ namespace {
 
 class Crc32TestSuite : public ::testing::Test {
 public:
-    static constexpr size_t MESSAGE_SIZE = 10;
-    uint8_t message[MESSAGE_SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    void SetUp() override {}
+    static constexpr uint8_t TEST_DATA1[] = "Testdata";
+    static constexpr uint8_t TEST_DATA2[] = { 'A', 'B', 'C' };
+
+    static constexpr uint32_t EXPECTED_CRC1 = 3703174379;
+    static constexpr uint32_t EXPECTED_CRC2 = 2743272264;
 };
 
-TEST_F(Crc32TestSuite, IterativeChecksumTwoStepsEqualsChecksum)
+TEST_F(Crc32TestSuite, Test_CRC_IterativeEqualsCompleteCrc)
 {
-    uint32_t fullCrc = Crc32::calculateCrc32(message, MESSAGE_SIZE);
+    uint32_t crc = Crc32::calculateCrc32(TEST_DATA1, sizeof(TEST_DATA1));
 
-    uint32_t iterativeCrc = Crc32::CRC_INITIAL_VALUE;
-    iterativeCrc = Crc32::calculateCrc32Step(message, MESSAGE_SIZE / 2, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[5], MESSAGE_SIZE / 2, iterativeCrc);
-    iterativeCrc = ~iterativeCrc;
+    uint32_t iterativeCRC = Crc32::CRC_INITIAL_VALUE;
+    iterativeCRC = Crc32::calculateCrc32Step(TEST_DATA1, 4, iterativeCRC);
 
-    ASSERT_EQ(fullCrc, iterativeCrc);
+    iterativeCRC = Crc32::calculateCrc32Step(&TEST_DATA1[4], 5, iterativeCRC);
+    iterativeCRC = (iterativeCRC ^ Crc32::CRC_FINAL_XOR_VALUE);
+
+    EXPECT_EQ(iterativeCRC, crc);
 }
 
-TEST_F(Crc32TestSuite, IterativeChecksumBytewiseEqualsChecksum)
+TEST_F(Crc32TestSuite, Test_CRC_TestData1)
 {
-    uint32_t fullCrc = Crc32::calculateCrc32(message, MESSAGE_SIZE);
+    uint32_t crc = Crc32::calculateCrc32(TEST_DATA1, sizeof(TEST_DATA1));
+    EXPECT_EQ(crc, EXPECTED_CRC1);
+}
 
-    uint32_t iterativeCrc = Crc32::CRC_INITIAL_VALUE;
-    iterativeCrc = Crc32::calculateCrc32Step(&message[0], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[1], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[2], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[3], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[4], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[5], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[6], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[7], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[8], 1, iterativeCrc);
-    iterativeCrc = Crc32::calculateCrc32Step(&message[9], 1, iterativeCrc);
-    iterativeCrc = ~iterativeCrc;
+TEST_F(Crc32TestSuite, Test_CRC_TestData2)
+{
+    uint32_t crc = Crc32::calculateCrc32(TEST_DATA2, sizeof(TEST_DATA2));
+    EXPECT_EQ(crc, EXPECTED_CRC2);
+}
 
-    ASSERT_EQ(fullCrc, iterativeCrc);
+TEST_F(Crc32TestSuite, Test_CRC_TestData2Iterative)
+{
+    uint32_t iterative = Crc32::CRC_INITIAL_VALUE;
+    iterative = Crc32::calculateCrc32Step(&TEST_DATA2[0], 1, iterative);
+    iterative = Crc32::calculateCrc32Step(&TEST_DATA2[1], 1, iterative);
+    iterative = Crc32::calculateCrc32Step(&TEST_DATA2[2], 1, iterative);
+    EXPECT_EQ(iterative ^ Crc32::CRC_FINAL_XOR_VALUE, EXPECTED_CRC2);
 }
 
 }
