@@ -22,21 +22,24 @@ public:
     /**
      * @brief Calculate CRC2 checksum for a given memory area
      *
-     * @tparam POLYNOM The Polynom that will be used for calculation.
      * @param message Memory address of start byte of area to do checksum.
      * @param length The length of the memory area to calculate checksum.
+     * @param polynom The Polynom that will be used for calculation.
      * @return uint32_t Calculated CRC32 checksum in host byte order.
      */
-    template <uint32_t POLYNOM = DEFAULT_POLYNOM>
-    static uint32_t calculateCrc32(const uint8_t* message, uint32_t length)
+    static uint32_t calculateCrc32(
+        const uint8_t* message, uint32_t length, uint32_t polynom = DEFAULT_POLYNOM)
     {
+        if (message == nullptr) {
+            return 0;
+        }
         uint32_t crc = CRC_INITIAL_VALUE; // NOLINT
 
         for (uint32_t i = 0; i < length; i++) {
             crc = crc ^ message[i]; // NOLINT
-            for (int j = 0; j < 8; j++) { // Do eight times.
+            for (int j = 0; j < 8; j++) {
                 if (crc & 1) { // NOLINT
-                    crc = (crc >> 1) ^ POLYNOM; // NOLINT
+                    crc = (crc >> 1) ^ polynom; // NOLINT
                 } else {
                     crc = crc >> 1;
                 }
@@ -62,16 +65,20 @@ public:
      * @param message Memory address of start byte of area to do checksum.
      * @param length The length of the memory area to calculate checksum.
      * @param crc Initial value to calculate CRC.
+     * @tparam polynom The Polynom that will be used for calculation.
      * @return uint32_t New CRC after memory area.
      */
-    template <uint32_t POLYNOM = DEFAULT_POLYNOM>
-    static uint32_t calculateCrc32Step(const uint8_t* message, uint32_t length, uint32_t crc)
+    static uint32_t calculateCrc32Step(
+        const uint8_t* message, uint32_t length, uint32_t crc, uint32_t polynom = DEFAULT_POLYNOM)
     {
+        if (message == nullptr) {
+            return crc;
+        }
         for (uint32_t i = 0; i < length; i++) {
             crc = crc ^ message[i]; // NOLINT
-            for (int j = 0; j < 8; j++) { // Do eight times.
+            for (int j = 0; j < 8; j++) {
                 if (crc & 1) { // NOLINT
-                    crc = (crc >> 1) ^ POLYNOM; // NOLINT
+                    crc = (crc >> 1) ^ polynom; // NOLINT
                 } else {
                     crc = crc >> 1;
                 }
