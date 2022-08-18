@@ -24,7 +24,7 @@ public:
     static constexpr ProtectionStatus EXPECTED_PROTECTION_STATUS = ProtectionStatus::PROTECTED;
     static constexpr uint8_t SAMPLE_DATA[] = { 1, 2, 3, 4, 5, 6 };
 
-    MetadataInterface meta { reinterpret_cast<GlobalImageMetadata*>(__bootloader__) };
+    MetadataInterface meta { reinterpret_cast<GlobalImageMetadata*>(__bootloader__) }; // NOLINT
     const GlobalImageMetadata* globalMetadata = meta.getGlobalImageMetadata();
 };
 
