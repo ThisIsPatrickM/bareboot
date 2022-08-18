@@ -124,6 +124,11 @@ TEST_F(MetadataInterfaceTestSuite, GetMaxImageLength)
     EXPECT_EQ(meta.getMaxImageLength(), PlatformParameters::MAX_IMAGE_LENGTH);
 }
 
+TEST_F(MetadataInterfaceTestSuite, InitDoesNotBreak)
+{
+    meta.init();
+}
+
 TEST_F(MetadataInterfaceTestSuite, UpdateImage)
 {
     // TODO This only writes to boot ROM

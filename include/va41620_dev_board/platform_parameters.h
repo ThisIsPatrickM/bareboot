@@ -47,12 +47,6 @@ public:
         APP_NVM_BEGIN_ADDRESS + 2 * MAX_IMAGE_LENGTH
     };
 
-    /**
-     * @brief Location of Register that protects writing to Code ROM.
-     *
-     */
-    static constexpr uintptr_t ROM_PROT_ADDRESS = 0x40010010;
-
     static_assert(
         PlatformParameters::MAX_IMAGE_LENGTH + PlatformParameters::BOOT_ROM_SIZE <=
             PlatformParameters::SRAM_SIZE,
