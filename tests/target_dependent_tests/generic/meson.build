@@ -12,6 +12,6 @@ generic_additional_includes =  [
 # Unit Tests
 generic_unit_tests += {
     'name'   : 'Bootloader Metadata Generic Unit Test',
-    'src'    : files('platform_parameter_tests.cpp') + genertic_unit_tests_sources,
+    'src'    : files('metadata_interface_tests.cpp') + genertic_unit_tests_sources,
     'inc'    : generic_additional_includes
 }

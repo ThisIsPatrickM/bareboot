@@ -1,6 +1,6 @@
 
 gtest_main_dep = gtest_proj.get_variable('gtest_main_dep')
-# gtest_dep = gtest_proj.get_variable('gtest_dep')
+gtest_dep = gtest_proj.get_variable('gtest_dep')
 # gtest_incdir = gtest_proj.get_variable('gtest_incdir')
 gmock_dep = gtest_proj.get_variable('gmock_dep')
 # gmock_incdir = gtest_proj.get_variable('gmock_incdir')
@@ -17,7 +17,7 @@ foreach t : bootloader_unit_tests
         sources             : t['src'],
         dependencies        : [
             t.get('deps', []),
-            gtest_main_dep, gmock_dep
+            gtest_main_dep, gmock_dep, gtest_dep
         ],
         include_directories : bootloader_inc,
         link_with : [bootloader_lib]

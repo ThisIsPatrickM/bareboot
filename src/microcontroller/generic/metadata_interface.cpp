@@ -13,6 +13,11 @@ MetadataInterface::MetadataInterface()
 {
 }
 
+MetadataInterface::MetadataInterface(GlobalImageMetadata* globalImageMetadata)
+    : m_globalImageMetadata(globalImageMetadata)
+{
+}
+
 const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
 {
     return m_globalImageMetadata;
@@ -92,7 +97,7 @@ ProtectionStatus MetadataInterface::updateImageProtectionStatus(
 uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
-        length > PlatformParameters::MAX_IMAGE_LENGTH) {
+        length >= PlatformParameters::MAX_IMAGE_LENGTH) {
         return m_globalImageMetadata->images[imageIndex].length;
     }
     m_globalImageMetadata->images[imageIndex].length = length;

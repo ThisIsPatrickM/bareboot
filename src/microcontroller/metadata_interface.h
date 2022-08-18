@@ -23,6 +23,8 @@ public:
      */
     MetadataInterface();
 
+    MetadataInterface(GlobalImageMetadata* globalImageMetadata);
+
     /**
      * @brief Get the Global Image Metadata object
      *

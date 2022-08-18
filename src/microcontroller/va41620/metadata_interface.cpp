@@ -39,6 +39,11 @@ MetadataInterface::MetadataInterface()
 {
 }
 
+MetadataInterface::MetadataInterface(GlobalImageMetadata* globalImageMetadata)
+    : m_globalImageMetadata(globalImageMetadata)
+{
+}
+
 void MetadataInterface::init() // NOLINT(readability-convert-member-functions-to-static)
 {
     bootRomSpi.init();
@@ -125,6 +130,7 @@ uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, size_t 
     bootRomSpi.updateImageBootcounterOverSpi(bootcounter, imageIndex);
     // Update code Memory
     Disable_Code_Memory_Protection();
+
     m_globalImageMetadata->images[imageIndex].bootcounter = bootcounter;
     Enable_Code_Memory_Protection();
     return m_globalImageMetadata->images[imageIndex].bootcounter;
@@ -187,6 +193,11 @@ size_t MetadataInterface::getMaxImageLength()
 
 void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
 {
+    if (srcImageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
+        dstImageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
+        return;
+    }
+
     uintptr_t sourceImagePointer = m_globalImageMetadata->images[srcImageIndex].imageBegin;
     uintptr_t destinationImagePointer = m_globalImageMetadata->images[dstImageIndex].imageBegin;
     auto length = static_cast<int32_t>(m_globalImageMetadata->images[srcImageIndex].length);
@@ -204,6 +215,10 @@ void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
 void MetadataInterface::updateImage(
     const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset)
 {
+    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
+        imageOffset + length >= PlatformParameters::MAX_IMAGE_LENGTH) {
+        return;
+    }
     uintptr_t imagePointer = m_globalImageMetadata->images[imageIndex].imageBegin;
     imagePointer += imageOffset;
 
@@ -215,10 +230,10 @@ void MetadataInterface::loadImage(size_t imageIndex)
     if (imageIndex >= MetadataInterface::getNumberOfImages()) {
         return;
     }
-
-    if (reinterpret_cast<uintptr_t>(__approm_start__) == // NOLINT
+    // TODO Check if this needs a &. Pretty sure it does!
+    if (reinterpret_cast<uintptr_t>(&__approm_start__) == // NOLINT
         m_globalImageMetadata->images[imageIndex].imageBegin) {
-        // Nothing to do
+        // Nothing to do, because the image was already loaded by default
         return;
     }
 

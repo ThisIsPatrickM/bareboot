@@ -12,7 +12,7 @@ foreach t : va41620_unit_tests
         sources             : t['src'],
         dependencies        : [
             t.get('deps', []),
-            gtest_main_dep, gmock_dep
+            gtest_main_dep, gmock_dep, gtest_dep
         ],
         include_directories : [
             t.get('inc', []),
@@ -28,7 +28,7 @@ foreach t : generic_unit_tests
         sources             : t['src'],
         dependencies        : [
             t.get('deps', []),
-            gtest_main_dep, gmock_dep
+            gtest_main_dep, gmock_dep, gtest_dep
         ],
         include_directories : [t.get('inc', []), bootloader_independent_inc],
     )
