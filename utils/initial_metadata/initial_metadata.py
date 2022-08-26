@@ -1,10 +1,9 @@
 import argparse
 import hashlib
-import zlib
+import crc32c
 import os
 import hmac
 import subprocess
-from enum import Enum
 from platform_config import CONFIG_MAP
 
 
@@ -26,15 +25,12 @@ class GlobalImageMetadata:
         self.images: list(ImageMetadata) = []
 
 
-def calculate_crc(image_file):
+def calculate_crc32c(image_file):
     """
-    Calculate the CRC32 of the given file
+    Calculate the Castagnoli CRC32 of the given file
     """
     with open(image_file, "rb") as f:
-        # checksum = 0xFFFFFFFF
-        # checksum = 0
-        checksum = zlib.crc32(f.read())
-
+        checksum = crc32c.crc32c(f.read())
         return checksum
 
 
@@ -53,7 +49,7 @@ def calculate_hmac_signature(image_file, key_file):
 def extract_image_metadata(global_metadata: GlobalImageMetadata, image_file, key_file):
     global_metadata.hmac_key_file = key_file
     image_meta = ImageMetadata()
-    image_meta.crc = calculate_crc(image_file)
+    image_meta.crc = calculate_crc32c(image_file)
     image_meta.length = get_length(image_file)
     image_meta.hmac_signature = calculate_hmac_signature(image_file, key_file)
     image_meta.file_name = image_file
@@ -108,9 +104,6 @@ def write_crc(output_file, crc, index):
     Put the given CRC in the metadata of the given file to the given imageIndex
     """
     print("Checksum is ", hex(crc))
-    print("Checksum of ABC is ", zlib.crc32(b"ABC"))
-    print("Checksum of ABC is ", zlib.crc32(b"ABC", 0))
-    print("Checksum of ABC is ", zlib.crc32(b"ABC", 0xFFFFFFFF))
 
     offset = CONFIG.FIRST_CRC_OFFSET + CONFIG.SIZE_OF_IMAGE_METADATA * index
     with open(output_file, 'rb+') as f:

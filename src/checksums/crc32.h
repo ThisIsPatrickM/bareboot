@@ -12,10 +12,9 @@ namespace bootloader::checksums {
 class Crc32 {
 public:
     /**
-     * @brief DEFAULT_POLYNOM matches the polynom used by a default Linux CLI "crc32 my_file"
-     * and python library "zlib.crc32(...)"
+     * @brief DEFAULT_POLYNOM matches the the castagnoli polynom in reversed representations
      */
-    static constexpr uint32_t DEFAULT_POLYNOM = 0xEDB88320;
+    static constexpr uint32_t DEFAULT_POLYNOM = 0x82F63B78;
     static constexpr uint32_t CRC_INITIAL_VALUE = 0xFFFFFFFF;
     static constexpr uint32_t CRC_FINAL_XOR_VALUE = 0xFFFFFFFF;
 
@@ -27,7 +26,7 @@ public:
      * @param polynom The Polynom that will be used for calculation.
      * @return uint32_t Calculated CRC32 checksum in host byte order.
      */
-    static uint32_t calculateCrc32(
+    static uint32_t calculateCRC32(
         const uint8_t* message, uint32_t length, uint32_t polynom = DEFAULT_POLYNOM)
     {
         if (message == nullptr) {
@@ -56,7 +55,7 @@ public:
      *
      * Usage:
      * - Caller needs to begin with CRC_INITIAL_VALUE
-     * - Keep calling calculateCrc32Step() with memory areas that should be used to calculate CRC
+     * - Keep calling calculateCRC32Step() with memory areas that should be used to calculate CRC
      * and use previous result as crc input
      * - Once every memory area has been used, calculate (crc ^ CRC_FINAL_XOR_VALUE) with the last
      * output.
@@ -68,7 +67,7 @@ public:
      * @tparam polynom The Polynom that will be used for calculation.
      * @return uint32_t New CRC after memory area.
      */
-    static uint32_t calculateCrc32Step(
+    static uint32_t calculateCRC32Step(
         const uint8_t* message, uint32_t length, uint32_t crc, uint32_t polynom = DEFAULT_POLYNOM)
     {
         if (message == nullptr) {

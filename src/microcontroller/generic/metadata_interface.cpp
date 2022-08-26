@@ -174,7 +174,7 @@ bool MetadataInterface::verifyChecksum(std::size_t index)
     }
     uint32_t expectedChecksum = m_globalImageMetadata->images[index].crc;
 
-    uint32_t actualChecksum = checksums::Crc32::calculateCrc32(
+    uint32_t actualChecksum = checksums::Crc32::calculateCRC32(
         reinterpret_cast<uint8_t*>( // NOLINT
             m_globalImageMetadata->images[index].imageBegin),
         m_globalImageMetadata->images[index].length);

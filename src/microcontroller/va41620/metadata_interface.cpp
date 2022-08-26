@@ -274,7 +274,7 @@ bool MetadataInterface::verifyChecksum(size_t index)
         uint32_t fragmentSize = remainingLength > BUFFER_SIZE ? BUFFER_SIZE : remainingLength;
 
         uint8_t* localDataBeginPtr = bootRomSpi.getDataOverSpi(currentData, fragmentSize, buffer);
-        iterativeChecksum = checksums::Crc32::calculateCrc32Step(
+        iterativeChecksum = checksums::Crc32::calculateCRC32Step(
             localDataBeginPtr, fragmentSize, iterativeChecksum);
         remainingLength -= static_cast<int32_t>(fragmentSize);
         currentData += fragmentSize;
