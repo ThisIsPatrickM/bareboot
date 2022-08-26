@@ -7,7 +7,6 @@
 
 using namespace bootloader;
 using namespace testing;
-using namespace std;
 
 class MetadataInterfaceTestSuite : public ::testing::Test {
 public:

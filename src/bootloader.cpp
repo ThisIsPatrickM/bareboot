@@ -1,9 +1,7 @@
 #include "bootloader.h"
 
+using namespace bootloader::architecture;
 namespace bootloader {
-
-using namespace std;
-using namespace architecture;
 
 void Bootloader::run()
 {

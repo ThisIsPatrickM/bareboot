@@ -20,7 +20,7 @@ public:
 
     void init([[maybe_unused]] uint32_t frequency) {}
 
-    int32_t writeRead(
+    int32_t writeRead( // NOLINT
         [[maybe_unused]] const void* txBuffer,
         [[maybe_unused]] std::size_t txSize,
         [[maybe_unused]] void* rxBuffer,
@@ -29,7 +29,9 @@ public:
         return -1;
     }
 
-    int32_t write([[maybe_unused]] const void* txBuffer, [[maybe_unused]] std::size_t txSize)
+    int32_t write( // NOLINT
+        [[maybe_unused]] const void* txBuffer,
+        [[maybe_unused]] std::size_t txSize)
     {
         return -1;
     }
