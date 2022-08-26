@@ -24,3 +24,4 @@ Updating a new image at runtime is done by the bootmanager, whcih is not part of
 The initial target hardware is VA41620 from Vorage with an ARM CPU. 
 
 
+
