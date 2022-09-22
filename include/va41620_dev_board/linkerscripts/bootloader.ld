@@ -10,7 +10,7 @@ MEMORY
 {
 RAM (xrw)   : ORIGIN = 0x1fff8000, LENGTH = 64K
 BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
-/* ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K */
+/* MAX_IMAGE_LENGTH in platform_parameters.h = 86016 */
 ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 86016
 }
 

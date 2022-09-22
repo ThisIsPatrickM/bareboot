@@ -11,8 +11,7 @@ MEMORY
 {
 RAM (xrw)   : ORIGIN = 0x1fff8000, LENGTH = 64K
 BOOTROM (rx)    : ORIGIN = 0x00000000, LENGTH = 4K
-/* TODO Set fixed length and use in Code at the size of one Image. Problem is Compiletime/Linktime. Because Imagesize < ROM Size. Static check helps to prevent errors */ 
-/* ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 252K */
+/* MAX_IMAGE_LENGTH in platform_parameters.h = 86016 */
 ROM (rx)    : ORIGIN = 0x00000000+4K, LENGTH = 86016
 }
 
@@ -33,7 +32,8 @@ SECTIONS
     . = ALIGN(8);
   } >ROM
 
-    __bootloader__ = . - LENGTH(BOOTROM);
+  /* Label to the Metadata Table. sizeof(isr_vector) in bootloader and app is equal, so this calculation is correct */
+  __bootloader__ = . - LENGTH(BOOTROM);
 
   /* The program code and other data goes into FLASH */
   .text :
