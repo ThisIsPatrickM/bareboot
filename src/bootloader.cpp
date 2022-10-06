@@ -17,14 +17,10 @@ void Bootloader::run()
 
     // TODO Reset last successStatus when updating/copying image!
 
-    Memory_Barrier();
-
     m_metadataInterface.loadImage(selectedImage);
     Disable_Interrupts();
     Move_Vector_Table();
     Enable_Interrupts();
-
-    Memory_Barrier();
 
     Trigger_Watchdog();
 

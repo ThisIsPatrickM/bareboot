@@ -11,12 +11,6 @@ namespace bootloader::architecture {
 void Start_App();
 
 /**
- * @brief Execute Memory barrier, to ensure transactions are complete
- *
- */
-void Memory_Barrier();
-
-/**
  * @brief Disable interrupts while Vector Table is moved.
  *
  */

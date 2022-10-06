@@ -40,6 +40,11 @@ typedef void (*constructor)(); // NOLINT
 extern "C" constructor __init_array_start[]; // NOLINT
 extern "C" constructor __init_array_end[]; // NOLINT
 
+inline void Memory_Barrier()
+{
+    __asm__ volatile("" : : : "memory");
+}
+
 void Call_Constructors()
 {
     for (constructor* i = __init_array_start; i != __init_array_end; i++) { // NOLINT

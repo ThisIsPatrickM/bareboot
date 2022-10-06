@@ -16,6 +16,11 @@ using namespace bootloader::va41620::boot_rom_spi;
 using namespace bootloader::architecture;
 BootRomSpi bootRomSpi {};
 
+inline void Memory_Barrier()
+{
+    __asm__ volatile("" : : : "memory");
+}
+
 void Disable_Code_Memory_Protection()
 {
     Memory_Barrier();

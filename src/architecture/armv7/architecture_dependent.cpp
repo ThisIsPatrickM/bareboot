@@ -21,11 +21,6 @@ void Start_App()
     );
 }
 
-void Memory_Barrier()
-{
-    __asm__ volatile("" : : : "memory");
-}
-
 // TODO Group in Class Somewhere
 void Disable_Interrupts()
 {
