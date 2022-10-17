@@ -139,6 +139,7 @@ public:
 
 private:
     GlobalImageMetadata* m_globalImageMetadata;
+    static constexpr unsigned LOAD_RETRIES = 3;
 };
 
 }

@@ -164,7 +164,19 @@ void MetadataInterface::loadImage(std::size_t imageIndex)
     void* source =
         reinterpret_cast<void*>(m_globalImageMetadata->images[imageIndex].imageBegin); // NOLINT
 
-    RODOS::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
+    for (unsigned i = 0; i < LOAD_RETRIES; i++) {
+        // Load
+        RODOS::memcpy(destination, source, m_globalImageMetadata->images[imageIndex].length);
+        // Verify
+        if (checksums::Crc32::calculateCRC32(
+                static_cast<const uint8_t*>(destination),
+                m_globalImageMetadata->images[imageIndex].length) ==
+            m_globalImageMetadata->images[imageIndex].crc) {
+            return;
+        }
+    }
+
+    // TODO Reset System, load image failed 3 times in a row!
 }
 
 bool MetadataInterface::verifyChecksum(std::size_t index)

@@ -235,7 +235,7 @@ void MetadataInterface::loadImage(size_t imageIndex)
     if (imageIndex >= MetadataInterface::getNumberOfImages()) {
         return;
     }
-    // TODO Check if this needs a &. Pretty sure it does!
+
     if (reinterpret_cast<uintptr_t>(&__approm_start__) == // NOLINT
         m_globalImageMetadata->images[imageIndex].imageBegin) {
         // Nothing to do, because the image was already loaded by default
@@ -248,14 +248,25 @@ void MetadataInterface::loadImage(size_t imageIndex)
     }
 
     void* destination = reinterpret_cast<void*>(&__approm_start__); // NOLINT
-    Disable_Code_Memory_Protection();
 
-    bootRomSpi.loadImage(
-        destination,
-        static_cast<int32_t>(m_globalImageMetadata->images[imageIndex].length),
-        m_globalImageMetadata->images[imageIndex].imageBegin);
+    for (unsigned i = 0; i < LOAD_RETRIES; i++) {
+        // Load
+        Disable_Code_Memory_Protection();
+        bootRomSpi.loadImage(
+            destination,
+            static_cast<int32_t>(m_globalImageMetadata->images[imageIndex].length),
+            m_globalImageMetadata->images[imageIndex].imageBegin);
+        Enable_Code_Memory_Protection();
 
-    Enable_Code_Memory_Protection();
+        // Verify
+        if (checksums::Crc32::calculateCRC32(
+                static_cast<const uint8_t*>(destination),
+                m_globalImageMetadata->images[imageIndex].length) ==
+            m_globalImageMetadata->images[imageIndex].crc) {
+            return;
+        }
+    }
+    // TODO Reset System, load image failed 3 times in a row!
 }
 
 bool MetadataInterface::verifyChecksum(size_t index)
