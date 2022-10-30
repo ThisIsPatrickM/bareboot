@@ -2,8 +2,8 @@
 
 /* Controller specific includes */
 #include "architecture/architecture_dependent.h"
-#include "microcontroller/va41620/hw_hal/hw_hal_watchdog.h"
 #include "microcontroller/va41620/irq_handlers.h"
+#include "microcontroller/va41620/rodos_includes/hw_hal/hw_hal_watchdog.h"
 #include "platform_parameters.h"
 
 namespace bootloader {
@@ -87,11 +87,10 @@ void Wait_About_5_Seconds()
 /*******************************************************************************
  * Entry Point from Linker
  ******************************************************************************/
-
 extern "C" [[noreturn, gnu::used]] void Reset_Handler()
 {
     Init_Watchdog();
-    // TODO remove before flight
+    // TODO Remove before flight. For development useful in case a bad image is flashed.
     Wait_About_5_Seconds();
 
     Memory_Barrier();

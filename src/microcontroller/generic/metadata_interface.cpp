@@ -21,15 +21,6 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
     return m_globalImageMetadata;
 }
 
-std::size_t MetadataInterface::updatePreferredImage(std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->preferredImage;
-    }
-    m_globalImageMetadata->preferredImage = imageIndex;
-    return m_globalImageMetadata->preferredImage;
-}
-
 std::size_t MetadataInterface::updateCurrentImage(std::size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
@@ -45,61 +36,13 @@ uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
     return m_globalImageMetadata->globalBootcounter;
 }
 
-uint32_t MetadataInterface::updateImageVersion(uint32_t version, std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].version;
-    }
-    m_globalImageMetadata->images[imageIndex].version = version;
-    return m_globalImageMetadata->images[imageIndex].version;
-}
-
-uint32_t MetadataInterface::updateImageCrc(uint32_t crc, std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].crc;
-    }
-    m_globalImageMetadata->images[imageIndex].crc = crc;
-    return m_globalImageMetadata->images[imageIndex].crc;
-}
-
 uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, std::size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].bootcounter;
+        return 0;
     }
     m_globalImageMetadata->images[imageIndex].bootcounter = bootcounter;
     return m_globalImageMetadata->images[imageIndex].bootcounter;
-}
-
-CompletionStatus MetadataInterface::updateImageCompletionStatus(
-    CompletionStatus completionStatus, std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].completionStatus;
-    }
-    m_globalImageMetadata->images[imageIndex].completionStatus = completionStatus;
-    return m_globalImageMetadata->images[imageIndex].completionStatus;
-}
-
-ProtectionStatus MetadataInterface::updateImageProtectionStatus(
-    ProtectionStatus protectionStatus, std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->images[imageIndex].protectionStatus;
-    }
-    m_globalImageMetadata->images[imageIndex].protectionStatus = protectionStatus;
-    return m_globalImageMetadata->images[imageIndex].protectionStatus;
-}
-
-uint32_t MetadataInterface::updateImageLength(uint32_t length, std::size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
-        length >= PlatformParameters::MAX_IMAGE_LENGTH) {
-        return m_globalImageMetadata->images[imageIndex].length;
-    }
-    m_globalImageMetadata->images[imageIndex].length = length;
-    return m_globalImageMetadata->images[imageIndex].length;
 }
 
 std::size_t MetadataInterface::getNumberOfImages()
@@ -114,35 +57,6 @@ std::size_t MetadataInterface::getMaxImageLength()
 
 void MetadataInterface::init() {}
 
-void MetadataInterface::copyImage(std::size_t srcImageIndex, std::size_t dstImageIndex)
-{
-    void* sourceImagePointer =
-        reinterpret_cast<void*>(m_globalImageMetadata->images[srcImageIndex].imageBegin); // NOLINT
-    void* destinationImagePointer =
-        reinterpret_cast<void*>(m_globalImageMetadata->images[dstImageIndex].imageBegin); // NOLINT
-    std::size_t length = m_globalImageMetadata->images[srcImageIndex].length;
-
-    if (sourceImagePointer == nullptr || destinationImagePointer == nullptr) {
-        return;
-    }
-
-    RODOS::memcpy(destinationImagePointer, sourceImagePointer, length);
-}
-
-void MetadataInterface::updateImage(
-    const void* data, int32_t length, std::size_t imageIndex, uint32_t imageOffset)
-{
-    void* imagePointer = reinterpret_cast<void*>( // NOLINT
-        m_globalImageMetadata->images[imageIndex].imageBegin + imageOffset);
-
-    if (imagePointer == nullptr) {
-        return;
-    }
-    // TODO Length check?
-
-    RODOS::memcpy(imagePointer, data, length);
-}
-
 void MetadataInterface::loadImage(std::size_t imageIndex)
 {
     if (imageIndex >= MetadataInterface::getNumberOfImages()) {
@@ -151,12 +65,10 @@ void MetadataInterface::loadImage(std::size_t imageIndex)
 
     if (reinterpret_cast<uintptr_t>(__approm_start__) == // NOLINT
         m_globalImageMetadata->images[imageIndex].imageBegin) {
-        // Nothing to do
         return;
     }
 
     if (m_globalImageMetadata->images[imageIndex].imageBegin == 0) {
-        // TODO Error Handling
         return;
     }
 

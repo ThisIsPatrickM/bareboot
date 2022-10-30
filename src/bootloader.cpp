@@ -15,9 +15,9 @@ void Bootloader::run()
     m_metadataInterface.updateImageBootcounter(
         globalImageMetadata->images[selectedImage].bootcounter + 1, selectedImage);
 
-    // TODO Reset last successStatus when updating/copying image!
-
     m_metadataInterface.loadImage(selectedImage);
+
+    // Start Image
     Disable_Interrupts();
     Move_Vector_Table();
     Enable_Interrupts();
@@ -29,29 +29,34 @@ void Bootloader::run()
 
 size_t Bootloader::selectImageSlot()
 {
-    // TODO Check last success status!
-    // TODO Fix naming of lastbootSuccessful
     size_t preferredImage = m_metadataInterface.getGlobalImageMetadata()->preferredImage;
     if (isImageValid(preferredImage) && lastBootSuccessful(preferredImage)) {
-        return static_cast<int32_t>(preferredImage);
+        return preferredImage;
     }
     size_t lastImage = m_metadataInterface.getGlobalImageMetadata()->currentImage;
     if (isImageValid(lastImage) && lastBootSuccessful(lastImage)) {
-        return static_cast<int32_t>(lastImage);
+        return lastImage;
     }
+
     return selectBestGuessImageSlot();
 }
 
 size_t Bootloader::selectBestGuessImageSlot()
 {
-    // TODO Implement Advanced Select logic
-
-    // Find Any image where Completionstatus and Checksum is correct, so that round robin system is
-    // used
+    // Find image that is complete, has correct checksum and last boot was successful
     size_t currentImage = m_metadataInterface.getGlobalImageMetadata()->currentImage;
     for (size_t i = 0; i < MetadataInterface::getNumberOfImages(); i++) {
-        if (isImageValid((currentImage + i) % MetadataInterface::getNumberOfImages())) {
+        size_t imageIndex = (currentImage + i) % MetadataInterface::getNumberOfImages();
+        if (isImageValid(imageIndex) && lastBootSuccessful(imageIndex)) {
             return (currentImage + i) % MetadataInterface::getNumberOfImages();
+        }
+    }
+
+    // Find image that is complete and has correct checksum (no matter if last boot was successful)
+    for (size_t i = 0; i < MetadataInterface::getNumberOfImages(); i++) {
+        size_t imageIndex = (currentImage + i) % MetadataInterface::getNumberOfImages();
+        if (isImageValid(imageIndex)) {
+            return imageIndex;
         }
     }
 

@@ -1,7 +1,7 @@
 # BareBoot
 
 A bare-metal bootloader for embedded systems.
-Mirrored from a private gitlab repository.
+Mirrored from a private (and soon public) gitlab repository.
 
 Currently supported platforms:
 - Vorago VA41620
@@ -18,9 +18,9 @@ Updating a new image at runtime is done by the bootmanager, which is not part of
 ## Features
 
 - Verify Images are still in desired state using CRC
-- Authenticate Images are send by us using message authentication codes
+- Authenticate Images using message authentication codes (HMAC-SHA256)
 - Transmission is expected to be unencrypted
-- Space on devices is limited and depends on the microcontroller.
+- Space on devices is limited and depends on the microcontroller
 
 ## Resources
 

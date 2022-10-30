@@ -9,6 +9,5 @@ bootloader_microcontroller_va41620_sources = bootloader_va41620_common_sources
 
 # Collect bootloader_va41620_sources in all subdirectories
 subdir('boot_rom_spi')
-subdir('hal')
-subdir('hw_hal')
+subdir('rodos_includes')
 subdir('init_structs')

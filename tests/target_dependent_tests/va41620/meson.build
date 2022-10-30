@@ -6,8 +6,9 @@ bootloader_tests_va41620_sources =  [ bootloader_microcontroller_bootloader_dumm
 
 
 bootloader_tests_va41620_inc =  [
-        include_directories('mocks'),
-        bootloader_va41620_dependent_inc]
+        bootloader_va41620_dependent_inc,
+        include_directories('mocks')
+        ]
 
 # Unit Tests
 va41620_unit_tests += {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "microcontroller/va41620/peripheral_ctrl/peripheral_defs.h"
-#include "microcontroller/va41620/peripheral_ctrl/pin_config/enums.h"
-#include "microcontroller/va41620/peripheral_ctrl/register_maps/spi_registers.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/peripheral_defs.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/pin_config/enums.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/register_maps/spi_registers.h"
 
-#include "microcontroller/va41620/subtargets/peb1_100mhz/clkgen_config.h"
+#include "microcontroller/va41620/rodos_includes/subtargets/peb1_100mhz/clkgen_config.h"
 
 #include <cstddef>
 #include <limits>

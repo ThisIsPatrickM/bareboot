@@ -27,7 +27,7 @@ ninja -C build-va41620_dev_board test
 1. **Compile firmware and bootloader**:
 
 ```
-meson build-va41620_dev_board --cross-file cross-files/va41620_dev_board.ini -Db_lto=true 
+meson build-va41620_dev_board --cross-file cross-files/va41620_dev_board.ini
 ninja -C build-va41620_dev_board test
 ```
 Link time optimization is set to true. Not using this option might increase the required memory and the linker script might need to be adjusted. 

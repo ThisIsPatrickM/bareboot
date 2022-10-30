@@ -3,7 +3,7 @@
 /* Controller specific includes */
 #include "architecture/architecture_dependent.h"
 #include "microcontroller/va41620/boot_rom_spi/boot_rom_spi.h"
-#include "microcontroller/va41620/peripheral_ctrl/peripheral_defs.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/peripheral_defs.h"
 #include "platform_parameters.h"
 
 namespace bootloader {
@@ -59,20 +59,6 @@ const GlobalImageMetadata* MetadataInterface::getGlobalImageMetadata()
     return m_globalImageMetadata;
 }
 
-size_t MetadataInterface::updatePreferredImage(size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return m_globalImageMetadata->preferredImage;
-    }
-    // Update SPI
-    bootRomSpi.updatePreferredImageOverSpi(imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->preferredImage = imageIndex;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->preferredImage;
-}
-
 size_t MetadataInterface::updateCurrentImage(size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
@@ -98,34 +84,6 @@ uint32_t MetadataInterface::updateGlobalBootcounter(uint32_t bootcounter)
     return m_globalImageMetadata->globalBootcounter;
 }
 
-uint32_t MetadataInterface::updateImageVersion(uint32_t version, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return 0;
-    }
-    // Update SPI
-    bootRomSpi.updateImageVersionOverSpi(version, imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].version = version;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].version;
-}
-
-uint32_t MetadataInterface::updateImageCrc(uint32_t crc, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return 0;
-    }
-    // Update SPI
-    bootRomSpi.updateImageCrcOverSpi(crc, imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].crc = crc;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].crc;
-}
-
 uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, size_t imageIndex)
 {
     if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
@@ -141,51 +99,6 @@ uint32_t MetadataInterface::updateImageBootcounter(uint32_t bootcounter, size_t 
     return m_globalImageMetadata->images[imageIndex].bootcounter;
 }
 
-CompletionStatus MetadataInterface::updateImageCompletionStatus(
-    CompletionStatus completionStatus, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return CompletionStatus::INCOMPLETE;
-    }
-    // Update SPI
-    bootRomSpi.updateImageCompletionStatusOverSpi(completionStatus, imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].completionStatus = completionStatus;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].completionStatus;
-}
-
-ProtectionStatus MetadataInterface::updateImageProtectionStatus(
-    ProtectionStatus protectionStatus, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return ProtectionStatus::UNPROTECTED;
-    }
-    // Update SPI
-    bootRomSpi.updateImageProtectionStatusOverSpi(protectionStatus, imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].protectionStatus = protectionStatus;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].protectionStatus;
-}
-
-uint32_t MetadataInterface::updateImageLength(uint32_t length, size_t imageIndex)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
-        length >= PlatformParameters::MAX_IMAGE_LENGTH) {
-        return 0;
-    }
-    // Update SPI
-    bootRomSpi.updateImageLengthOverSpi(length, imageIndex);
-    // Update code Memory
-    Disable_Code_Memory_Protection();
-    m_globalImageMetadata->images[imageIndex].length = length;
-    Enable_Code_Memory_Protection();
-    return m_globalImageMetadata->images[imageIndex].length;
-}
-
 size_t MetadataInterface::getNumberOfImages()
 {
     return PlatformParameters::NUMBER_OF_IMAGES;
@@ -196,40 +109,6 @@ size_t MetadataInterface::getMaxImageLength()
     return PlatformParameters::MAX_IMAGE_LENGTH;
 }
 
-void MetadataInterface::copyImage(size_t srcImageIndex, size_t dstImageIndex)
-{
-    if (srcImageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
-        dstImageIndex >= PlatformParameters::NUMBER_OF_IMAGES) {
-        return;
-    }
-
-    uintptr_t sourceImagePointer = m_globalImageMetadata->images[srcImageIndex].imageBegin;
-    uintptr_t destinationImagePointer = m_globalImageMetadata->images[dstImageIndex].imageBegin;
-    auto length = static_cast<int32_t>(m_globalImageMetadata->images[srcImageIndex].length);
-
-    if (sourceImagePointer == 0 || destinationImagePointer == 0) {
-        return;
-    }
-
-    if (srcImageIndex == dstImageIndex) {
-        return;
-    }
-    bootRomSpi.copyImage(sourceImagePointer, length, destinationImagePointer);
-}
-
-void MetadataInterface::updateImage(
-    const void* data, int32_t length, size_t imageIndex, uint32_t imageOffset)
-{
-    if (imageIndex >= PlatformParameters::NUMBER_OF_IMAGES ||
-        imageOffset + length >= PlatformParameters::MAX_IMAGE_LENGTH) {
-        return;
-    }
-    uintptr_t imagePointer = m_globalImageMetadata->images[imageIndex].imageBegin;
-    imagePointer += imageOffset;
-
-    bootRomSpi.updateImage(data, length, imagePointer);
-}
-
 void MetadataInterface::loadImage(size_t imageIndex)
 {
     if (imageIndex >= MetadataInterface::getNumberOfImages()) {
@@ -238,12 +117,10 @@ void MetadataInterface::loadImage(size_t imageIndex)
 
     if (reinterpret_cast<uintptr_t>(&__approm_start__) == // NOLINT
         m_globalImageMetadata->images[imageIndex].imageBegin) {
-        // Nothing to do, because the image was already loaded by default
         return;
     }
 
     if (m_globalImageMetadata->images[imageIndex].imageBegin == 0) {
-        // TODO Error Handling
         return;
     }
 
@@ -266,6 +143,7 @@ void MetadataInterface::loadImage(size_t imageIndex)
             return;
         }
     }
+
     // TODO Reset System, load image failed 3 times in a row!
 }
 

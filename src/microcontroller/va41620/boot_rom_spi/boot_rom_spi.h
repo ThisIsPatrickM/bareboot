@@ -3,35 +3,43 @@
 #include "memory_map.h"
 #include "metadata.h"
 #include "microcontroller/va41620/boot_rom_spi/spi_messages.h"
-#include "microcontroller/va41620/hal/hal_spi.h"
+#include "microcontroller/va41620/rodos_includes/hal/hal_spi.h"
 #include "platform_parameters.h"
 
 #include "memcpy/memcpy.h"
 
 namespace bootloader::va41620::boot_rom_spi {
 
-// TODO Get BOOTLOADER_OFFSET From somewhere else. Maybe sizeof(Interrupt Table)? or form Memory
-// Map? __bootloader__
-// TODO Sync with rodos boot_rom_spi
-// TODO Remove methods here, that are not used in bootlaoder
+/**
+ * @brief Offset where GlobalImageMetadata begins. Fixed by __bootloader__ label at link time and
+ * placed right after Interupt Vector
+ */
 constexpr uint32_t METADATA_OFFSET = 0x350;
+constexpr uint32_t METADATA_GLOBAL_BOOTCOUNTER_OFFSET =
+    METADATA_OFFSET + offsetof(GlobalImageMetadata, globalBootcounter);
 constexpr uint32_t METADATA_PREFERRED_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, preferredImage);
 constexpr uint32_t METADATA_CURRENT_IMAGE_OFFSET =
     METADATA_OFFSET + offsetof(GlobalImageMetadata, currentImage);
 constexpr uint32_t METADATA_IMAGES_OFFSET = METADATA_OFFSET + offsetof(GlobalImageMetadata, images);
 
-constexpr uint32_t METADATA_GLOBAL_BOOTCOUNTER_OFFSET =
-    METADATA_OFFSET + offsetof(GlobalImageMetadata, globalBootcounter);
-
+/**
+ * @brief Number of bytes to skip when reading addressed data over SPI.
+ */
 constexpr size_t SPI_RECEIVE_ADDRESSED_DATA_OFFSET = 4;
+
 constexpr RODOS::SpiIdx BOOTSPI_IDX = RODOS::SPI_IDX3;
+
+/**
+ * @brief Removes all Memory Protection
+ */
 constexpr uint8_t SPI_STATUS_REGISTER_WRITE_ALL = 0b0100'0000;
 constexpr uint32_t SPI_FREQUENCY = 1'000'000;
 
+/**
+ * @brief Buffer size for Fragmentation
+ */
 constexpr int32_t BUFFER_SIZE = 128;
-
-// TODO Fix return types without dosis!
 
 /**
  * @brief Interface class to interact with Non-Volatile-Memory over SPI to manage Metadata and
@@ -49,14 +57,6 @@ public:
     void getBootRomGlobalImageMetadataOverSpi(GlobalImageMetadata& globalImageMetadata);
 
     /**
-     * @brief Set the preferred Image for the next boot process.
-     *
-     * @param preferredImageIndex
-     * @return void
-     */
-    void updatePreferredImageOverSpi(size_t preferredImageIndex);
-
-    /**
      * @brief Update the current image in the Metadata over SPI
      *
      * @param currentImageIndex
@@ -72,24 +72,6 @@ public:
     void updateGlobalBootcounterOverSpi(uint32_t bootcounter);
 
     /**
-     * @brief Set image version of selected image
-     *
-     * @param version
-     * @param imageIndex Index of the image that should have new version.
-     * @return void
-     */
-    void updateImageVersionOverSpi(uint32_t version, size_t imageIndex);
-
-    /**
-     * @brief Set image crc of selected image
-     *
-     * @param crc
-     * @param imageIndex
-     * @return void
-     */
-    void updateImageCrcOverSpi(uint32_t crc, size_t imageIndex);
-
-    /**
      * @brief Set bootcounter of selected image
      *
      * @param bootcounter
@@ -98,52 +80,51 @@ public:
     void updateImageBootcounterOverSpi(uint32_t bootcounter, size_t imageIndex);
 
     /**
-     * @brief Set image complete status of selected image
+     * @brief Get the length number of bytes over spi from address and writes them to receiveBuffer.
+     * @note Receivebuffer needs to be able to hold length+4 elements, because 4 dummy bytes are
+     * received.
      *
-     * @param completionStatus
-     * @param imageIndex
+     * @param address Address to read from
+     * @param length Number of bytes to receive
+     * @param receiveBuffer Pointer where the data is written to. Needs to hold length+4 elements
+     * @return uint8_t* Points into receiveBuffer where the data begins
      */
-    void updateImageCompletionStatusOverSpi(CompletionStatus completionStatus, size_t imageIndex);
-
-    /**
-     * @brief Set image protectionStatus of selected image
-     *
-     * @param protectionStatus
-     * @param imageIndex
-     */
-    void updateImageProtectionStatusOverSpi(ProtectionStatus protectionStatus, size_t imageIndex);
-
-    /**
-     * @brief Set image length of selected image
-     *
-     * @param length
-     * @param imageIndex
-     * @return Returns
-     */
-    void updateImageLengthOverSpi(uint32_t length, size_t imageIndex);
-
-    /**
-     * @brief Set imageBegin of selected image
-     *
-     * @param imageBegin
-     * @param imageIndex
-     * @return Returns
-     */
-    void updateImageBeginOverSpi(void* imageBegin, size_t imageIndex);
-
     uint8_t* getDataOverSpi(uintptr_t address, uint32_t length, uint8_t* receiveBuffer);
 
+    /**
+     * @brief Initializes the underlying HAL_SPI Interface. Needs to be called once.
+     *
+     */
     void init();
 
-    void copyImage(uintptr_t srcImagePointer, int32_t length, uintptr_t dstImagePointer);
-
-    void updateImage(const void* data, int32_t length, uintptr_t imagePointer);
-
+    /**
+     * @brief Load image from imagePointer to destination with length number of bytes.
+     *
+     * @param destination
+     * @param length
+     * @param imagePointer
+     */
     void loadImage(void* destination, int32_t length, uintptr_t imagePointer);
 
 private:
+    /**
+     * @brief Enables writing over SPI. Needs to be send before every write message.
+     *
+     */
     void enableWriting();
+
+    /**
+     * @brief Disables writing over SPI.
+     *
+     */
     void disableWriting();
+
+    /**
+     * @brief Puts the address in the BOOT_ROM into 3 bytes.
+     *
+     * @param address
+     * @param addressOffset
+     */
     static void putAddressOffsetIntoMessage(
         uint8_t address[SPI_ADDRESS_SPACE_BYTES], uint32_t addressOffset);
 

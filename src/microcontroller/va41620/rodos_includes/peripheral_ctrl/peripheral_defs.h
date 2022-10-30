@@ -1,5 +1,6 @@
 #pragma once
-#include "microcontroller/va41620/cortex_m/hw_periph_bitband.h"
+
+#include "microcontroller/va41620/rodos_includes/cortex_m/hw_periph_bitband.h"
 #include "register_maps/spi_registers.h"
 #include "register_maps/sysconfig_peripheral_bitband.h"
 #include "register_maps/sysconfig_registers.h"

@@ -62,9 +62,9 @@ bootloader = declare_dependency(
 
 #####    Tests    #####
 
-# TODO Later only run tests in subproject
-if meson.can_run_host_binaries()
-# if not meson.is_subproject() and meson.can_run_host_binaries()
+# Activate this to run tests even if this is a subproject
+# if meson.can_run_host_binaries()
+if not meson.is_subproject() and meson.can_run_host_binaries()
     gtest_proj = subproject('gtest')
     subdir('tests')
 endif

@@ -1,6 +1,6 @@
 #pragma once
-#include "microcontroller/va41620/peripheral_ctrl/clock_management/clkgen_configstruct.h"
-#include "microcontroller/va41620/peripheral_ctrl/clock_management/clkgen_setup.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/clock_management/clkgen_configstruct.h"
+#include "microcontroller/va41620/rodos_includes/peripheral_ctrl/clock_management/clkgen_setup.h"
 
 namespace RODOS {
 

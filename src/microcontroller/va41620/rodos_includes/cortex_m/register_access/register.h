@@ -1,7 +1,7 @@
 #pragma once
 
-#include "microcontroller/va41620/cortex_m/register_access/mmio.h"
-#include "rodos_includes/bit_field.h"
+#include "microcontroller/va41620/rodos_includes/bit_field.h"
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/mmio.h"
 
 namespace RODOS {
 

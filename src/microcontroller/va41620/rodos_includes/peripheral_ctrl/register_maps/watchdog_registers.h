@@ -1,10 +1,10 @@
 #pragma once
-#include "microcontroller/va41620/cortex_m/register_access/register.h"
-#include "microcontroller/va41620/cortex_m/register_access/reserved_bytes.h"
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/register.h"
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
-// TODO Use better namespaceName
+// NOLINTBEGIN
 namespace WD_WDOGCONTROL {
     using RESEN = RegSubValue<1>;
     using INTEN = RegSubValue<0>;
@@ -34,5 +34,7 @@ struct WatchdogStruct {
 };
 
 static_assert(sizeof(WatchdogStruct) == 0x1000);
+
+// NOLINTEND
 
 }

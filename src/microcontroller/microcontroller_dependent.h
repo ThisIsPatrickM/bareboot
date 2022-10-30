@@ -24,6 +24,4 @@ void Init_Watchdog();
 
 void Trigger_Watchdog();
 
-// TODO Move to a class? Yes!
-
 } // namespace bootloader

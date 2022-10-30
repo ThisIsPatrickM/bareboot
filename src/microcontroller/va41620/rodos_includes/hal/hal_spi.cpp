@@ -1,4 +1,4 @@
-#include "microcontroller/va41620/hal/hal_spi.h"
+#include "microcontroller/va41620/rodos_includes/hal/hal_spi.h"
 
 namespace RODOS {
 

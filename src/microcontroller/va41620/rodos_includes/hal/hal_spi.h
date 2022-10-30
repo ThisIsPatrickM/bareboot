@@ -8,7 +8,7 @@
  */
 #pragma once
 
-#include "microcontroller/va41620/hw_hal/hw_hal_spi.h"
+#include "microcontroller/va41620/rodos_includes/hw_hal/hw_hal_spi.h"
 #include <cstdint>
 #include <new>
 

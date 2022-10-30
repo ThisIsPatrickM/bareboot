@@ -17,8 +17,9 @@ private:
     static constexpr std::size_t NVM_TOTAL_SIZE = 2 * 1024 * 1024; // 2MB
     static constexpr std::size_t BOOT_ROM_SIZE = 4 * 1024; // 4KB, see linkerscript
     static constexpr std::size_t APP_NVM_TOTAL_SIZE =
-        NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BootRom, for Size see linker script
-    static constexpr uintptr_t APP_NVM_BEGIN_ADDRESS = BOOT_ROM_SIZE; // 4KB
+        NVM_TOTAL_SIZE - BOOT_ROM_SIZE; // Without BOOT_ROM
+    static constexpr uintptr_t APP_NVM_BEGIN_ADDRESS =
+        BOOT_ROM_SIZE; // App Data begins after Bootloader
 
 public:
     /**

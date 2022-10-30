@@ -3,7 +3,7 @@
 #include <cstdint>
 
 /* rodos includes */
-#include "rodos_includes/bit_field.h"
+#include "microcontroller/va41620/rodos_includes/bit_field.h"
 
 namespace bootloader::va41620::boot_rom_spi {
 
@@ -116,9 +116,6 @@ struct [[gnu::packed]] SpiWrite {
     const uint8_t opcode = static_cast<uint8_t>(SpiOpCodes::WRITE);
     uint8_t address[SPI_ADDRESS_SPACE_BYTES] = { 0 };
     uint8_t data[DATA_LENGTH] = {};
-    // TODO test this further, but its complicated
-    // uint32_t padding : 14 = 0;
-    // uint32_t a : 18 = 15;
 };
 
 /**

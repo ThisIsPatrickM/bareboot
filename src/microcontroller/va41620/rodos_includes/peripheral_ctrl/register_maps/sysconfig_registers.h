@@ -1,9 +1,10 @@
 #pragma once
-#include "microcontroller/va41620/cortex_m/register_access/register.h"
-#include "microcontroller/va41620/cortex_m/register_access/reserved_bytes.h"
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/register.h"
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/reserved_bytes.h"
 
 namespace RODOS {
 
+// NOLINTBEGIN
 namespace SYSCONFIG_RST_STAT {
     using POR = RegSubValue<0>;
     using EXTRST = RegSubValue<1>;
@@ -230,4 +231,5 @@ struct SYSCONFIGStruct {
 
 static_assert(sizeof(SYSCONFIGStruct) == 0x1000);
 
+// NOLINTEND
 }

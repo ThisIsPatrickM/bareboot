@@ -1,5 +1,6 @@
 #pragma once
-#include "microcontroller/va41620/cortex_m/register_access/register.h"
+
+#include "microcontroller/va41620/rodos_includes/cortex_m/register_access/register.h"
 
 namespace RODOS {
 // NOLINTBEGIN
