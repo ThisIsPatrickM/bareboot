@@ -45,19 +45,23 @@ This step puts bootloader and rodos/dosis application to the expected location a
 See [Github InitialMetadata](https://github.com/ThisIsPatrickM/bareboot-initial-metadata) for further instructions.
 This creates a single file that can be flashed with the default name `python-vorago.bin`
 
+The resulting binary looks something like this:
+![Memory Layout](img/memory_layout.jpg)
+
+Bootloader starts at offset 0x0 and contains the metadata at offset 0x350. Both are fixed from the linkerfile and known by the python script.
+The addresses/offsets where the slots begin are calculated in `include/<platform>/platform_parameters.h` and also in the python script. 
+
+
 4. **Flash to microcontroller**:
 
 ```
 subprojects/bootloader/utils/va41620_flash/vaflash.py python-vorago.bin --gdb_path=gdb-multiarch
 ```
 
-# How to port to other systems
-
 
 # GDB Quick Tips
 
 - **GDB Server**: `subprojects/bootloader/utils/va41620_flash/gdbserversetup.sh`
 - **Connect to GDB**: `	gdb-multiarch build-va41620_dev_board/experimental/examples/example-vorago.elf -ex "target remote :2331"`
-
 - **Remove ROM Protection**: `set {int}0x40010010 = 1`
 - **Show Metadata Table**: `x/20 0x350`  Shows 20 bytes starting from address 0x350, the address of the metadata table on VA41620
